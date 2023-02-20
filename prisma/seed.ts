@@ -4,18 +4,32 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function seed() {
-  const email = "rachel@remix.run";
+  const email1 = "celio@mynextadventure.com";
+  const email2 = "luana@mynextadventure.com";
 
   // cleanup the existing database
-  await prisma.user.delete({ where: { email } }).catch(() => {
+  await prisma.user.deleteMany({ where: { email: { in: [email1, email2]} } }).catch(() => {
+    // no worries if it doesn't exist yet
+  });
+  await prisma.adventureTemplate.deleteMany().catch(() => {
     // no worries if it doesn't exist yet
   });
 
-  const hashedPassword = await bcrypt.hash("racheliscool", 10);
+  const hashedPassword = await bcrypt.hash("secret123", 10);
 
-  const user = await prisma.user.create({
+  const user1 = await prisma.user.create({
     data: {
-      email,
+      email: email1,
+      password: {
+        create: {
+          hash: hashedPassword,
+        },
+      },
+    },
+  });
+  const user2 = await prisma.user.create({
+    data: {
+      email: email2,
       password: {
         create: {
           hash: hashedPassword,
@@ -24,21 +38,48 @@ async function seed() {
     },
   });
 
-  await prisma.note.create({
+  const adventureTemplate = await prisma.adventureTemplate.create({
     data: {
-      title: "My first note",
-      body: "Hello, world!",
-      userId: user.id,
+      title: "My first adventure",
+      description: "The best adventure ever!!!"
     },
   });
 
-  await prisma.note.create({
+  const challengeTemplates = await Promise.all([
+    { title: "First challenge", description: "You need to do this.", position: 0 },
+    { title: "Second challenge", description: "You need to do that.", position: 1 },
+    { title: "Third challenge", description: "You need to do this again.", position: 2 },
+  ].map(item => prisma.challengeTemplate.create({
     data: {
-      title: "My second note",
-      body: "Hello, world!",
-      userId: user.id,
+      title: item.title,
+      description: item.description,
+      position: item.position,
+      adventureTemplateId: adventureTemplate.id
     },
+  })));
+
+  const adventure = await prisma.adventure.create({
+    data: {
+      adventureTemplateId: adventureTemplate.id,
+      users: {
+        connect: [{ id: user1.id }, { id: user2.id }]
+      }
+    }
   });
+
+  await Promise.all([
+    { revealed: true, completed: true, note: "Awesome!", challengeTemplateId: challengeTemplates[0].id },
+    { revealed: true, completed: false, challengeTemplateId: challengeTemplates[1].id },
+    { revealed: false, completed: true, challengeTemplateId: challengeTemplates[2].id },
+  ].map(item => prisma.challenge.create({
+    data: {
+      revealed: item.revealed,
+      completed: item.completed,
+      note: item.note,
+      adventureId: adventure.id,
+      challengeTemplateId: item.challengeTemplateId
+    },
+  })));
 
   console.log(`Database has been seeded. 🌱`);
 }
