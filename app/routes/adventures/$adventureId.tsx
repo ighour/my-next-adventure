@@ -1,9 +1,10 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, useCatch, useLoaderData } from "@remix-run/react";
+import { Form, Link, useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
 import { deleteAdventure, getAdventure } from "~/models/adventure.server";
+import { getChallengeListItems } from "~/models/challenge.server";
 import { requireUserId } from "~/session.server";
 
 export async function loader({ request, params }: LoaderArgs) {
@@ -14,7 +15,10 @@ export async function loader({ request, params }: LoaderArgs) {
   if (!adventure) {
     throw new Response("Not Found", { status: 404 });
   }
-  return json({ adventure });
+
+  const challenges = await getChallengeListItems({ userId, adventureId: adventure.id });
+
+  return json({ adventure, challenges });
 }
 
 export async function action({ request, params }: ActionArgs) {
@@ -46,6 +50,29 @@ export default function AdventureDetailsPage() {
           Delete
         </button>
       </Form>
+      <hr className="my-4" />
+      <h4 className="text-xl font-bold">Challenges</h4>
+      <ol>
+        {data.challenges.map((challenge) => (
+          <li key={challenge.id}>
+            {challenge.revealed ?
+              <Link
+                className="block border-b p-4 text-xl"
+                to={`challenges/${challenge.id}`}
+              >
+                {challenge.challengeTemplate.title}{challenge.completed ? " (Completed)" : ""}
+              </Link>
+              :
+              <div
+                className="block border-b p-4 text-xl text-gray-500"
+              >
+                {challenge.challengeTemplate.title}
+              </div>
+            }
+
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }
