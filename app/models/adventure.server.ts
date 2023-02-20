@@ -1,8 +1,8 @@
-import type { User } from "@prisma/client";
+import type { AdventureTemplate, User } from "@prisma/client";
 
 import { prisma } from "~/db.server";
 
-export type { Note } from "@prisma/client";
+export type { Adventure } from "@prisma/client";
 
 export function getAdventureListItems({ userId }: { userId: User["id"] }) {
   return prisma.adventure.findMany({
@@ -12,5 +12,28 @@ export function getAdventureListItems({ userId }: { userId: User["id"] }) {
       adventureTemplate: { select: { title: true } },
     },
     orderBy: { updatedAt: "desc" },
+  });
+}
+
+/**
+ * @todo - receive invitedUsers (+validate from template).
+ * @todo - create challenges from template.
+ */
+export function createAdventure({
+  adventureTemplateId,
+  userId,
+}: {
+  adventureTemplateId: AdventureTemplate["id"]
+  userId: User["id"];
+}) {
+  return prisma.adventure.create({
+    data: {
+      adventureTemplateId,
+      users: {
+        connect: {
+          id: userId,
+        },
+      },
+    },
   });
 }
