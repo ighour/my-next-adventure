@@ -1,4 +1,4 @@
-import type { AdventureTemplate, User } from "@prisma/client";
+import type { Adventure, AdventureTemplate, User } from "@prisma/client";
 
 import { prisma } from "~/db.server";
 
@@ -23,7 +23,7 @@ export function createAdventure({
   adventureTemplateId,
   userId,
 }: {
-  adventureTemplateId: AdventureTemplate["id"]
+  adventureTemplateId: AdventureTemplate["id"];
   userId: User["id"];
 }) {
   return prisma.adventure.create({
@@ -35,5 +35,30 @@ export function createAdventure({
         },
       },
     },
+  });
+}
+
+export function getAdventure({
+  id,
+  userId,
+}: Pick<Adventure, "id"> & {
+  userId: User["id"];
+}) {
+  return prisma.adventure.findFirst({
+    select: {
+      id: true,
+      adventureTemplate: { select: { title: true, description: true } },
+      users: { select: { email: true }}
+    },
+    where: { id, users: { some: { id: userId } } },
+  });
+}
+
+export function deleteAdventure({
+  id,
+  userId,
+}: Pick<Adventure, "id"> & { userId: User["id"] }) {
+  return prisma.adventure.deleteMany({
+    where: { id, users: { some: { id: userId } } },
   });
 }
