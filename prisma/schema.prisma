@@ -16,6 +16,10 @@ model User {
 
   password Password?
   notes    Note[]
+
+  adventureTemplates AdventureTemplate[]
+  challengeTemplates ChallengeTemplate[]
+  adventures Adventure[]
 }
 
 model Password {
@@ -35,4 +39,66 @@ model Note {
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String
+}
+
+model AdventureTemplate {
+  id    String @id @default(cuid())
+  title String
+  body  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String?
+
+  challengesTemplates    ChallengeTemplate[]
+  adventures    Adventure[]
+}
+
+model ChallengeTemplate {
+  id    String @id @default(cuid())
+  title String
+  description  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String?
+
+  adventureTemplate   AdventureTemplate   @relation(fields: [adventureTemplateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  adventureTemplateId String
+
+  challenges    Challenge[]
+}
+
+model Adventure {
+  id    String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  adventureTemplate   AdventureTemplate   @relation(fields: [adventureTemplateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  adventureTemplateId String
+
+  users    User[]
+  challenges    Challenge[]
+}
+
+model Challenge {
+  id    String @id @default(cuid())
+
+  revealed  Boolean @default(false)
+  completed  Boolean @default(false)
+  note  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  adventure   Adventure   @relation(fields: [adventureId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  adventureId String
+
+  challengeTemplate   ChallengeTemplate   @relation(fields: [challengeTemplateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  challengeTemplateId String
 }
