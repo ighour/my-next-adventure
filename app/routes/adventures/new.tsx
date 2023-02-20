@@ -39,18 +39,11 @@ export async function action({ request }: ActionArgs) {
     );
   }
 
-  const otherUsersEmail = participants.trim().split(",");
+  const otherUsersEmail = [...new Set(participants.trim().split(",").filter(email => email !== user.email))];
 
   if (!(await checkUsersExistsByEmail(otherUsersEmail))) {
     return json(
       { errors: { ...errorFields, participants: "One or more participants were not found" } },
-      { status: 400 }
-    );
-  }
-
-  if (otherUsersEmail.includes(user.email)) {
-    return json(
-      { errors: { ...errorFields, participants: "You cannot add yourself" } },
       { status: 400 }
     );
   }
