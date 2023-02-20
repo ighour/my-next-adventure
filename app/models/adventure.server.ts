@@ -15,25 +15,36 @@ export function getAdventureListItems({ userId }: { userId: User["id"] }) {
   });
 }
 
-/**
- * @todo - receive invitedUsers (+validate from template).
- * @todo - create challenges from template.
- */
-export function createAdventure({
+export async function createAdventure({
   adventureTemplateId,
   userId,
+  otherUsersEmail,
 }: {
   adventureTemplateId: AdventureTemplate["id"];
   userId: User["id"];
+  otherUsersEmail: User["email"][];
 }) {
+  const challengeTemplates = await prisma.challengeTemplate.findMany({
+    where: {
+      adventureTemplateId
+    },
+    orderBy: { position: "asc" },
+  });
+
   return prisma.adventure.create({
     data: {
       adventureTemplateId,
       users: {
-        connect: {
-          id: userId,
-        },
+        connect: [
+          { id: userId },
+          ...otherUsersEmail.map(email => ({ email }))
+        ]
       },
+      challenges: {
+        create: challengeTemplates.map(template => ({
+          challengeTemplateId: template.id
+        }))
+      }
     },
   });
 }
