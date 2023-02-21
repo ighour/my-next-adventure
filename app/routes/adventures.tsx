@@ -19,13 +19,13 @@ export default function AdventuresPage() {
     <div className="flex h-full min-h-screen flex-col">
       <Navbar />
 
-      <main className="flex h-full bg-white dark:bg-slate-800 text-black dark:text-white">
-        <div className="h-full w-80 border-r dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
-          <Link to="new" className="block p-4 text-xl text-blue-500 dark:text-blue-400">
+      <main className="flex h-full">
+        <div className="h-full w-80 border-r">
+          <Link to="new" className="link link-secondary no-underline text-xl px-4">
             + Start an Adventure
           </Link>
 
-          <hr />
+          <div className="divider"></div> 
 
           {data.adventureListItems.length === 0 ? (
             <p className="p-4">No adventures yet</p>
@@ -35,7 +35,7 @@ export default function AdventuresPage() {
                 <li key={adventure.id}>
                   <NavLink
                     className={({ isActive }) =>
-                      `block border-b p-4 text-xl ${isActive ? "bg-white dark:bg-black" : ""}`
+                      `link no-underline text-xl px-4 ${isActive ? "link-primary" : ""}`
                     }
                     to={adventure.id}
                   >
