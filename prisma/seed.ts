@@ -70,7 +70,7 @@ async function seed() {
   await Promise.all([
     { revealed: true, completed: true, note: "Awesome!", challengeTemplateId: challengeTemplates[0].id },
     { revealed: true, completed: false, challengeTemplateId: challengeTemplates[1].id },
-    { revealed: false, completed: true, challengeTemplateId: challengeTemplates[2].id },
+    { revealed: false, completed: false, challengeTemplateId: challengeTemplates[2].id },
   ].map(item => prisma.challenge.create({
     data: {
       revealed: item.revealed,

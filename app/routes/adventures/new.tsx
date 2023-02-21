@@ -5,7 +5,7 @@ import * as React from "react";
 
 import { getAdventureTemplateListItems } from "~/models/adventure-template.server";
 import { createAdventure } from "~/models/adventure.server";
-import { checkUsersExistsByEmail, getUserById } from "~/models/user.server";
+import { checkUsersExistsByEmail } from "~/models/user.server";
 import { requireUser } from "~/session.server";
 
 export async function loader() {

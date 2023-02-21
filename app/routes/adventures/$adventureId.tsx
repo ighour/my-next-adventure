@@ -1,6 +1,6 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, Link, useCatch, useLoaderData } from "@remix-run/react";
+import { Form, NavLink, Outlet, useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
 import { deleteAdventure, getAdventure } from "~/models/adventure.server";
@@ -51,28 +51,29 @@ export default function AdventureDetailsPage() {
         </button>
       </Form>
       <hr className="my-4" />
-      <h4 className="text-xl font-bold">Challenges</h4>
-      <ol>
-        {data.challenges.map((challenge) => (
-          <li key={challenge.id}>
-            {challenge.revealed ?
-              <Link
-                className="block border-b p-4 text-xl"
-                to={`challenges/${challenge.id}`}
-              >
-                {challenge.challengeTemplate.title}{challenge.completed ? " (Completed)" : ""}
-              </Link>
-              :
-              <div
-                className="block border-b p-4 text-xl text-gray-500"
-              >
-                {challenge.challengeTemplate.title}
-              </div>
-            }
+      <h3 className="text-2xl font-bold">Challenges</h3>
+      <div className="flex h-full">
+        <div className="h-full w-80 border-r">
+        <ol>
+              {data.challenges.map((challenge) => (
+                <li key={challenge.id}>
+                  <NavLink
+                    className={({ isActive }) =>
+                      `block border-b p-4 text-xl ${isActive ? "font-bold" : ""} ${challenge.completed ? "line-through" : ""} ${!challenge.revealed ? "text-gray-400" : ""}`
+                    }
+                    to={`challenges/${challenge.id}`}
+                  >
+                    #{challenge.challengeTemplate.position+1} {challenge.challengeTemplate.title}
+                  </NavLink>
+                </li>
+              ))}
+            </ol>
+        </div>
 
-          </li>
-        ))}
-      </ol>
+        <div className="flex-1 p-6">
+          <Outlet />
+        </div>
+      </div>
     </div>
   );
 }
