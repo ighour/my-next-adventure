@@ -7,10 +7,15 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
+import clsx from 'clsx';
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUser } from "./session.server";
+import { NonFlashOfWrongThemeEls, Theme, ThemeProvider, useTheme } from "./utils/theme-provider";
+import { getThemeSession } from "./utils/theme.server";
+import { User } from "./models/user.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
@@ -22,18 +27,32 @@ export const meta: MetaFunction = () => ({
   viewport: "width=device-width,initial-scale=1",
 });
 
+export type LoaderData = {
+  theme: Theme | null;
+  user: User | null;
+};
+
 export async function loader({ request }: LoaderArgs) {
-  return json({
+  const themeSession = await getThemeSession(request);
+
+  const data: LoaderData = {
+    theme: themeSession.getTheme(),
     user: await getUser(request),
-  });
+  };
+  
+  return json(data);
 }
 
-export default function App() {
+function App() {
+  const data = useLoaderData<LoaderData>();
+  const [theme] = useTheme();
+
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className={clsx(theme, "h-full")}>
       <head>
         <Meta />
         <Links />
+        <NonFlashOfWrongThemeEls ssrTheme={Boolean(data.theme)} />
       </head>
       <body className="h-full">
         <Outlet />
@@ -42,5 +61,15 @@ export default function App() {
         <LiveReload />
       </body>
     </html>
+  );
+}
+
+export default function AppWithProviders() {
+  const data = useLoaderData<LoaderData>();
+
+  return (
+    <ThemeProvider specifiedTheme={data.theme}>
+      <App />
+    </ThemeProvider>
   );
 }
