@@ -11,6 +11,8 @@ import {
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUser } from "./session.server";
+import { useEffect } from "react";
+import { themeChange } from "theme-change";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
@@ -29,6 +31,10 @@ export async function loader({ request }: LoaderArgs) {
 }
 
 export default function App() {
+  useEffect(() => {
+    themeChange(false)
+  }, [])
+
   return (
     <html lang="en" className="h-full">
       <head>

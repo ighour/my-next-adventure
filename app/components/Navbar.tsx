@@ -1,6 +1,8 @@
 import { Form, Link, NavLink } from "@remix-run/react";
 
 export default function Navbar() {
+    const themes = ["light", "dark", "cupcake", "bumblebee", "emerald", "corporate", "synthwave", "retro", "cyberpunk", "valentine", "halloween", "garden", "forest", "aqua", "lofi", "pastel", "fantasy", "wireframe", "black", "luxury", "dracula", "cmyk", "autumn", "business", "acid", "lemonade", "night", "coffee", "winter"];
+
     return (
         <header className="navbar bg-base-100">
             <div className="navbar-start">
@@ -11,18 +13,18 @@ export default function Navbar() {
                     </label>
                     <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
                         <li>
-                        <NavLink
-                            className={({ isActive }) =>
-                                `${isActive ? "underline" : ""}`
-                            }
-                            to="/adventures"
-                        >
-                            Adventures
-                        </NavLink>
-                    </li>
+                            <NavLink
+                                className={({ isActive }) =>
+                                    `${isActive ? "underline" : ""}`
+                                }
+                                to="/adventures"
+                            >
+                                Adventures
+                            </NavLink>
+                        </li>
                     </ul>
                 </div>
-                <Link className="btn btn-ghost normal-case text-xl" to="/">My Next Adventure</Link>
+                <Link className="btn btn-ghost normal-case text-xl" to="/">MNA</Link>
             </div>
             {/* Menu list for big sizes */}
             <div className="navbar-center hidden lg:flex">
@@ -40,6 +42,10 @@ export default function Navbar() {
                 </ul>
             </div>
             <div className="navbar-end">
+                <select data-choose-theme className="select select-ghost">
+                    <option value="">Default</option>
+                    {themes.map(theme => <option key={theme} value={theme}>{`${theme.charAt(0).toUpperCase()}${theme.slice(1)}`}</option>)}
+                </select>
                 <Form action="/logout" method="post">
                     <button
                         type="submit"
