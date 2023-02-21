@@ -4,7 +4,6 @@ import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 
 import { requireUserId } from "~/session.server";
 import { getAdventureListItems } from "~/models/adventure.server";
-import ThemeToggle from "~/components/ThemeToggle";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await requireUserId(request);
@@ -21,7 +20,6 @@ export default function AdventuresPage() {
         <h1 className="text-3xl font-bold">
           <Link to=".">My Adventures</Link>
         </h1>
-        <ThemeToggle />
         <Form action="/logout" method="post">
           <button
             type="submit"
