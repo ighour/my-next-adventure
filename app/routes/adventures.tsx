@@ -15,7 +15,6 @@ export async function loader({ request }: LoaderArgs) {
 
 export default function AdventuresPage() {
   const data = useLoaderData<typeof loader>();
-  const user = useUser();
 
   return (
     <div className="flex h-full min-h-screen flex-col">
@@ -23,7 +22,6 @@ export default function AdventuresPage() {
         <h1 className="text-3xl font-bold">
           <Link to=".">My Adventures</Link>
         </h1>
-        <p>{user.email}</p>
         <ThemeToggle />
         <Form action="/logout" method="post">
           <button
