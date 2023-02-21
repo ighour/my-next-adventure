@@ -111,7 +111,7 @@ export default function ChallengeDetailsPage() {
             <textarea
               ref={noteRef}
               name="note"
-              className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
+              className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               aria-invalid={errors?.note ? true : undefined}
               aria-errormessage={
                 errors?.note ? "note-error" : undefined

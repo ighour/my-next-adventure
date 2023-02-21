@@ -18,7 +18,7 @@ export default function AdventuresPage() {
 
   return (
     <div className="flex h-full min-h-screen flex-col">
-      <header className="flex items-center justify-between bg-slate-800 p-4 text-white">
+      <header className="flex items-center justify-between bg-slate-900 p-4 text-white">
         <h1 className="text-3xl font-bold">
           <Link to=".">My Adventures</Link>
         </h1>
@@ -33,9 +33,9 @@ export default function AdventuresPage() {
         </Form>
       </header>
 
-      <main className="flex h-full bg-white">
-        <div className="h-full w-80 border-r bg-gray-50">
-          <Link to="new" className="block p-4 text-xl text-blue-500">
+      <main className="flex h-full bg-white dark:bg-slate-800 text-black dark:text-white">
+        <div className="h-full w-80 border-r dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
+          <Link to="new" className="block p-4 text-xl text-blue-500 dark:text-blue-400">
             + Start an Adventure
           </Link>
 
@@ -49,7 +49,7 @@ export default function AdventuresPage() {
                 <li key={adventure.id}>
                   <NavLink
                     className={({ isActive }) =>
-                      `block border-b p-4 text-xl ${isActive ? "bg-white" : ""}`
+                      `block border-b p-4 text-xl ${isActive ? "bg-white dark:bg-black" : ""}`
                     }
                     to={adventure.id}
                   >
