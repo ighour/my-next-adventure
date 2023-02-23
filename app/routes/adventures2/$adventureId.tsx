@@ -1,7 +1,8 @@
-import type { LoaderArgs } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
+import ChallengeListItem from "~/components/ChallengeListItem";
 
 import { getAdventure } from "~/models/adventure.server";
 import { getChallengeListItems } from "~/models/challenge.server";
@@ -21,12 +22,44 @@ export async function loader({ request, params }: LoaderArgs) {
   return json({ adventure, challenges });
 }
 
+// @TODO - actions
+export async function action({ request, params }: ActionArgs) {
+  const userId = await requireUserId(request);
+  invariant(params.adventureId, "adventureId not found");
+
+  const formData = await request.formData();
+  const { _action, _challengeId } = Object.fromEntries(formData);
+
+  if (_action === "reveal") {
+    // await revealChallenge({ userId, id: params.challengeId });
+    console.log("revealed")
+    return null
+
+  } else if (_action === "complete") {
+    // await completeChallenge({ userId, id: params.challengeId });
+    console.log("completed")
+    return null
+
+  }
+}
+
 export default function AdventureDetailsPage() {
   const data = useLoaderData<typeof loader>();
   console.log(data)
 
   return (
-    <div>TODO</div>
+    <div>
+      {data.challenges.map(challenge =>
+        <ChallengeListItem
+          className="m-2"
+          key={challenge.id}
+          title={challenge.challengeTemplate.title}
+          description={challenge.challengeTemplate.description}
+          completed={challenge.completed}
+          revealed={challenge.revealed}
+        />  
+      )}
+    </div>
   );
 }
 
