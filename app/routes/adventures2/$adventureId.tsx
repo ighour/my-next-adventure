@@ -5,7 +5,7 @@ import invariant from "tiny-invariant";
 import ChallengeListItem from "~/components/ChallengeListItem";
 
 import { getAdventure } from "~/models/adventure.server";
-import { getChallengeListItems } from "~/models/challenge.server";
+import { completeChallenge, getChallengeListItems, revealChallenge } from "~/models/challenge.server";
 import { requireUserId } from "~/session.server";
 
 export async function loader({ request, params }: LoaderArgs) {
@@ -22,22 +22,18 @@ export async function loader({ request, params }: LoaderArgs) {
   return json({ adventure, challenges });
 }
 
-// @TODO - actions
-export async function action({ request, params }: ActionArgs) {
+export async function action({ request }: ActionArgs) {
   const userId = await requireUserId(request);
-  invariant(params.adventureId, "adventureId not found");
 
   const formData = await request.formData();
   const { _action, _challengeId } = Object.fromEntries(formData);
 
   if (_action === "reveal") {
-    // await revealChallenge({ userId, id: params.challengeId });
-    console.log("revealed")
+    await revealChallenge({ userId, id: _challengeId.toString() });
     return null
 
   } else if (_action === "complete") {
-    // await completeChallenge({ userId, id: params.challengeId });
-    console.log("completed")
+    await completeChallenge({ userId, id: _challengeId.toString() });
     return null
 
   }
@@ -45,18 +41,31 @@ export async function action({ request, params }: ActionArgs) {
 
 export default function AdventureDetailsPage() {
   const data = useLoaderData<typeof loader>();
-  console.log(data)
+
+  const getAction = ({ completed, revealed }: { completed: boolean, revealed: boolean}) => {
+    if (completed) {
+      return null
+    }
+    if (revealed) {
+      return  { text: "Done", name: "complete" }
+    }
+    return  { text: "Reveal", name: "reveal" }
+  }
 
   return (
-    <div>
-      {data.challenges.map(challenge =>
+    <div className="flex flex-col justify-center items-center">
+      {data.challenges.map((challenge, index) =>
         <ChallengeListItem
-          className="m-2"
+          index={index}
+          className="mx-2 my-4"
           key={challenge.id}
-          title={challenge.challengeTemplate.title}
+          id={challenge.id}
+          title={`#${challenge.challengeTemplate.position+1} ${challenge.challengeTemplate.title}`}
           description={challenge.challengeTemplate.description}
           completed={challenge.completed}
           revealed={challenge.revealed}
+          note={challenge.note}
+          action={getAction(challenge)}
         />  
       )}
     </div>

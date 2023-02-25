@@ -19,7 +19,7 @@ export default function AdventuresPage() {
     <div className="flex h-full min-h-screen flex-col">
       <Navbar />
 
-      <main className="flex h-full">
+      <main className="flex bg-base-200">
         <div className="flex-1 p-6">
           <Outlet />
         </div>

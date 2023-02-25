@@ -4,8 +4,8 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function seed() {
-  const email1 = "celio@mynextadventure.com";
-  const email2 = "luana@mynextadventure.com";
+  const email1 = "celio@a.a";
+  const email2 = "luana@a.a";
 
   // cleanup the existing database
   await prisma.user.deleteMany({ where: { email: { in: [email1, email2]} } }).catch(() => {
@@ -15,7 +15,7 @@ async function seed() {
     // no worries if it doesn't exist yet
   });
 
-  const hashedPassword = await bcrypt.hash("secret123", 10);
+  const hashedPassword = await bcrypt.hash("celio@a.a", 10);
 
   const user1 = await prisma.user.create({
     data: {
@@ -40,15 +40,36 @@ async function seed() {
 
   const adventureTemplate = await prisma.adventureTemplate.create({
     data: {
-      title: "My first adventure",
-      description: "The best adventure ever!!!"
+      title: "Couples Edition",
+      description: "Lorem ipsum..."
     },
   });
 
   const challengeTemplates = await Promise.all([
-    { title: "First challenge", description: "You need to do this.", position: 0 },
-    { title: "Second challenge", description: "You need to do that.", position: 1 },
-    { title: "Third challenge", description: "You need to do this again.", position: 2 },
+    {
+      title: "The Helpless Baker",
+      description: `
+        <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
+        <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
+      `,
+      position: 0
+    },
+    {
+      title: "The Helpless Baker 2",
+      description: `
+        <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
+        <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
+      `,
+      position: 1
+    },
+    {
+      title: "The Helpless Baker 3",
+      description: `
+        <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
+        <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
+      `,
+      position: 2
+    },
   ].map(item => prisma.challengeTemplate.create({
     data: {
       title: item.title,
@@ -68,7 +89,14 @@ async function seed() {
   });
 
   await Promise.all([
-    { revealed: true, completed: true, note: "Awesome!", challengeTemplateId: challengeTemplates[0].id },
+    {
+      revealed: true, completed: true, challengeTemplateId: challengeTemplates[0].id,
+      note: `
+        <p>"Smells like a love spirit"</p>
+        <p>Delicious granola made by four hands and two eyes.</p>
+        <p>A lot of love in one recipe.</p>
+      `
+    },
     { revealed: true, completed: false, challengeTemplateId: challengeTemplates[1].id },
     { revealed: false, completed: false, challengeTemplateId: challengeTemplates[2].id },
   ].map(item => prisma.challenge.create({

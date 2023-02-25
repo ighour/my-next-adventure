@@ -15,6 +15,7 @@ export function getChallengeListItems({ userId, adventureId }: { userId: User["i
       id: true,
       revealed: true,
       completed: true,
+      note: true,
       challengeTemplate: { select: { title: true, description: true, position: true } },
     },
     orderBy: { challengeTemplate: { position: "asc" } },
