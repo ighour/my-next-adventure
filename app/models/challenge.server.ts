@@ -16,7 +16,7 @@ export function getChallengeListItems({ userId, adventureId }: { userId: User["i
       revealed: true,
       completed: true,
       note: true,
-      challengeTemplate: { select: { title: true, description: true, position: true } },
+      challengeTemplate: { select: { title: true, description: true, notePlaceholder: true, position: true } },
     },
     orderBy: { challengeTemplate: { position: "asc" } },
   });
@@ -74,7 +74,7 @@ export function updateNote({
   userId,
 }: Pick<Challenge, "id"> & {
   userId: User["id"];
-  note: string;
+  note: string | null;
 }) {
   return prisma.challenge.updateMany({
     data: {

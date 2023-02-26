@@ -52,6 +52,7 @@ async function seed() {
         <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
+      notePlaceholder: "How was the challenge?",
       position: 0
     },
     {
@@ -64,6 +65,7 @@ async function seed() {
         <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
+      notePlaceholder: "Was it hard to complete the challenge?",
       position: 1
     },
     {
@@ -71,6 +73,7 @@ async function seed() {
       description: `
         <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
       `,
+      notePlaceholder: "Have you had fun on your challenge?",
       position: 2
     },
     {
@@ -97,6 +100,7 @@ async function seed() {
     data: {
       title: item.title,
       description: item.description,
+      notePlaceholder: item.notePlaceholder,
       position: item.position,
       adventureTemplateId: adventureTemplate.id
     },
@@ -114,11 +118,7 @@ async function seed() {
   await Promise.all([
     {
       revealed: true, completed: true, challengeTemplateId: challengeTemplates[0].id,
-      note: `
-        <p>"Smells like a love spirit"</p>
-        <p>Delicious granola made by four hands and two eyes.</p>
-        <p>A lot of love in one recipe.</p>
-      `
+      note: `"Smells like a love spirit". Delicious granola made by four hands and two eyes. A lot of love in one recipe.`
     },
     { revealed: true, completed: false, challengeTemplateId: challengeTemplates[1].id },
     { revealed: false, completed: false, challengeTemplateId: challengeTemplates[2].id },

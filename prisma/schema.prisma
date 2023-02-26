@@ -45,6 +45,7 @@ model ChallengeTemplate {
   id          String @id @default(cuid())
   title       String
   description String
+  notePlaceholder String?
   position    Int
 
   createdAt DateTime @default(now())
