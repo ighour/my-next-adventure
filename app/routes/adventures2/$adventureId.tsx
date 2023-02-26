@@ -47,9 +47,9 @@ export default function AdventureDetailsPage() {
       return null
     }
     if (revealed) {
-      return  { text: "Done", name: "complete" }
+      return  { text: "Mark as done", name: "complete" }
     }
-    return  { text: "Reveal", name: "reveal" }
+    return  { text: "Reveal it", name: "reveal" }
   }
 
   return (

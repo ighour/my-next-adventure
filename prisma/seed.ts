@@ -59,6 +59,10 @@ async function seed() {
       description: `
         <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
+        <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
+        <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
+        <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
+        <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
       position: 1
     },
@@ -66,9 +70,28 @@ async function seed() {
       title: "The Helpless Baker 3",
       description: `
         <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
-        <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
       position: 2
+    },
+    {
+      title: "The Helpless Baker The Helpless Baker The Helpless Baker The Helpless Baker The Helpless Baker",
+      description: `
+        <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
+        <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
+      `,
+      position: 3
+    },
+    {
+      title: "The Helpless Baker The Helpless Baker The Helpless Baker The Helpless Baker The Helpless Baker 2",
+      description: `
+        <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
+        <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
+        <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
+        <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
+        <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
+        <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
+      `,
+      position: 4
     },
   ].map(item => prisma.challengeTemplate.create({
     data: {
@@ -99,6 +122,8 @@ async function seed() {
     },
     { revealed: true, completed: false, challengeTemplateId: challengeTemplates[1].id },
     { revealed: false, completed: false, challengeTemplateId: challengeTemplates[2].id },
+    { revealed: true, completed: false, challengeTemplateId: challengeTemplates[3].id },
+    { revealed: true, completed: false, challengeTemplateId: challengeTemplates[4].id },
   ].map(item => prisma.challenge.create({
     data: {
       revealed: item.revealed,
