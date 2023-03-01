@@ -2,8 +2,6 @@
 
 ## TODO
 
-- [ ] Seeds for schemas
+- [ ] Add challenge details / icons
 
-- [ ] View for adventure
-
-- [ ] Remove unused schemas
+- [ ] Add image(s)
