@@ -1,8 +1,8 @@
 import { Form } from "@remix-run/react"
 import clsx from "clsx"
-import type { ChangeEvent, ChangeEventHandler} from "react";
+import type { ChangeEvent } from "react";
 import React, { useState } from "react"
-import type { TActionErrorData } from "~/routes/adventures2/$adventureId"
+import type { TActionErrorData } from "~/routes/adventures2/$adventureId/challenges"
 
 interface IProps {
     id: string
