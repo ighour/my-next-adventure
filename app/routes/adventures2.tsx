@@ -16,13 +16,11 @@ export default function AdventuresPage() {
   const data = useLoaderData<typeof loader>();
   console.log(data)
   return (
-    <div className="flex h-full min-h-screen flex-col">
+    <div className="flex flex-col h-full min-h-screen">
       <Navbar />
 
-      <main className="flex bg-base-200">
-        <div className="flex-1 p-6">
-          <Outlet />
-        </div>
+      <main className="h-full min-h-screen bg-base-200 p-6">
+        <Outlet />
       </main>
     </div>
   );
