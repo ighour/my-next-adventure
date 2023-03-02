@@ -9,7 +9,7 @@ import invariant from "tiny-invariant";
 import { getAdventure } from "~/models/adventure.server";
 import { completeChallenge, getChallengeListItems, revealChallenge, updateNote } from "~/models/challenge.server";
 import { requireUserId } from "~/session.server";
-import { ClockIcon, CurrencyDollarIcon, SunIcon } from '@heroicons/react/24/outline'
+import { ClockIcon, CurrencyDollarIcon, HomeIcon, ShoppingCartIcon, SunIcon } from '@heroicons/react/24/outline'
 
 export async function loader({ request, params }: LoaderArgs) {
     const userId = await requireUserId(request);
@@ -137,9 +137,8 @@ function ChallengeListItem({ id, title, description, notePlaceholder, completed,
                     </div>
                 </div>
                 <div className="flex flex-col items-start space-y-5 h-96 ml-2">
-                    <span>TAG</span>
-                    <span>TAG</span>
-                    <span>TAG</span>
+                    <HomeIcon className="h-8 w-8"/>
+                    <ShoppingCartIcon className="h-8 w-8"/>
                 </div>
             </div>
             {completed &&
