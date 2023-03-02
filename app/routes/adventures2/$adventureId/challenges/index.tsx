@@ -10,6 +10,7 @@ import { getAdventure } from "~/models/adventure.server";
 import { completeChallenge, getChallengeListItems, revealChallenge, updateNote } from "~/models/challenge.server";
 import { requireUserId } from "~/session.server";
 import { ClockIcon, CurrencyDollarIcon, HomeIcon, ShoppingCartIcon, SunIcon } from '@heroicons/react/24/outline'
+import { EHint } from "~/models/enums";
 
 export async function loader({ request, params }: LoaderArgs) {
     const userId = await requireUserId(request);
@@ -62,11 +63,33 @@ export async function action({ request }: ActionArgs) {
 // @TODO - get automatically from action
 export type TActionErrorData = { _challengeId: string, note?: string };
 
+function getIconComponentByName (name: string, props?: { className?: string, key?: string }) {
+    switch (name) {
+        case "currency-dollar":
+            return <CurrencyDollarIcon className={clsx("h-8 w-8", props?.className)} key={props?.key} />
+        case "sun":
+            return <SunIcon className={clsx("h-8 w-8", props?.className)} key={props?.key} />
+        case "clock":
+            return <ClockIcon className={clsx("h-8 w-8", props?.className)} key={props?.key} />
+        case "home":
+        case EHint.HOME:
+            return <HomeIcon className={clsx("h-8 w-8", props?.className)} key={props?.key} />
+        case "shopping-cart":
+        case EHint.SHOPPING_CART:
+            return <ShoppingCartIcon className={clsx("h-8 w-8", props?.className)} key={props?.key} />
+        default: return <span key={props?.key}></span>
+    }
+}
+
 interface IChallengeListItemProps {
     id: string
     title: string
     description: string
     notePlaceholder: string | null
+    cost: string
+    time: string
+    duration: number
+    hints: string[]
     completed: boolean
     revealed: boolean
     note: string | null
@@ -78,18 +101,7 @@ interface IChallengeListItemProps {
     className?: string
 };
 
-function getIconComponentByName (name: string, props?: { className?: string, key?: string }) {
-    switch (name) {
-        case "currency-dollar": return <CurrencyDollarIcon className={clsx("h-8 w-8", props?.className)} key={props?.key} />
-        case "sun": return <SunIcon className={clsx("h-8 w-8", props?.className)} key={props?.key} />
-        case "clock": return <ClockIcon className={clsx("h-8 w-8", props?.className)} key={props?.key} />
-        case "home": return <HomeIcon className={clsx("h-8 w-8", props?.className)} key={props?.key} />
-        case "shopping-cart": return <ShoppingCartIcon className={clsx("h-8 w-8", props?.className)} key={props?.key} />
-        default: return <span key={props?.key}></span>
-    }
-}
-
-function ChallengeListItem({ id, title, description, notePlaceholder, completed, revealed, note, action, errors, className }: IChallengeListItemProps) {
+function ChallengeListItem({ id, title, description, notePlaceholder, cost, time, duration, hints, completed, revealed, note, action, errors, className }: IChallengeListItemProps) {
     const [modifyingNote, setModifyingNote] = useState(note ?? "");
 
     const noteRef = useRef<HTMLTextAreaElement>(null);
@@ -104,37 +116,93 @@ function ChallengeListItem({ id, title, description, notePlaceholder, completed,
         setModifyingNote(() => event.target.value);
     }
 
-    const info = {
-        cost: "FREE",
-        time: "ANY",
-        duration: "1HR"
+    const getFormattedCost = () => {
+        let numericCost = Number(cost);
+
+        if (numericCost <= 0) {
+            return "FREE";
+        }
+        if (numericCost < 1) {
+            return "< 1";
+        }
+        if (numericCost < 10) {
+            return "< 10";
+        }
+        if (numericCost < 20) {
+            return "< 20";
+        }
+        if (numericCost < 30) {
+            return "< 30";
+        }
+        if (numericCost < 50) {
+            return "< 50";
+        }
+        return "> 50";
+    }
+
+    const getFormattedDuration = () => {
+        if (duration <= 0) {
+            return "INSTANT";
+        }
+        if (duration <= 1) {
+            return "1 MIN";
+        }
+        if (duration <= 5) {
+            return "5 MIN";
+        }
+        if (duration <= 10) {
+            return "10 MIN";
+        }
+        if (duration <= 15) {
+            return "15 MIN";
+        }
+        if (duration <= 30) {
+            return "30 MIN";
+        }
+        if (duration <= 45) {
+            return "45 MIN";
+        }
+        if (duration <= 60) {
+            return "1 HOUR";
+        }
+        if (duration <= 90) {
+            return "01:30";
+        }
+        if (duration <= 120) {
+            return "2 HOUR";
+        }
+        if (duration <= 180) {
+            return "3 HOUR";
+        }
+        if (duration <= 240) {
+            return "4 HOUR";
+        }
+        if (duration <= 300) {
+            return "5 HOUR";
+        }
+        return "> 5 HOUR";
     }
 
     const getInfoComponent = (className?: string) => {
         return (
             <div className={clsx("font-semibold", className)}>
                 <span className="flex items-center">
-                    {getIconComponentByName("currency-dollar", { className: "mr-1" })} {info.cost}
+                    {getIconComponentByName("currency-dollar", { className: "mr-1" })} {getFormattedCost()}
                 </span>
                 <span className="flex items-center">
-                    {getIconComponentByName("sun", { className: "mr-1" })} {info.time}
+                    {getIconComponentByName("sun", { className: "mr-1" })} {time}
                 </span>
                 <span className="flex items-center">
-                    {getIconComponentByName("clock", { className: "mr-1" })} {info.duration}
+                    {getIconComponentByName("clock", { className: "mr-1" })} {getFormattedDuration()}
                 </span>
             </div>
         )
     }
 
-    const hints = [
-        { icon: "home" },
-        { icon: "shopping-cart" }
-    ]
-
     const getHintsComponent = (className?: string) => {
         return (
             <div className={clsx("font-semibold", className)}>
-                {hints.map(trait => getIconComponentByName(trait.icon, { key: trait.icon }))}
+                {hints.map(hint => getIconComponentByName(hint, { key: hint }))}
             </div>
         )
     }
@@ -263,6 +331,10 @@ export default function ChallengesListPage() {
                     title={`#${challenge.challengeTemplate.position + 1} ${challenge.challengeTemplate.title}`}
                     description={challenge.challengeTemplate.description}
                     notePlaceholder={challenge.challengeTemplate.notePlaceholder}
+                    cost={challenge.challengeTemplate.cost_euros}
+                    time={challenge.challengeTemplate.time_of_day}
+                    duration={challenge.challengeTemplate.duration_minutes}
+                    hints={challenge.challengeTemplate.hints.map(h => h.hint.name)}
                     completed={challenge.completed}
                     revealed={challenge.revealed}
                     note={challenge.note}

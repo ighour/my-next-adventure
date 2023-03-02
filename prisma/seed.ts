@@ -1,5 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { Hint, PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { EHint, ETimeOfDay } from "~/models/enums";
 
 const prisma = new PrismaClient();
 
@@ -12,6 +13,9 @@ async function seed() {
     // no worries if it doesn't exist yet
   });
   await prisma.adventureTemplate.deleteMany().catch(() => {
+    // no worries if it doesn't exist yet
+  });
+  await prisma.hint.deleteMany().catch(() => {
     // no worries if it doesn't exist yet
   });
 
@@ -45,6 +49,14 @@ async function seed() {
     },
   });
 
+  const hints = await Promise.all(Object.keys(EHint).map(hint => prisma.hint.create({
+    data: {
+      name: hint,
+    },
+  })));
+
+  const hintsByKey = hints.reduce((all, item) => ({ ...all, [item.name]: item }), {} as Record<EHint, Hint>)
+
   const challengeTemplates = await Promise.all([
     {
       title: "The Helpless Baker",
@@ -53,7 +65,11 @@ async function seed() {
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
       notePlaceholder: "How was the challenge?",
-      position: 0
+      position: 0,
+      cost_euros: 0,
+      time_of_day: ETimeOfDay.ANY,
+      duration_minutes: 60,
+      hints: [EHint.HOME]
     },
     {
       title: "The Helpless Baker 2",
@@ -66,7 +82,11 @@ async function seed() {
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
       notePlaceholder: "Was it hard to complete the challenge?",
-      position: 1
+      position: 1,
+      cost_euros: 12,
+      time_of_day: ETimeOfDay.ANY,
+      duration_minutes: 15,
+      hints: [EHint.HOME, EHint.SHOPPING_CART]
     },
     {
       title: "The Helpless Baker 3",
@@ -74,7 +94,11 @@ async function seed() {
         <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
       `,
       notePlaceholder: "Have you had fun on your challenge?",
-      position: 2
+      position: 2,
+      cost_euros: 75.75,
+      time_of_day: ETimeOfDay.AFTERNOON,
+      duration_minutes: 92,
+      hints: []
     },
     {
       title: "The Helpless Baker The Helpless Baker The Helpless Baker The Helpless Baker The Helpless Baker",
@@ -82,7 +106,11 @@ async function seed() {
         <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
-      position: 3
+      position: 3,
+      cost_euros: 0,
+      time_of_day: ETimeOfDay.NIGHT,
+      duration_minutes: 432,
+      hints: [EHint.HOME]
     },
     {
       title: "The Helpless Baker The Helpless Baker The Helpless Baker The Helpless Baker The Helpless Baker 2",
@@ -94,7 +122,11 @@ async function seed() {
         <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
-      position: 4
+      position: 4,
+      cost_euros: 0.32,
+      time_of_day: ETimeOfDay.MORNING,
+      duration_minutes: 7,
+      hints: [EHint.SHOPPING_CART]
     },
   ].map(item => prisma.challengeTemplate.create({
     data: {
@@ -102,7 +134,19 @@ async function seed() {
       description: item.description,
       notePlaceholder: item.notePlaceholder,
       position: item.position,
-      adventureTemplateId: adventureTemplate.id
+      cost_euros: item.cost_euros,
+      time_of_day: item.time_of_day,
+      duration_minutes: item.duration_minutes,
+      adventureTemplateId: adventureTemplate.id,
+      hints: {
+        create: item.hints.map(hint => ({
+          hint: {
+            connect: {
+              id: hintsByKey[hint].id,
+            }
+          }
+        }))
+      }
     },
   })));
 

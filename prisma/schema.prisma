@@ -47,6 +47,9 @@ model ChallengeTemplate {
   description String
   notePlaceholder String?
   position    Int
+  cost_euros  Decimal @default(0)
+  time_of_day String // ETimeOfDay
+  duration_minutes  Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -55,6 +58,7 @@ model ChallengeTemplate {
   adventureTemplateId String
 
   challenges Challenge[]
+  hints HintsOnChallengeTemplates[]
 
   @@unique([adventureTemplateId, position])
   @@unique([adventureTemplateId, title])
@@ -87,4 +91,21 @@ model Challenge {
 
   challengeTemplate   ChallengeTemplate @relation(fields: [challengeTemplateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   challengeTemplateId String
+}
+
+model Hint {
+  id        String  @id @default(cuid())
+  name      String // EHint
+
+  challengeTemplates HintsOnChallengeTemplates[]
+}
+
+model HintsOnChallengeTemplates {
+  challengeTemplate       ChallengeTemplate     @relation(fields: [challengeTemplateId], references: [id])
+  challengeTemplateId     String
+  hint   Hint @relation(fields: [hintId], references: [id])
+  hintId String
+  assignedAt DateTime @default(now())
+
+  @@id([challengeTemplateId, hintId])
 }
