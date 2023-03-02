@@ -93,21 +93,36 @@ function ChallengeListItem({ id, title, description, notePlaceholder, completed,
         setModifyingNote(() => event.target.value);
     }
 
+    const getChallengeProperties = (className?: string) => {
+        return (
+            <div className={clsx("font-semibold", className)}>
+                <span className="flex items-center">
+                    <CurrencyDollarIcon className="h-6 w-6 mr-1" /> FREE
+                </span>
+                <span className="flex items-center">
+                    <SunIcon className="h-6 w-6 mr-1" /> ANY
+                </span>
+                <span className="flex items-center">
+                    <ClockIcon className="h-6 w-6 mr-1" /> 1HR
+                </span>
+            </div>
+        )
+    }
+
+    const getChallengeTraits = (className?: string) => {
+        return (
+            <div className={clsx("font-semibold", className)}>
+                <HomeIcon className="h-8 w-8" />
+                <ShoppingCartIcon className="h-8 w-8" />
+            </div>
+        )
+    }
+
     return (
         <div className={clsx(className)}>
             <div className="flex items-end">
                 <div className="flex flex-col items-end">
-                    <div className="flex justify-center space-x-5 w-96 mb-1 font-semibold">
-                        <span className="flex items-center">
-                            <CurrencyDollarIcon className="h-6 w-6 mr-1"/> FREE
-                        </span>
-                        <span className="flex items-center">
-                            <SunIcon className="h-6 w-6 mr-1"/> ANY
-                        </span>
-                        <span className="flex items-center">
-                            <ClockIcon className="h-6 w-6 mr-1"/> 1HR
-                        </span>
-                    </div>
+                    {getChallengeProperties("hidden lg:flex justify-center space-x-5 w-96 mb-1")}
                     <div className="card lg:card-side bg-base-100 shadow-xl">
                         <figure>
                             <img
@@ -115,9 +130,13 @@ function ChallengeListItem({ id, title, description, notePlaceholder, completed,
                                 alt="TODO"
                             />
                         </figure>
-                        <div className="card-body w-96 h-96">
+                        <div className="card-body w-96 lg:h-96">
                             <h2 className="card-title px-2">{title}</h2>
                             <div className={clsx("space-y-4 h-64 overflow-y-auto px-1", `${!revealed ? "blur-sm" : ""}`)} dangerouslySetInnerHTML={{ __html: description }} />
+                            <div className="lg:hidden space-y-2 py-2">
+                                {getChallengeProperties("flex justify-center space-x-5")}
+                                {getChallengeTraits("flex justify-center space-x-5")}
+                            </div>
                             {action &&
                                 <div className="card-actions justify-end">
                                     <Form method="post">
@@ -136,13 +155,10 @@ function ChallengeListItem({ id, title, description, notePlaceholder, completed,
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col items-start space-y-5 h-96 ml-2">
-                    <HomeIcon className="h-8 w-8"/>
-                    <ShoppingCartIcon className="h-8 w-8"/>
-                </div>
+                {getChallengeTraits("hidden lg:flex flex-col items-start space-y-5 h-96 ml-2")}
             </div>
             {completed &&
-                <div className="form-control my-2">
+                <div className="form-control my-2 px-3">
                     <Form method="post">
                         <input type="hidden" name="_challengeId" value={id} />
                         <label className="label">
