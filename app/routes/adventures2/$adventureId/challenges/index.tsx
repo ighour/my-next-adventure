@@ -123,64 +123,61 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
             return "FREE";
         }
         if (numericCost < 1) {
-            return "< 1";
+            return "1";
         }
         if (numericCost < 10) {
-            return "< 10";
+            return "10";
         }
         if (numericCost < 20) {
-            return "< 20";
+            return "20";
         }
         if (numericCost < 30) {
-            return "< 30";
+            return "30";
         }
-        if (numericCost < 50) {
-            return "< 50";
+        if (numericCost <= 50) {
+            return "50";
         }
         return "> 50";
     }
 
     const getFormattedDuration = () => {
-        if (duration <= 0) {
-            return "INSTANT";
-        }
         if (duration <= 1) {
-            return "1 MIN";
+            return "1M";
         }
         if (duration <= 5) {
-            return "5 MIN";
+            return "5M";
         }
         if (duration <= 10) {
-            return "10 MIN";
+            return "10M";
         }
         if (duration <= 15) {
-            return "15 MIN";
+            return "15M";
         }
         if (duration <= 30) {
-            return "30 MIN";
+            return "30M";
         }
         if (duration <= 45) {
-            return "45 MIN";
+            return "45M";
         }
         if (duration <= 60) {
-            return "1 HOUR";
+            return "1H";
         }
         if (duration <= 90) {
-            return "01:30";
+            return "1H30M";
         }
         if (duration <= 120) {
-            return "2 HOUR";
+            return "2H";
         }
         if (duration <= 180) {
-            return "3 HOUR";
+            return "3H";
         }
         if (duration <= 240) {
-            return "4 HOUR";
+            return "4H";
         }
         if (duration <= 300) {
-            return "5 HOUR";
+            return "5H";
         }
-        return "> 5 HOUR";
+        return "> 5H";
     }
 
     const getInfoComponent = (className?: string) => {
