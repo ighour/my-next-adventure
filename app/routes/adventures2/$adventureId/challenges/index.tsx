@@ -78,6 +78,17 @@ interface IChallengeListItemProps {
     className?: string
 };
 
+function getIconComponentByName (name: string, props?: { className?: string, key?: string }) {
+    switch (name) {
+        case "currency-dollar": return <CurrencyDollarIcon className={clsx("h-8 w-8", props?.className)} key={props?.key} />
+        case "sun": return <SunIcon className={clsx("h-8 w-8", props?.className)} key={props?.key} />
+        case "clock": return <ClockIcon className={clsx("h-8 w-8", props?.className)} key={props?.key} />
+        case "home": return <HomeIcon className={clsx("h-8 w-8", props?.className)} key={props?.key} />
+        case "shopping-cart": return <ShoppingCartIcon className={clsx("h-8 w-8", props?.className)} key={props?.key} />
+        default: return <span key={props?.key}></span>
+    }
+}
+
 function ChallengeListItem({ id, title, description, notePlaceholder, completed, revealed, note, action, errors, className }: IChallengeListItemProps) {
     const [modifyingNote, setModifyingNote] = useState(note ?? "");
 
@@ -93,27 +104,37 @@ function ChallengeListItem({ id, title, description, notePlaceholder, completed,
         setModifyingNote(() => event.target.value);
     }
 
-    const getChallengeProperties = (className?: string) => {
+    const challengeProperties = {
+        cost: "FREE",
+        time: "ANY",
+        duration: "1HR"
+    }
+
+    const getChallengePropertiesInfo = (className?: string) => {
         return (
             <div className={clsx("font-semibold", className)}>
                 <span className="flex items-center">
-                    <CurrencyDollarIcon className="h-6 w-6 mr-1" /> FREE
+                    {getIconComponentByName("currency-dollar", { className: "mr-1" })} {challengeProperties.cost}
                 </span>
                 <span className="flex items-center">
-                    <SunIcon className="h-6 w-6 mr-1" /> ANY
+                    {getIconComponentByName("sun", { className: "mr-1" })} {challengeProperties.time}
                 </span>
                 <span className="flex items-center">
-                    <ClockIcon className="h-6 w-6 mr-1" /> 1HR
+                    {getIconComponentByName("clock", { className: "mr-1" })} {challengeProperties.duration}
                 </span>
             </div>
         )
     }
 
-    const getChallengeTraits = (className?: string) => {
+    const challengeTraits = [
+        { icon: "home" },
+        { icon: "shopping-cart" }
+    ]
+
+    const getChallengeTraitsInfo = (className?: string) => {
         return (
             <div className={clsx("font-semibold", className)}>
-                <HomeIcon className="h-8 w-8" />
-                <ShoppingCartIcon className="h-8 w-8" />
+                {challengeTraits.map(trait => getIconComponentByName(trait.icon, { key: trait.icon }))}
             </div>
         )
     }
@@ -122,7 +143,7 @@ function ChallengeListItem({ id, title, description, notePlaceholder, completed,
         <div className={clsx(className)}>
             <div className="flex items-end">
                 <div className="flex flex-col items-end">
-                    {getChallengeProperties("hidden lg:flex justify-center space-x-5 w-96 mb-1")}
+                    {getChallengePropertiesInfo("hidden lg:flex justify-center space-x-5 w-96 mb-1")}
                     <div className="card lg:card-side bg-base-100 shadow-xl">
                         <figure>
                             <img
@@ -134,8 +155,8 @@ function ChallengeListItem({ id, title, description, notePlaceholder, completed,
                             <h2 className="card-title px-2">{title}</h2>
                             <div className={clsx("space-y-4 h-64 overflow-y-auto px-1", `${!revealed ? "blur-sm" : ""}`)} dangerouslySetInnerHTML={{ __html: description }} />
                             <div className="lg:hidden space-y-2 py-2">
-                                {getChallengeProperties("flex justify-center space-x-5")}
-                                {getChallengeTraits("flex justify-center space-x-5")}
+                                {getChallengePropertiesInfo("flex justify-center space-x-5")}
+                                {getChallengeTraitsInfo("flex justify-center space-x-5")}
                             </div>
                             {action &&
                                 <div className="card-actions justify-end">
@@ -155,7 +176,7 @@ function ChallengeListItem({ id, title, description, notePlaceholder, completed,
                         </div>
                     </div>
                 </div>
-                {getChallengeTraits("hidden lg:flex flex-col items-start space-y-5 h-96 ml-2")}
+                {getChallengeTraitsInfo("hidden lg:flex flex-col items-start space-y-5 h-96 ml-2")}
             </div>
             {completed &&
                 <div className="form-control my-2 px-3">
