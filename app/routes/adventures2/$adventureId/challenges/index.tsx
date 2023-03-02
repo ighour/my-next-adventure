@@ -2,13 +2,14 @@ import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
-import type { ChangeEvent} from "react";
+import type { ChangeEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
 
 import { getAdventure } from "~/models/adventure.server";
 import { completeChallenge, getChallengeListItems, revealChallenge, updateNote } from "~/models/challenge.server";
 import { requireUserId } from "~/session.server";
+import { ClockIcon, CurrencyDollarIcon, SunIcon } from '@heroicons/react/24/outline'
 
 export async function loader({ request, params }: LoaderArgs) {
     const userId = await requireUserId(request);
@@ -94,31 +95,51 @@ function ChallengeListItem({ id, title, description, notePlaceholder, completed,
 
     return (
         <div className={clsx(className)}>
-            <div className="card lg:card-side bg-base-100 shadow-xl">
-                <figure>
-                    <img
-                        src="https://daisyui.com/images/stock/photo-1494232410401-ad00d5433cfa.jpg"
-                        alt="TODO"
-                    />
-                </figure>
-                <div className="card-body w-96 h-96">
-                    <h2 className="card-title px-2">{title}</h2>
-                    <div className={clsx("space-y-4 h-64 overflow-y-auto px-1", `${!revealed ? "blur-sm" : ""}`)} dangerouslySetInnerHTML={{ __html: description }} />
-                    {action &&
-                        <div className="card-actions justify-end">
-                            <Form method="post">
-                                <input type="hidden" name="_challengeId" value={id} />
-                                <button
-                                    type="submit"
-                                    name="_action"
-                                    value={action.name}
-                                    className="btn btn-primary"
-                                >
-                                    {action.text}
-                                </button>
-                            </Form>
+            <div className="flex items-end">
+                <div className="flex flex-col items-end">
+                    <div className="flex justify-center space-x-5 w-96 mb-1 font-semibold">
+                        <span className="flex items-center">
+                            <CurrencyDollarIcon className="h-6 w-6 mr-1"/> FREE
+                        </span>
+                        <span className="flex items-center">
+                            <SunIcon className="h-6 w-6 mr-1"/> ANY
+                        </span>
+                        <span className="flex items-center">
+                            <ClockIcon className="h-6 w-6 mr-1"/> 1HR
+                        </span>
+                    </div>
+                    <div className="card lg:card-side bg-base-100 shadow-xl">
+                        <figure>
+                            <img
+                                src="https://daisyui.com/images/stock/photo-1494232410401-ad00d5433cfa.jpg"
+                                alt="TODO"
+                            />
+                        </figure>
+                        <div className="card-body w-96 h-96">
+                            <h2 className="card-title px-2">{title}</h2>
+                            <div className={clsx("space-y-4 h-64 overflow-y-auto px-1", `${!revealed ? "blur-sm" : ""}`)} dangerouslySetInnerHTML={{ __html: description }} />
+                            {action &&
+                                <div className="card-actions justify-end">
+                                    <Form method="post">
+                                        <input type="hidden" name="_challengeId" value={id} />
+                                        <button
+                                            type="submit"
+                                            name="_action"
+                                            value={action.name}
+                                            className="btn btn-primary"
+                                        >
+                                            {action.text}
+                                        </button>
+                                    </Form>
+                                </div>
+                            }
                         </div>
-                    }
+                    </div>
+                </div>
+                <div className="flex flex-col items-start space-y-5 h-96 ml-2">
+                    <span>TAG</span>
+                    <span>TAG</span>
+                    <span>TAG</span>
                 </div>
             </div>
             {completed &&
