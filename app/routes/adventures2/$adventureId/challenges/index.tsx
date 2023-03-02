@@ -104,37 +104,37 @@ function ChallengeListItem({ id, title, description, notePlaceholder, completed,
         setModifyingNote(() => event.target.value);
     }
 
-    const challengeProperties = {
+    const info = {
         cost: "FREE",
         time: "ANY",
         duration: "1HR"
     }
 
-    const getChallengePropertiesInfo = (className?: string) => {
+    const getInfoComponent = (className?: string) => {
         return (
             <div className={clsx("font-semibold", className)}>
                 <span className="flex items-center">
-                    {getIconComponentByName("currency-dollar", { className: "mr-1" })} {challengeProperties.cost}
+                    {getIconComponentByName("currency-dollar", { className: "mr-1" })} {info.cost}
                 </span>
                 <span className="flex items-center">
-                    {getIconComponentByName("sun", { className: "mr-1" })} {challengeProperties.time}
+                    {getIconComponentByName("sun", { className: "mr-1" })} {info.time}
                 </span>
                 <span className="flex items-center">
-                    {getIconComponentByName("clock", { className: "mr-1" })} {challengeProperties.duration}
+                    {getIconComponentByName("clock", { className: "mr-1" })} {info.duration}
                 </span>
             </div>
         )
     }
 
-    const challengeTraits = [
+    const hints = [
         { icon: "home" },
         { icon: "shopping-cart" }
     ]
 
-    const getChallengeTraitsInfo = (className?: string) => {
+    const getHintsComponent = (className?: string) => {
         return (
             <div className={clsx("font-semibold", className)}>
-                {challengeTraits.map(trait => getIconComponentByName(trait.icon, { key: trait.icon }))}
+                {hints.map(trait => getIconComponentByName(trait.icon, { key: trait.icon }))}
             </div>
         )
     }
@@ -143,7 +143,7 @@ function ChallengeListItem({ id, title, description, notePlaceholder, completed,
         <div className={clsx(className)}>
             <div className="flex items-end">
                 <div className="flex flex-col items-end">
-                    {getChallengePropertiesInfo("hidden lg:flex justify-center space-x-5 w-96 mb-1")}
+                    {getInfoComponent("hidden lg:flex justify-center space-x-5 w-96 mb-1")}
                     <div className="card lg:card-side bg-base-100 shadow-xl">
                         <figure>
                             <img
@@ -155,8 +155,8 @@ function ChallengeListItem({ id, title, description, notePlaceholder, completed,
                             <h2 className="card-title px-2">{title}</h2>
                             <div className={clsx("space-y-4 h-64 overflow-y-auto px-1", `${!revealed ? "blur-sm" : ""}`)} dangerouslySetInnerHTML={{ __html: description }} />
                             <div className="lg:hidden space-y-2 py-2">
-                                {getChallengePropertiesInfo("flex justify-center space-x-5")}
-                                {getChallengeTraitsInfo("flex justify-center space-x-5")}
+                                {getInfoComponent("flex justify-center space-x-5")}
+                                {getHintsComponent("flex justify-center space-x-5")}
                             </div>
                             {action &&
                                 <div className="card-actions justify-end pt-2 flex justify-center lg:justify-end">
@@ -176,7 +176,7 @@ function ChallengeListItem({ id, title, description, notePlaceholder, completed,
                         </div>
                     </div>
                 </div>
-                {getChallengeTraitsInfo("hidden lg:flex flex-col items-start space-y-5 h-96 ml-2")}
+                {getHintsComponent("hidden lg:flex flex-col items-start space-y-5 h-96 ml-2")}
             </div>
             {completed &&
                 <div className="form-control my-2 px-3">
