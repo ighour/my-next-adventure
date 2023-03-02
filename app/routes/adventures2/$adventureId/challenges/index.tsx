@@ -159,14 +159,14 @@ function ChallengeListItem({ id, title, description, notePlaceholder, completed,
                                 {getChallengeTraitsInfo("flex justify-center space-x-5")}
                             </div>
                             {action &&
-                                <div className="card-actions justify-end">
+                                <div className="card-actions justify-end pt-2 flex justify-center lg:justify-end">
                                     <Form method="post">
                                         <input type="hidden" name="_challengeId" value={id} />
                                         <button
                                             type="submit"
                                             name="_action"
                                             value={action.name}
-                                            className="btn btn-primary"
+                                            className="btn btn-xs btn-primary"
                                         >
                                             {action.text}
                                         </button>
