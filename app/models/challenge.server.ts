@@ -16,6 +16,7 @@ export function getChallengeListItems({ userId, adventureId }: { userId: User["i
       revealed: true,
       completed: true,
       note: true,
+      completed_image: true,
       challengeTemplate: {
         select: {
           title: true,

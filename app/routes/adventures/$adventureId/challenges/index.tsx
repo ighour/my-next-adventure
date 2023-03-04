@@ -94,6 +94,7 @@ interface IChallengeListItemProps {
     completed: boolean
     revealed: boolean
     note: string | null
+    completedImage: string | null
     hints: string[]
     coverImage: string | null
     action: {
@@ -104,7 +105,7 @@ interface IChallengeListItemProps {
     className?: string
 };
 
-function ChallengeListItem({ id, title, description, notePlaceholder, cost, time, duration, completed, revealed, note, hints, coverImage, action, errors, className }: IChallengeListItemProps) {
+function ChallengeListItem({ id, title, description, notePlaceholder, cost, time, duration, completed, revealed, note, completedImage, hints, coverImage, action, errors, className }: IChallengeListItemProps) {
     const [modifyingNote, setModifyingNote] = useState(note ?? "");
 
     const noteRef = useRef<HTMLTextAreaElement>(null);
@@ -215,7 +216,7 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
                     <div className="card lg:card-side bg-base-100 shadow-xl">
                         <figure className="w-96">
                             <img
-                                src={coverImage ?? defaultCoverImage}
+                                src={completedImage ?? coverImage ?? defaultCoverImage}
                                 alt="Adventure cover"
                             />
                         </figure>
@@ -337,6 +338,7 @@ export default function ChallengesListPage() {
                     completed={challenge.completed}
                     revealed={challenge.revealed}
                     note={challenge.note}
+                    completedImage={challenge.completed_image}
                     hints={challenge.challengeTemplate.hints.map(h => h.hint.name)}
                     coverImage={challenge.challengeTemplate.adventureTemplate.cover_image}
                     action={getAction(challenge)}

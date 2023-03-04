@@ -2,8 +2,6 @@
 
 ## TODO
 
-- [ ] Set default image for Adventure
-
 - [ ] Can upload image after done
 
 - [ ] Set theme based on Adventure
