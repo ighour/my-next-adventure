@@ -12,6 +12,8 @@ import { requireUserId } from "~/session.server";
 import { ClockIcon, CurrencyDollarIcon, HomeIcon, ShoppingCartIcon, SunIcon } from '@heroicons/react/24/outline'
 import { EHint } from "~/models/enums";
 
+import defaultCoverImage from "~/assets/adventure_cover.png";
+
 export async function loader({ request, params }: LoaderArgs) {
     const userId = await requireUserId(request);
     invariant(params.adventureId, "adventureId not found");
@@ -89,10 +91,11 @@ interface IChallengeListItemProps {
     cost: string
     time: string
     duration: number
-    hints: string[]
     completed: boolean
     revealed: boolean
     note: string | null
+    hints: string[]
+    coverImage: string | null
     action: {
         text: string
         name: string
@@ -101,7 +104,7 @@ interface IChallengeListItemProps {
     className?: string
 };
 
-function ChallengeListItem({ id, title, description, notePlaceholder, cost, time, duration, hints, completed, revealed, note, action, errors, className }: IChallengeListItemProps) {
+function ChallengeListItem({ id, title, description, notePlaceholder, cost, time, duration, completed, revealed, note, hints, coverImage, action, errors, className }: IChallengeListItemProps) {
     const [modifyingNote, setModifyingNote] = useState(note ?? "");
 
     const noteRef = useRef<HTMLTextAreaElement>(null);
@@ -210,10 +213,10 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
                 <div className="flex flex-col items-end">
                     {getInfoComponent("hidden lg:flex justify-center space-x-5 w-96 mb-1")}
                     <div className="card lg:card-side bg-base-100 shadow-xl">
-                        <figure>
+                        <figure className="w-96">
                             <img
-                                src="https://daisyui.com/images/stock/photo-1494232410401-ad00d5433cfa.jpg"
-                                alt="TODO"
+                                src={coverImage ?? defaultCoverImage}
+                                alt="Adventure cover"
                             />
                         </figure>
                         <div className="card-body w-96 lg:h-96">
@@ -331,10 +334,11 @@ export default function ChallengesListPage() {
                     cost={challenge.challengeTemplate.cost_euros}
                     time={challenge.challengeTemplate.time_of_day}
                     duration={challenge.challengeTemplate.duration_minutes}
-                    hints={challenge.challengeTemplate.hints.map(h => h.hint.name)}
                     completed={challenge.completed}
                     revealed={challenge.revealed}
                     note={challenge.note}
+                    hints={challenge.challengeTemplate.hints.map(h => h.hint.name)}
+                    coverImage={challenge.challengeTemplate.adventureTemplate.cover_image}
                     action={getAction(challenge)}
                     errors={getErrorForChallenge(challenge.id)}
                 />

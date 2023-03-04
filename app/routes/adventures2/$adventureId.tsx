@@ -1,6 +1,6 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { NavLink, Outlet, useCatch, useLoaderData } from "@remix-run/react";
+import { Outlet, useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
 import { getAdventure } from "~/models/adventure.server";
@@ -24,14 +24,6 @@ export default function AdventureDetailsPage() {
   return (
     <>
       <h2 className="text-3xl mb-2">{data.adventure.adventureTemplate.title}</h2>
-      <NavLink
-        className={({ isActive }) =>
-          `link mb-2 ${isActive ? "font-bold" : ""}`
-        }
-        to="challenges"
-      >
-        Challenges
-      </NavLink>
       <Outlet />
     </>
   );

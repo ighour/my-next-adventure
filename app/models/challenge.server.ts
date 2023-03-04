@@ -33,6 +33,11 @@ export function getChallengeListItems({ userId, adventureId }: { userId: User["i
                 }
               }
             }
+          },
+          adventureTemplate: {
+            select: {
+              cover_image: true
+            }
           }
         }
       },
