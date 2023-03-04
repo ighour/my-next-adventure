@@ -17,7 +17,7 @@ export default function Navbar() {
                                 className={({ isActive }) =>
                                     `${isActive ? "underline" : ""}`
                                 }
-                                to="/adventures"
+                                to="/adventures2"
                             >
                                 Adventures
                             </NavLink>
@@ -34,7 +34,7 @@ export default function Navbar() {
                             className={({ isActive }) =>
                                 `${isActive ? "underline" : ""}`
                             }
-                            to="/adventures"
+                            to="/adventures2"
                         >
                             Adventures
                         </NavLink>
