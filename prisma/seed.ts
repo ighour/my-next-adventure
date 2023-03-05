@@ -233,7 +233,7 @@ async function seed() {
       revealed: true,
       completed: true,
       note: `"Smells like a love spirit". Delicious granola made by four hands and two eyes. A lot of love in one recipe.`,
-      completed_image: "https://healingcenterseattle.org/thcroot/wp-content/uploads/2020/10/volunteerGroup.jpg"
+      completedImage: "https://healingcenterseattle.org/thcroot/wp-content/uploads/2020/10/volunteerGroup.jpg"
     },
     {
       revealed: true,
@@ -260,7 +260,7 @@ async function seed() {
           revealed: item.revealed,
           completed: item.completed,
           note: item.note,
-          completed_image: item.completed_image,
+          completedImage: item.completedImage,
           adventureId: adventure.id,
           challengeTemplateId: challengeTemplates[index].id,
         },

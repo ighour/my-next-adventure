@@ -83,7 +83,7 @@ model Challenge {
   revealed  Boolean @default(false)
   completed Boolean @default(false)
   note      String?
-  completed_image String?
+  completedImage String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

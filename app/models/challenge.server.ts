@@ -16,7 +16,7 @@ export function getChallengeListItems({ userId, adventureId }: { userId: User["i
       revealed: true,
       completed: true,
       note: true,
-      completed_image: true,
+      completedImage: true,
       challengeTemplate: {
         select: {
           title: true,
@@ -104,6 +104,22 @@ export function updateNote({
   return prisma.challenge.updateMany({
     data: {
       note,
+    },
+    where: { id, adventure: { users: { some: { id: userId } } } },
+  });
+}
+
+export function addCompletedImage({
+  id,
+  completedImage,
+  userId,
+}: Pick<Challenge, "id"> & {
+  userId: User["id"];
+  completedImage: string;
+}) {
+  return prisma.challenge.updateMany({
+    data: {
+      completedImage,
     },
     where: { id, adventure: { users: { some: { id: userId } } } },
   });

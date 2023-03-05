@@ -1,6 +1,6 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import { Form, useActionData, useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import type { ChangeEvent } from "react";
 import { useEffect, useRef, useState } from "react";
@@ -62,10 +62,7 @@ export async function action({ request }: ActionArgs) {
     }
 }
 
-// @TODO - get automatically from action
-export type TActionErrorData = { _challengeId: string, note?: string };
-
-function getIconComponentByName (name: string, props?: { className?: string, key?: string }) {
+function getIconComponentByName(name: string, props?: { className?: string, key?: string }) {
     switch (name) {
         case "currency-dollar":
             return <CurrencyDollarIcon className={clsx("h-8 w-8", props?.className)} key={props?.key} />
@@ -83,6 +80,73 @@ function getIconComponentByName (name: string, props?: { className?: string, key
     }
 }
 
+function getFormattedCost(cost: string) {
+    let numericCost = Number(cost);
+
+    if (numericCost <= 0) {
+        return "FREE";
+    }
+    if (numericCost < 1) {
+        return "1";
+    }
+    if (numericCost < 10) {
+        return "10";
+    }
+    if (numericCost < 20) {
+        return "20";
+    }
+    if (numericCost < 30) {
+        return "30";
+    }
+    if (numericCost <= 50) {
+        return "50";
+    }
+    return "> 50";
+}
+
+function getFormattedDuration(duration: number) {
+    if (duration <= 1) {
+        return "1M";
+    }
+    if (duration <= 5) {
+        return "5M";
+    }
+    if (duration <= 10) {
+        return "10M";
+    }
+    if (duration <= 15) {
+        return "15M";
+    }
+    if (duration <= 30) {
+        return "30M";
+    }
+    if (duration <= 45) {
+        return "45M";
+    }
+    if (duration <= 60) {
+        return "1H";
+    }
+    if (duration <= 90) {
+        return "1H30M";
+    }
+    if (duration <= 120) {
+        return "2H";
+    }
+    if (duration <= 180) {
+        return "3H";
+    }
+    if (duration <= 240) {
+        return "4H";
+    }
+    if (duration <= 300) {
+        return "5H";
+    }
+    return "> 5H";
+}
+
+// @TODO - get automatically from action
+export type TActionErrorData = { _challengeId: string, note?: string, image?: string };
+
 interface IChallengeListItemProps {
     id: string
     title: string
@@ -97,22 +161,23 @@ interface IChallengeListItemProps {
     completedImage: string | null
     hints: string[]
     coverImage: string | null
-    action: {
-        text: string
-        name: string
-    } | null
     errors?: TActionErrorData
     className?: string
 };
 
-function ChallengeListItem({ id, title, description, notePlaceholder, cost, time, duration, completed, revealed, note, completedImage, hints, coverImage, action, errors, className }: IChallengeListItemProps) {
+function ChallengeListItem({ id, title, description, notePlaceholder, cost, time, duration, completed, revealed, note, completedImage, hints, coverImage, errors, className }: IChallengeListItemProps) {
     const [modifyingNote, setModifyingNote] = useState(note ?? "");
+    const imageUploadsFetcher = useFetcher();
 
     const noteRef = useRef<HTMLTextAreaElement>(null);
+    const imageRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         if (errors?.note) {
             noteRef.current?.focus();
+        }
+        if (errors?.image) {
+            imageRef.current?.focus();
         }
     }, [errors]);
 
@@ -120,81 +185,17 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
         setModifyingNote(() => event.target.value);
     }
 
-    const getFormattedCost = () => {
-        let numericCost = Number(cost);
-
-        if (numericCost <= 0) {
-            return "FREE";
-        }
-        if (numericCost < 1) {
-            return "1";
-        }
-        if (numericCost < 10) {
-            return "10";
-        }
-        if (numericCost < 20) {
-            return "20";
-        }
-        if (numericCost < 30) {
-            return "30";
-        }
-        if (numericCost <= 50) {
-            return "50";
-        }
-        return "> 50";
-    }
-
-    const getFormattedDuration = () => {
-        if (duration <= 1) {
-            return "1M";
-        }
-        if (duration <= 5) {
-            return "5M";
-        }
-        if (duration <= 10) {
-            return "10M";
-        }
-        if (duration <= 15) {
-            return "15M";
-        }
-        if (duration <= 30) {
-            return "30M";
-        }
-        if (duration <= 45) {
-            return "45M";
-        }
-        if (duration <= 60) {
-            return "1H";
-        }
-        if (duration <= 90) {
-            return "1H30M";
-        }
-        if (duration <= 120) {
-            return "2H";
-        }
-        if (duration <= 180) {
-            return "3H";
-        }
-        if (duration <= 240) {
-            return "4H";
-        }
-        if (duration <= 300) {
-            return "5H";
-        }
-        return "> 5H";
-    }
-
     const getInfoComponent = (className?: string) => {
         return (
             <div className={clsx("font-semibold", className)}>
                 <span className="flex items-center">
-                    {getIconComponentByName("currency-dollar", { className: "mr-1" })} {getFormattedCost()}
+                    {getIconComponentByName("currency-dollar", { className: "mr-1" })} {getFormattedCost(cost)}
                 </span>
                 <span className="flex items-center">
                     {getIconComponentByName("sun", { className: "mr-1" })} {time}
                 </span>
                 <span className="flex items-center">
-                    {getIconComponentByName("clock", { className: "mr-1" })} {getFormattedDuration()}
+                    {getIconComponentByName("clock", { className: "mr-1" })} {getFormattedDuration(duration)}
                 </span>
             </div>
         )
@@ -205,6 +206,73 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
             <div className={clsx("font-semibold", className)}>
                 {hints.map(hint => getIconComponentByName(hint, { key: hint }))}
             </div>
+        )
+    }
+
+    const getActionsFormComponent = () => {
+        if (completed) {
+            // @TODO - cant replace for now
+            if (completedImage) {
+                return null
+            }
+
+            return (
+                <imageUploadsFetcher.Form method="post" action="/uploads" encType="multipart/form-data">
+                    <input type="hidden" name="_challengeId" value={id} />
+                    <input
+                        ref={imageRef}
+                        type="file"
+                        name="image"
+                        accept="image/*"
+                        required={true}
+                        aria-invalid={errors?.image ? true : undefined}
+                        aria-errormessage={
+                            errors?.image ? `image-error-${id}` : undefined
+                        }
+                        className="file-input file-input-ghost file-input-xs w-full max-w-xs"
+                    />
+                    {errors?.image && (
+                        <div className="pt-1 text-red-700" id={`image-error-${id}`}>
+                            {errors.image}
+                        </div>
+                    )}
+                    <button
+                        type="submit"
+                        className="btn btn-xs btn-primary"
+                    >
+                        Add image
+                    </button>
+                </imageUploadsFetcher.Form>
+            )
+        }
+        if (revealed) {
+            return (
+                <Form method="post">
+                    <input type="hidden" name="_challengeId" value={id} />
+                    <button
+                        type="submit"
+                        name="_action"
+                        value="complete"
+                        className="btn btn-xs btn-primary"
+                    >
+                        Mark as done
+                    </button>
+                </Form>
+            )
+        }
+
+        return (
+            <Form method="post">
+                <input type="hidden" name="_challengeId" value={id} />
+                <button
+                    type="submit"
+                    name="_action"
+                    value="reveal"
+                    className="btn btn-xs btn-primary"
+                >
+                    Reveal it
+                </button>
+            </Form>
         )
     }
 
@@ -227,21 +295,9 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
                                 {getInfoComponent("flex justify-center space-x-5")}
                                 {getHintsComponent("flex justify-center space-x-5")}
                             </div>
-                            {action &&
-                                <div className="card-actions justify-end pt-2 flex justify-center lg:justify-end">
-                                    <Form method="post">
-                                        <input type="hidden" name="_challengeId" value={id} />
-                                        <button
-                                            type="submit"
-                                            name="_action"
-                                            value={action.name}
-                                            className="btn btn-xs btn-primary"
-                                        >
-                                            {action.text}
-                                        </button>
-                                    </Form>
-                                </div>
-                            }
+                            <div className="card-actions justify-end pt-2 flex justify-center lg:justify-end">
+                                {getActionsFormComponent()}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -304,16 +360,6 @@ export default function ChallengesListPage() {
 
     const errors = actionData && 'errors' in actionData ? actionData.errors as TActionErrorData : null;
 
-    const getAction = ({ completed, revealed }: { completed: boolean, revealed: boolean }) => {
-        if (completed) {
-            return null
-        }
-        if (revealed) {
-            return { text: "Mark as done", name: "complete" }
-        }
-        return { text: "Reveal it", name: "reveal" }
-    }
-
     const getErrorForChallenge = (id: string) => {
         if (!errors) { return }
         const { _challengeId: challengeIdWithErrors } = errors
@@ -338,10 +384,9 @@ export default function ChallengesListPage() {
                     completed={challenge.completed}
                     revealed={challenge.revealed}
                     note={challenge.note}
-                    completedImage={challenge.completed_image}
+                    completedImage={challenge.completedImage}
                     hints={challenge.challengeTemplate.hints.map(h => h.hint.name)}
                     coverImage={challenge.challengeTemplate.adventureTemplate.cover_image}
-                    action={getAction(challenge)}
                     errors={getErrorForChallenge(challenge.id)}
                 />
             )}

@@ -2,8 +2,6 @@
 
 ## TODO
 
-- [ ] Can upload image after done
-
 - [ ] Set theme based on Adventure
 
 - [ ] List Adventures
@@ -18,4 +16,6 @@
 
 - [ ] Create real adventures / challenges
 
-- [ ] Add draft/published idea
+- [ ] Add draft/published idea for templates?
+
+- [ ] Can replace-delete current image? Save ID and get full url instead of full url?
