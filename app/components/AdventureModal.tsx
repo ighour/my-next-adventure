@@ -17,27 +17,37 @@ export default function AdventureModal({ title, inviteId, maxJoiners, creator, j
             <div className="modal modal-bottom sm:modal-middle">
                 <div className="modal-box relative">
                     <label htmlFor={MODAL_ID} className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</label>
-                    <h3 className="text-lg font-bold mb-2">{title}</h3>
-                    <div className="space-y-2">
-                        <h4 className="text-md space-x-2">
-                            <span className="underline">Adventure Code:</span>
-                            <span>{inviteId}</span>
-                        </h4>
-                        <h4 className="text-md space-x-2">
-                            <span className="underline">Max adventurers:</span>
-                            <span>{maxJoiners === null ? "Unlimited" : maxJoiners + 1}</span>
-                        </h4>
-                        <div>
-                            <h4 className="text-md underline">Adventurers:</h4>
-                            <ul>
-                                <li>{creator} (owner)</li>
+                    <h2 className="text-xl font-bold mb-2">{title}</h2>
+                    <ul className="space-y-2 text-md">
+                        <li>
+                            1. You can invite other people to your adventure by using the code <span className="underline font-semibold">{inviteId}</span>
+                        </li>
+                        {maxJoiners !== null &&
+                            <li>
+                                2. This adventure is limited to <span className="underline font-semibold">{maxJoiners + 1}</span> people
+                            </li>
+                        }
+                        {!maxJoiners === null &&
+                            <li>
+                                2. You can invite <span className="underline font-semibold">unlimited</span> people for this adventure
+                            </li>
+                        }
+                        <li>
+                            3. Adventure creator is <span className="underline font-semibold">{creator}</span>
+                        </li>
+                    </ul>
+                    {joiners.length &&
+                        <>
+                            <div className="mt-2">4. Other adventurers are:</div>
+                            <ul className="space-y-2 text-md">
                                 {joiners.map(joiner =>
-                                    <li key={joiner}>{joiner}</li>
-                                )
-                                }
+                                    <li key={joiner}>
+                                        - {joiner}
+                                    </li>
+                                )}
                             </ul>
-                        </div>
-                    </div>
+                        </>
+                    }
                 </div>
             </div>
         </>
