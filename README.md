@@ -2,7 +2,7 @@
 
 ## TODO
 
-- [ ] Set theme based on Adventure
+- [ ] Start new adventure (how to add more participants?)
 
 - [ ] List Adventures
 
@@ -10,11 +10,11 @@
 
 - [ ] Set navbar and menus
 
-- [ ] Start new adventure (how to add more participants?)
-
 - [ ] Decouple Challeges and Adventure (many to many)
 
 - [ ] Create real adventures / challenges
+
+- [ ] Set theme based on Adventure?
 
 - [ ] Add draft/published idea for templates?
 
