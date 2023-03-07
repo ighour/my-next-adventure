@@ -28,14 +28,21 @@ export async function action({ request }: ActionArgs) {
         );
     }
 
-    if (invitedAdventure.creatorId === user.id) {
+    const joinersIds = invitedAdventure.joiners.map(joiner => joiner.id);
+
+    if (invitedAdventure.creatorId === user.id || joinersIds.includes(user.id)) {
         return json(
             { errors: { inviteId: "You already belongs to that adventure" } },
             { status: 400 }
         );
     }
 
-    // @TODO - validate max count of users
+    if (invitedAdventure.adventureTemplate.maxJoiners && joinersIds.length >= invitedAdventure.adventureTemplate.maxJoiners) {
+        return json(
+            { errors: { inviteId: "This adventure is full" } },
+            { status: 400 }
+        );
+    }
 
     const joinedAdventure = await joinAdventure({ id: invitedAdventure.id, userId: user.id });
 

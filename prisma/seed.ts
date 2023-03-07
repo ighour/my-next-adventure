@@ -6,9 +6,6 @@ import { EHint, ETimeOfDay } from "~/models/enums";
 const prisma = new PrismaClient();
 
 async function seed() {
-  const email1 = "celio@a.a";
-  const email2 = "luana@a.a";
-
   // cleanup the existing database
   await prisma.challengeTemplate.deleteMany().catch(() => {
     // no worries if it doesn't exist yet
@@ -33,7 +30,7 @@ async function seed() {
 
   const user1 = await prisma.user.create({
     data: {
-      email: email1,
+      email: "celio@a.a",
       password: {
         create: {
           hash: hashedPassword,
@@ -43,7 +40,17 @@ async function seed() {
   });
   const user2 = await prisma.user.create({
     data: {
-      email: email2,
+      email: "luana@a.a",
+      password: {
+        create: {
+          hash: hashedPassword,
+        },
+      },
+    },
+  });
+  await prisma.user.create({
+    data: {
+      email: "a@a.a",
       password: {
         create: {
           hash: hashedPassword,
@@ -56,6 +63,7 @@ async function seed() {
     data: {
       title: "Couples Edition",
       description: "Lorem ipsum...",
+      maxJoiners: 1
     },
   });
 
@@ -64,7 +72,7 @@ async function seed() {
       title: "Couples Edition 2",
       description: "Lorem ipsum (with cover)...",
       coverImage:
-        "https://daisyui.com/images/stock/photo-1494232410401-ad00d5433cfa.jpg",
+        "https://daisyui.com/images/stock/photo-1494232410401-ad00d5433cfa.jpg"
     },
   });
 

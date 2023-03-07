@@ -17,25 +17,15 @@ export default function AdventuresIndexPage() {
 
     return (
         <ul>
-            <li>My Next Adventure:</li>
+            <li>My Adventures (Owner):</li>
             <li>
                 <Link
                     className="link text-xl px-4"
                     to="new"
                 >
-                    Start a new adventure
+                    + Start a new adventure
                 </Link>
             </li>
-            <li>
-                <Link
-                    className="link text-xl px-4"
-                    to="join"
-                >
-                    Join an adventure
-                </Link>
-            </li>
-            <div className="divider"></div>
-            <li>My Adventures (Owner):</li>
             {data.createdAdventureListItems.map(adventure =>
                 <li key={adventure.id}>
                     <Link
@@ -48,6 +38,14 @@ export default function AdventuresIndexPage() {
             )}
             <div className="divider"></div>
             <li>My Adventures (Joiner):</li>
+            <li>
+                <Link
+                    className="link text-xl px-4"
+                    to="join"
+                >
+                    + Join an adventure
+                </Link>
+            </li>
             {data.joinedAdventureListItems.map(adventure =>
                 <li key={adventure.id}>
                     <Link

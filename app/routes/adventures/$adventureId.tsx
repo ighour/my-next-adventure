@@ -1,6 +1,6 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Outlet, useCatch, useLoaderData, useLocation } from "@remix-run/react";
+import { Outlet, useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
 import { getAdventure } from "~/models/adventure.server";
@@ -37,7 +37,7 @@ export default function AdventureDetailsPage() {
   return (
     <>
       <h2 className="text-3xl mb-2">{data.adventure.adventureTemplate.title}</h2>
-      <div className="flex items-center">
+      <div className="flex items-center my-2">
         <div> Your adventure code is <span className="underline">{data.adventure.inviteId}</span> </div>
         <CopyToClipboard
           text={inviteUrl}
@@ -46,6 +46,16 @@ export default function AdventureDetailsPage() {
             <ClipboardIcon className="h-6 w-6" />
           </button>
         </CopyToClipboard>
+      </div>
+      <div>
+        <h4 className="text-md my-2">Adventurers:</h4>
+        <ul>
+          <li>{data.adventure.creator.email} (owner)</li>
+          {data.adventure.joiners.map(joiner =>
+            <li key={joiner.email}>{joiner.email}</li>
+          )
+          }
+        </ul>
       </div>
       <Outlet />
     </>

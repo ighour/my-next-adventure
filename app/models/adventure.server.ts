@@ -64,7 +64,7 @@ export function getAdventure({
       id: true,
       inviteId: true,
       adventureTemplate: { select: { title: true, description: true } },
-      creator: { select: { email: true }},
+      creator: { select: { id: true, email: true }},
       joiners: { select: { email: true }}
     },
     where: {
@@ -83,6 +83,16 @@ export function getAdventureByInviteId({ inviteId }: { inviteId: Adventure["invi
     select: {
       id: true,
       creatorId: true,
+      joiners: {
+        select: {
+          id: true
+        }
+      },
+      adventureTemplate: {
+        select: {
+          maxJoiners: true
+        }
+      }
     },
   });
 }
