@@ -13,6 +13,7 @@ import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUser } from "./session.server";
 import { useEffect } from "react";
 import { themeChange } from "theme-change";
+import Notifications from "./components/Notifications";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
@@ -46,6 +47,7 @@ export default function App() {
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
+        <Notifications />
       </body>
     </html>
   );

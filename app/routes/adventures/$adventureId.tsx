@@ -8,7 +8,8 @@ import { requireUserId } from "~/session.server";
 
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useEffect, useState } from "react";
-import { ClipboardIcon } from "@heroicons/react/24/outline";
+import { createNotificationWithTitleAndDescription } from "~/components/Notifications";
+import toast from "react-hot-toast/headless";
 
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);
@@ -36,18 +37,23 @@ export default function AdventureDetailsPage() {
 
   return (
     <>
-      <h2 className="text-3xl mb-2">{data.adventure.adventureTemplate.title}</h2>
-      <div className="flex items-center my-2">
-        <div> Your adventure code is <span className="underline">{data.adventure.inviteId}</span> </div>
-        <CopyToClipboard
-          text={inviteUrl}
-        >
-          <button className="btn btn-sm btn-ghost btn-circle">
-            <ClipboardIcon className="h-6 w-6" />
-          </button>
-        </CopyToClipboard>
+      <div className="hero min-h-screen bg-base-200">
+        <div className="hero-content text-center">
+          <div className="max-w-md">
+            <h1 className="text-5xl font-bold">{data.adventure.adventureTemplate.title}</h1>
+            <p className="py-6">{data.adventure.adventureTemplate.description}</p>
+            <CopyToClipboard
+              text={inviteUrl}
+              onCopy={() => { createNotificationWithTitleAndDescription({ title: "Copied invite link", description: "Share it with other adventurers."}) }}
+            >
+              <button className="btn btn-primary">
+                Invite Adventurers
+              </button>
+            </CopyToClipboard>
+          </div>
+        </div>
       </div>
-      <div>
+      {/* <div>
         <h4 className="text-md my-2">Adventurers:</h4>
         <ul>
           <li>{data.adventure.creator.email} (owner)</li>
@@ -56,7 +62,7 @@ export default function AdventureDetailsPage() {
           )
           }
         </ul>
-      </div>
+      </div> */}
       <Outlet />
     </>
   );
