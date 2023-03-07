@@ -9,6 +9,7 @@ import { requireUserId } from "~/session.server";
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useEffect, useState } from "react";
 import { createNotificationWithTitleAndDescription } from "~/utils/notifications";
+import AdventureModal, { AdventureModalOpener } from "~/components/AdventureModal";
 
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);
@@ -34,6 +35,8 @@ export default function AdventureDetailsPage() {
 
   const inviteUrl = `${fullUrl}/adventures/join?invite=${data.adventure.inviteId}`
 
+  const joiners = data.adventure.joiners.map(joiner => joiner.email);
+
   return (
     <>
       <div className="hero min-h-screen bg-base-200">
@@ -41,27 +44,27 @@ export default function AdventureDetailsPage() {
           <div className="max-w-md">
             <h1 className="text-5xl font-bold">{data.adventure.adventureTemplate.title}</h1>
             <p className="py-6">{data.adventure.adventureTemplate.description}</p>
-            <CopyToClipboard
-              text={inviteUrl}
-              onCopy={() => { createNotificationWithTitleAndDescription({ title: "Copied invite link", description: "Share it with other adventurers."}) }}
-            >
-              <button className="btn btn-primary">
-                Invite Adventurers
-              </button>
-            </CopyToClipboard>
+            <div>
+              <CopyToClipboard
+                text={inviteUrl}
+                onCopy={() => { createNotificationWithTitleAndDescription({ title: "Copied adventure invite link", description: "Share it with other adventurers." }) }}
+              >
+                <button className="btn btn-primary mx-1 my-1">
+                  Invite Adventurers
+                </button>
+              </CopyToClipboard>
+              <AdventureModalOpener className="mx-1 my-1" />
+            </div>
           </div>
         </div>
       </div>
-      {/* <div>
-        <h4 className="text-md my-2">Adventurers:</h4>
-        <ul>
-          <li>{data.adventure.creator.email} (owner)</li>
-          {data.adventure.joiners.map(joiner =>
-            <li key={joiner.email}>{joiner.email}</li>
-          )
-          }
-        </ul>
-      </div> */}
+      <AdventureModal
+        title={data.adventure.adventureTemplate.title}
+        inviteId={data.adventure.inviteId}
+        maxJoiners={data.adventure.adventureTemplate.maxJoiners}
+        creator={data.adventure.creator.email}
+        joiners={joiners}
+      />
       <Outlet />
     </>
   );

@@ -14,7 +14,7 @@ export async function action({ request }: ActionArgs) {
 
     if (typeof inviteId !== "string" || inviteId.length === 0) {
         return json(
-            { errors: { inviteId: "You need to add an invite ID" } },
+            { errors: { inviteId: "You need to add an adventure code" } },
             { status: 400 }
         );
     }
@@ -78,7 +78,7 @@ export default function JoinAdventurePage() {
 
                 <div>
                     <label className="flex w-full flex-col gap-1">
-                        <span>Invite ID </span>
+                        <span>Adventure Code </span>
                         <input
                             ref={inviteIdRef}
                             name="inviteId"
@@ -102,7 +102,7 @@ export default function JoinAdventurePage() {
                         type="submit"
                         className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
                     >
-                        Start
+                        Join
                     </button>
                 </div>
             </Form>

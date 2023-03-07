@@ -63,7 +63,7 @@ export function getAdventure({
     select: {
       id: true,
       inviteId: true,
-      adventureTemplate: { select: { title: true, description: true } },
+      adventureTemplate: { select: { title: true, description: true, maxJoiners: true } },
       creator: { select: { id: true, email: true }},
       joiners: { select: { email: true }}
     },
