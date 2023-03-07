@@ -1,10 +1,14 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Outlet, useCatch, useLoaderData } from "@remix-run/react";
+import { Outlet, useCatch, useLoaderData, useLocation } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
 import { getAdventure } from "~/models/adventure.server";
 import { requireUserId } from "~/session.server";
+
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useEffect, useState } from "react";
+import { ClipboardIcon } from "@heroicons/react/24/outline";
 
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);
@@ -20,10 +24,29 @@ export async function loader({ request, params }: LoaderArgs) {
 
 export default function AdventureDetailsPage() {
   const data = useLoaderData<typeof loader>();
+  const [fullUrl, setFullUrl] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location) {
+      setFullUrl(window.location.protocol + '//' + window.location.host)
+    }
+  }, []);
+
+  const inviteUrl = `${fullUrl}/adventures/join?invite=${data.adventure.inviteId}`
 
   return (
     <>
       <h2 className="text-3xl mb-2">{data.adventure.adventureTemplate.title}</h2>
+      <div className="flex items-center">
+        <div> Your adventure code is <span className="underline">{data.adventure.inviteId}</span> </div>
+        <CopyToClipboard
+          text={inviteUrl}
+        >
+          <button className="btn btn-sm btn-ghost btn-circle">
+            <ClipboardIcon className="h-6 w-6" />
+          </button>
+        </CopyToClipboard>
+      </div>
       <Outlet />
     </>
   );
