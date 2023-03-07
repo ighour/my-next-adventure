@@ -2,8 +2,6 @@
 
 ## TODO
 
-- [ ] Show adventure hero + invite code + adventurers list
-
 - [ ] List Adventures
 
 - [ ] Set app theme
@@ -13,6 +11,8 @@
 - [ ] Decouple Challeges and Adventure (many to many)
 
 - [ ] Create real adventures / challenges
+
+- [ ] Optimize adventure page & modal
 
 - [ ] Set theme based on Adventure?
 
