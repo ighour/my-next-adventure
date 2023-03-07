@@ -8,8 +8,7 @@ import { requireUserId } from "~/session.server";
 
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useEffect, useState } from "react";
-import { createNotificationWithTitleAndDescription } from "~/components/Notifications";
-import toast from "react-hot-toast/headless";
+import { createNotificationWithTitleAndDescription } from "~/utils/notifications";
 
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);
