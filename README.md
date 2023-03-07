@@ -2,7 +2,7 @@
 
 ## TODO
 
-- [ ] Start new adventure (how to add more participants?)
+- [ ] Show adventure hero + invite code + adventurers list
 
 - [ ] List Adventures
 
