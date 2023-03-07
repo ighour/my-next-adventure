@@ -63,7 +63,7 @@ async function seed() {
     data: {
       title: "Couples Edition 2",
       description: "Lorem ipsum (with cover)...",
-      cover_image:
+      coverImage:
         "https://daisyui.com/images/stock/photo-1494232410401-ad00d5433cfa.jpg",
     },
   });
@@ -92,9 +92,9 @@ async function seed() {
       `,
       notePlaceholder: "How was the challenge?",
       position: 0,
-      cost_euros: 0,
-      time_of_day: ETimeOfDay.ANY,
-      duration_minutes: 60,
+      costEuros: 0,
+      timeOfDay: ETimeOfDay.ANY,
+      durationMinutes: 60,
       hints: [EHint.HOME],
     },
     {
@@ -109,9 +109,9 @@ async function seed() {
       `,
       notePlaceholder: "Was it hard to complete the challenge?",
       position: 1,
-      cost_euros: 12,
-      time_of_day: ETimeOfDay.ANY,
-      duration_minutes: 15,
+      costEuros: 12,
+      timeOfDay: ETimeOfDay.ANY,
+      durationMinutes: 15,
       hints: [EHint.HOME, EHint.SHOPPING_CART],
     },
     {
@@ -121,9 +121,9 @@ async function seed() {
       `,
       notePlaceholder: "Have you had fun on your challenge?",
       position: 2,
-      cost_euros: 75.75,
-      time_of_day: ETimeOfDay.AFTERNOON,
-      duration_minutes: 92,
+      costEuros: 75.75,
+      timeOfDay: ETimeOfDay.AFTERNOON,
+      durationMinutes: 92,
       hints: [],
     },
     {
@@ -134,9 +134,9 @@ async function seed() {
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
       position: 3,
-      cost_euros: 0,
-      time_of_day: ETimeOfDay.NIGHT,
-      duration_minutes: 432,
+      costEuros: 0,
+      timeOfDay: ETimeOfDay.NIGHT,
+      durationMinutes: 432,
       hints: [EHint.HOME],
     },
     {
@@ -151,9 +151,9 @@ async function seed() {
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
       position: 4,
-      cost_euros: 0.32,
-      time_of_day: ETimeOfDay.MORNING,
-      duration_minutes: 7,
+      costEuros: 0.32,
+      timeOfDay: ETimeOfDay.MORNING,
+      durationMinutes: 7,
       hints: [EHint.SHOPPING_CART],
     },
   ];
@@ -166,9 +166,9 @@ async function seed() {
           description: item.description,
           notePlaceholder: item.notePlaceholder,
           position: item.position,
-          cost_euros: item.cost_euros,
-          time_of_day: item.time_of_day,
-          duration_minutes: item.duration_minutes,
+          costEuros: item.costEuros,
+          timeOfDay: item.timeOfDay,
+          durationMinutes: item.durationMinutes,
           adventureTemplateId: adventureTemplate.id,
           hints: {
             create: item.hints.map((hint) => ({
@@ -192,9 +192,9 @@ async function seed() {
           description: item.description,
           notePlaceholder: item.notePlaceholder,
           position: item.position,
-          cost_euros: item.cost_euros,
-          time_of_day: item.time_of_day,
-          duration_minutes: item.duration_minutes,
+          costEuros: item.costEuros,
+          timeOfDay: item.timeOfDay,
+          durationMinutes: item.durationMinutes,
           adventureTemplateId: adventureTemplate2.id,
           hints: {
             create: item.hints.map((hint) => ({

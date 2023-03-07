@@ -378,15 +378,15 @@ export default function ChallengesListPage() {
                     title={`#${challenge.challengeTemplate.position + 1} ${challenge.challengeTemplate.title}`}
                     description={challenge.challengeTemplate.description}
                     notePlaceholder={challenge.challengeTemplate.notePlaceholder}
-                    cost={challenge.challengeTemplate.cost_euros}
-                    time={challenge.challengeTemplate.time_of_day}
-                    duration={challenge.challengeTemplate.duration_minutes}
+                    cost={challenge.challengeTemplate.costEuros}
+                    time={challenge.challengeTemplate.timeOfDay}
+                    duration={challenge.challengeTemplate.durationMinutes}
                     completed={challenge.completed}
                     revealed={challenge.revealed}
                     note={challenge.note}
                     completedImage={challenge.completedImage}
                     hints={challenge.challengeTemplate.hints.map(h => h.hint.name)}
-                    coverImage={challenge.challengeTemplate.adventureTemplate.cover_image}
+                    coverImage={challenge.challengeTemplate.adventureTemplate.coverImage}
                     errors={getErrorForChallenge(challenge.id)}
                 />
             )}

@@ -27,9 +27,9 @@ export function getChallengeListItems({ userId, adventureId }: { userId: User["i
           description: true,
           notePlaceholder: true,
           position: true,
-          cost_euros: true,
-          time_of_day: true,
-          duration_minutes: true,
+          costEuros: true,
+          timeOfDay: true,
+          durationMinutes: true,
           hints: {
             select: {
               hint: {
@@ -41,7 +41,7 @@ export function getChallengeListItems({ userId, adventureId }: { userId: User["i
           },
           adventureTemplate: {
             select: {
-              cover_image: true
+              coverImage: true
             }
           }
         }

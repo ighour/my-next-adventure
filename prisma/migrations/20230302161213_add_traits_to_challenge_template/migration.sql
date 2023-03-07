@@ -1,8 +1,8 @@
 /*
   Warnings:
 
-  - Added the required column `duration_minutes` to the `ChallengeTemplate` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `time_of_day` to the `ChallengeTemplate` table without a default value. This is not possible if the table is not empty.
+  - Added the required column `durationMinutes` to the `ChallengeTemplate` table without a default value. This is not possible if the table is not empty.
+  - Added the required column `timeOfDay` to the `ChallengeTemplate` table without a default value. This is not possible if the table is not empty.
 
 */
 -- CreateTable
@@ -30,9 +30,9 @@ CREATE TABLE "new_ChallengeTemplate" (
     "description" TEXT NOT NULL,
     "notePlaceholder" TEXT,
     "position" INTEGER NOT NULL,
-    "cost_euros" DECIMAL NOT NULL DEFAULT 0,
-    "time_of_day" TEXT NOT NULL,
-    "duration_minutes" INTEGER NOT NULL,
+    "costEuros" DECIMAL NOT NULL DEFAULT 0,
+    "timeOfDay" TEXT NOT NULL,
+    "durationMinutes" INTEGER NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
     "adventureTemplateId" TEXT NOT NULL,
