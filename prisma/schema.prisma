@@ -16,7 +16,8 @@ model User {
 
   password Password?
 
-  adventures         Adventure[]
+  createdAdventures          Adventure[] @relation("Adventure_createdAdventures")
+  joinedAdventures          Adventure[] @relation("Adventure_joinedAdventures")
 }
 
 model Password {
@@ -25,6 +26,7 @@ model Password {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String @unique
 }
+
 model AdventureTemplate {
   id          String @id @default(cuid())
   title       String @unique
@@ -64,13 +66,18 @@ model ChallengeTemplate {
 model Adventure {
   id String @id @default(cuid())
 
+  inviteId String @default(cuid())
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   adventureTemplate   AdventureTemplate @relation(fields: [adventureTemplateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   adventureTemplateId String
 
-  users      User[]
+  creator   User @relation("Adventure_createdAdventures", fields: [creatorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  creatorId String
+
+  joiners      User[] @relation("Adventure_joinedAdventures")
   challenges Challenge[]
 }
 

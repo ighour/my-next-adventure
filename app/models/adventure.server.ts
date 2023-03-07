@@ -6,7 +6,12 @@ export type { Adventure } from "@prisma/client";
 
 export function getAdventureListItems({ userId }: { userId: User["id"] }) {
   return prisma.adventure.findMany({
-    where: { users: { some: { id: userId } } },
+    where: {
+      OR: [
+        { creatorId: userId },
+        { joiners: { some: { id: userId } } }
+      ]
+    },
     select: {
       id: true,
       adventureTemplate: { select: { title: true } },
@@ -34,11 +39,9 @@ export async function createAdventure({
   return prisma.adventure.create({
     data: {
       adventureTemplateId,
-      users: {
-        connect: [
-          { id: userId },
-          ...otherUsersEmail.map(email => ({ email }))
-        ]
+      creatorId: userId,
+      joiners: {
+        connect: otherUsersEmail.map(email => ({ email }))
       },
       challenges: {
         create: challengeTemplates.map(template => ({
@@ -59,9 +62,16 @@ export function getAdventure({
     select: {
       id: true,
       adventureTemplate: { select: { title: true, description: true } },
-      users: { select: { email: true }}
+      creator: { select: { email: true }},
+      joiners: { select: { email: true }}
     },
-    where: { id, users: { some: { id: userId } } },
+    where: {
+      id,
+      OR: [
+        { creatorId: userId },
+        { joiners: { some: { id: userId } } }
+      ]
+    },
   });
 }
 
@@ -70,6 +80,12 @@ export function deleteAdventure({
   userId,
 }: Pick<Adventure, "id"> & { userId: User["id"] }) {
   return prisma.adventure.deleteMany({
-    where: { id, users: { some: { id: userId } } },
+    where: {
+      id,
+      OR: [
+        { creatorId: userId },
+        { joiners: { some: { id: userId } } }
+      ]
+    },
   });
 }

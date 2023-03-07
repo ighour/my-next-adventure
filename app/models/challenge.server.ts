@@ -9,7 +9,11 @@ export function getChallengeListItems({ userId, adventureId }: { userId: User["i
     where: { 
       adventureId,
       adventure: {
-        users: { some: { id: userId } } },
+        OR: [
+          { creatorId: userId },
+          { joiners: { some: { id: userId } } }
+        ]
+      },
     },
     select: {
       id: true,
@@ -61,7 +65,15 @@ export function getChallenge({
       note: true,
       challengeTemplate: { select: { title: true, description: true } },
     },
-    where: { id, adventure: { users: { some: { id: userId } } } },
+    where: {
+      id,
+      adventure: {
+        OR: [
+          { creatorId: userId },
+          { joiners: { some: { id: userId } } }
+        ]
+      }
+    },
   });
 }
 
@@ -75,7 +87,15 @@ export function revealChallenge({
     data: {
       revealed: true,
     },
-    where: { id, adventure: { users: { some: { id: userId } } } },
+    where: {
+      id,
+      adventure: {
+        OR: [
+          { creatorId: userId },
+          { joiners: { some: { id: userId } } }
+        ]
+      }
+    },
   });
 }
 
@@ -89,7 +109,15 @@ export function completeChallenge({
     data: {
       completed: true,
     },
-    where: { id, adventure: { users: { some: { id: userId } } } },
+    where: {
+      id,
+      adventure: {
+        OR: [
+          { creatorId: userId },
+          { joiners: { some: { id: userId } } }
+        ]
+      }
+    },
   });
 }
 
@@ -105,7 +133,15 @@ export function updateNote({
     data: {
       note,
     },
-    where: { id, adventure: { users: { some: { id: userId } } } },
+    where: {
+      id,
+      adventure: {
+        OR: [
+          { creatorId: userId },
+          { joiners: { some: { id: userId } } }
+        ]
+      }
+    },
   });
 }
 
@@ -121,6 +157,14 @@ export function addCompletedImage({
     data: {
       completedImage,
     },
-    where: { id, adventure: { users: { some: { id: userId } } } },
+    where: {
+      id,
+      adventure: {
+        OR: [
+          { creatorId: userId },
+          { joiners: { some: { id: userId } } }
+        ]
+      }
+    },
   });
 }

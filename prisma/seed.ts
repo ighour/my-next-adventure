@@ -213,8 +213,9 @@ async function seed() {
   const adventure = await prisma.adventure.create({
     data: {
       adventureTemplateId: adventureTemplate.id,
-      users: {
-        connect: [{ id: user1.id }, { id: user2.id }],
+      creatorId: user1.id,
+      joiners: {
+        connect: [{ id: user2.id }],
       },
     },
   });
@@ -222,8 +223,9 @@ async function seed() {
   const adventure2 = await prisma.adventure.create({
     data: {
       adventureTemplateId: adventureTemplate2.id,
-      users: {
-        connect: [{ id: user1.id }, { id: user2.id }],
+      creatorId: user2.id,
+      joiners: {
+        connect: [{ id: user1.id }],
       },
     },
   });
