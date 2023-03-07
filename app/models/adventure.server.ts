@@ -23,11 +23,9 @@ export function getAdventureListItems({ userId }: { userId: User["id"] }) {
 export async function createAdventure({
   adventureTemplateId,
   userId,
-  otherUsersEmail,
 }: {
   adventureTemplateId: AdventureTemplate["id"];
   userId: User["id"];
-  otherUsersEmail: User["email"][];
 }) {
   const challengeTemplates = await prisma.challengeTemplate.findMany({
     where: {
@@ -40,9 +38,6 @@ export async function createAdventure({
     data: {
       adventureTemplateId,
       creatorId: userId,
-      joiners: {
-        connect: otherUsersEmail.map(email => ({ email }))
-      },
       challenges: {
         create: challengeTemplates.map(template => ({
           challengeTemplateId: template.id

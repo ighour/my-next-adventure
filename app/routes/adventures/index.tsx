@@ -16,6 +16,12 @@ export default function AdventuresIndexPage() {
 
     return (
         <ul>
+            <Link
+                className="link text-xl px-4"
+                to="new"
+            >
+                + New adventure
+            </Link>
             {data.adventureListItems.map(adventure =>
                 <li key={adventure.id}>
                     <Link
