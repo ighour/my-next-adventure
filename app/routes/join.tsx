@@ -5,8 +5,10 @@ import * as React from "react";
 
 import { getUserId, createUserSession } from "~/session.server";
 
-import { createUser, getUserByEmail } from "~/models/user.server";
+import { createUserFromUserInvite, getUserByEmail } from "~/models/user.server";
 import { safeRedirect, validateEmail } from "~/utils";
+import { getUserInvite, deactivateUserInvite } from "~/models/user-invite.server";
+import dayjs from "dayjs";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
@@ -18,25 +20,74 @@ export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");
+  const inviteCode = formData.get("inviteCode");
   const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
+
+  const baseErrors = {
+    email: null,
+    password: null,
+    inviteCode: null
+  };
 
   if (!validateEmail(email)) {
     return json(
-      { errors: { email: "Email is invalid", password: null } },
+      { errors: { ...baseErrors, email: "Email is invalid" } },
       { status: 400 }
     );
   }
 
   if (typeof password !== "string" || password.length === 0) {
     return json(
-      { errors: { email: null, password: "Password is required" } },
+      { errors: { ...baseErrors, password: "Password is required" } },
       { status: 400 }
     );
   }
 
   if (password.length < 8) {
     return json(
-      { errors: { email: null, password: "Password is too short" } },
+      { errors: { ...baseErrors, password: "Password is too short" } },
+      { status: 400 }
+    );
+  }
+
+  if (typeof inviteCode !== "string" || inviteCode.length === 0) {
+    return json(
+      { errors: { ...baseErrors, inviteCode: "Invite Code is required" } },
+      { status: 400 }
+    );
+  }
+
+  const userInvite = await getUserInvite({ inviteCode });
+  if (!userInvite) {
+    return json(
+      {
+        errors: {
+          ...baseErrors,
+          inviteCode: "Invalid invite code",
+        },
+      },
+      { status: 400 }
+    );
+  }
+  if (userInvite.usedAt) {
+    return json(
+      {
+        errors: {
+          ...baseErrors,
+          inviteCode: "Invite code was already used before",
+        },
+      },
+      { status: 400 }
+    );
+  }
+  if (dayjs(userInvite.validUntil).isBefore(dayjs())) {
+    return json(
+      {
+        errors: {
+          ...baseErrors,
+          inviteCode: "Invite code is not valid anymore",
+        },
+      },
       { status: 400 }
     );
   }
@@ -46,15 +97,19 @@ export async function action({ request }: ActionArgs) {
     return json(
       {
         errors: {
+          ...baseErrors,
           email: "A user already exists with this email",
-          password: null,
         },
       },
       { status: 400 }
     );
   }
 
-  const user = await createUser(email, password);
+  const user = await createUserFromUserInvite(email, password, inviteCode);
+
+  // @TODO - create user and update invite in transaction
+
+  await deactivateUserInvite({ inviteCode, userId: user.id })
 
   return createUserSession({
     request,
@@ -76,12 +131,15 @@ export default function Join() {
   const actionData = useActionData<typeof action>();
   const emailRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
+  const inviteCodeRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
     if (actionData?.errors?.email) {
       emailRef.current?.focus();
     } else if (actionData?.errors?.password) {
       passwordRef.current?.focus();
+    } else if (actionData?.errors?.inviteCode) {
+      inviteCodeRef.current?.focus();
     }
   }, [actionData]);
 
@@ -138,6 +196,31 @@ export default function Join() {
               {actionData?.errors?.password && (
                 <div className="pt-1 text-red-700" id="password-error">
                   {actionData.errors.password}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="inviteCode"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Invite Code
+            </label>
+            <div className="mt-1">
+              <input
+                ref={inviteCodeRef}
+                id="inviteCode"
+                required
+                name="inviteCode"
+                aria-invalid={actionData?.errors?.inviteCode ? true : undefined}
+                aria-describedby="invite-code-error"
+                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+              />
+              {actionData?.errors?.inviteCode && (
+                <div className="pt-1 text-red-700" id="invite-code-error">
+                  {actionData.errors.inviteCode}
                 </div>
               )}
             </div>

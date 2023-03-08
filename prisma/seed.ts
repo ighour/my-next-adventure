@@ -1,6 +1,7 @@
 import type { Hint } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import dayjs from "dayjs";
 import { EHint, ETimeOfDay } from "~/models/enums";
 
 const prisma = new PrismaClient();
@@ -23,6 +24,9 @@ async function seed() {
     // no worries if it doesn't exist yet
   });
   await prisma.user.deleteMany().catch(() => {
+    // no worries if it doesn't exist yet
+  });
+  await prisma.userInvite.deleteMany().catch(() => {
     // no worries if it doesn't exist yet
   });
 
@@ -56,6 +60,17 @@ async function seed() {
           hash: hashedPassword,
         },
       },
+    },
+  });
+
+  await prisma.userInvite.create({
+    data: {
+      validUntil: new Date(),
+    },
+  });
+  await prisma.userInvite.create({
+    data: {
+      validUntil: dayjs().add(1, "month").toDate(),
     },
   });
 
