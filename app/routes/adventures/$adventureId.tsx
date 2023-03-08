@@ -25,15 +25,6 @@ export async function loader({ request, params }: LoaderArgs) {
 
 export default function AdventureDetailsPage() {
   const data = useLoaderData<typeof loader>();
-  const [fullUrl, setFullUrl] = useState("");
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.location) {
-      setFullUrl(window.location.protocol + '//' + window.location.host)
-    }
-  }, []);
-
-  const inviteUrl = `${fullUrl}/adventures/join?invite=${data.adventure.inviteId}`
 
   const joiners = data.adventure.joiners.map(joiner => joiner.email);
 
@@ -46,11 +37,11 @@ export default function AdventureDetailsPage() {
             <p className="py-6">{data.adventure.description}</p>
             <div>
               <CopyToClipboard
-                text={inviteUrl}
+                text={data.adventure.inviteId}
                 onCopy={() => { createNotificationWithTitleAndDescription({ title: "Copied adventure invite link", description: "Share it with other adventurers." }) }}
               >
                 <button className="btn btn-primary mx-1 my-1">
-                  Invite Adventurers
+                  Invite Code
                 </button>
               </CopyToClipboard>
               <AdventureModalOpener className="mx-1 my-1" />

@@ -2,9 +2,7 @@
 
 ## TODO
 
-- [ ] User creation: by platform invite link
-
-- [ ] User creation: by adventure invite link
+- [ ] Optimize login / register views
 
 - [ ] Can reveal only next challenge
 
