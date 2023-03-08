@@ -5,10 +5,10 @@ import * as React from "react";
 
 import { getUserId, createUserSession } from "~/session.server";
 
-import { createUserFromUserInvite, getUserByEmail } from "~/models/user.server";
+import { createUser, createUserFromUserInvite, getUserByEmail } from "~/models/user.server";
 import { safeRedirect, validateEmail } from "~/utils";
-import { getUserInvite, deactivateUserInvite } from "~/models/user-invite.server";
-import dayjs from "dayjs";
+import { deactivateUserInvite, getValidUserInvite } from "~/models/user-invite.server";
+import { getJoinableAdventureByInviteId, joinAdventure } from "~/models/adventure.server";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
@@ -57,41 +57,6 @@ export async function action({ request }: ActionArgs) {
     );
   }
 
-  const userInvite = await getUserInvite({ inviteCode });
-  if (!userInvite) {
-    return json(
-      {
-        errors: {
-          ...baseErrors,
-          inviteCode: "Invalid invite code",
-        },
-      },
-      { status: 400 }
-    );
-  }
-  if (userInvite.usedAt) {
-    return json(
-      {
-        errors: {
-          ...baseErrors,
-          inviteCode: "Invite code was already used before",
-        },
-      },
-      { status: 400 }
-    );
-  }
-  if (dayjs(userInvite.validUntil).isBefore(dayjs())) {
-    return json(
-      {
-        errors: {
-          ...baseErrors,
-          inviteCode: "Invite code is not valid anymore",
-        },
-      },
-      { status: 400 }
-    );
-  }
-
   const existingUser = await getUserByEmail(email);
   if (existingUser) {
     return json(
@@ -105,18 +70,40 @@ export async function action({ request }: ActionArgs) {
     );
   }
 
-  const user = await createUserFromUserInvite(email, password, inviteCode);
+  const { userInvite, error: userInviteError } = await getValidUserInvite({ inviteCode });
+  if (userInvite) {
+    const user = await createUserFromUserInvite(email, password, inviteCode);
+    // @TODO - create user and update invite in transaction
+    await deactivateUserInvite({ inviteCode, userId: user.id })
+    return createUserSession({
+      request,
+      userId: user.id,
+      remember: false,
+      redirectTo,
+    });
+  }
 
-  // @TODO - create user and update invite in transaction
+  const { adventure, error: adventureInviteError } = await getJoinableAdventureByInviteId({ inviteId: inviteCode });
+  if (adventure) {
+    const user = await createUser(email, password);
+    const joinedAdventure = await joinAdventure({ id: adventure.id, userId: user.id });
+    return createUserSession({
+      request,
+      userId: user.id,
+      remember: false,
+      redirectTo: `/adventures/${joinedAdventure.id}`,
+    });
+  }
 
-  await deactivateUserInvite({ inviteCode, userId: user.id })
-
-  return createUserSession({
-    request,
-    userId: user.id,
-    remember: false,
-    redirectTo,
-  });
+  return json(
+    {
+      errors: {
+        ...baseErrors,
+        inviteCode: userInviteError || adventureInviteError || "Invalid invite code",
+      },
+    },
+    { status: 400 }
+  );
 }
 
 export const meta: MetaFunction = () => {

@@ -3,7 +3,7 @@ import { json, redirect } from "@remix-run/node";
 import { Form, useActionData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
 
-import { getAdventureByInviteId, joinAdventure } from "~/models/adventure.server";
+import { getJoinableAdventureByInviteId, joinAdventure } from "~/models/adventure.server";
 import { requireUser } from "~/session.server";
 
 export async function action({ request }: ActionArgs) {
@@ -19,32 +19,16 @@ export async function action({ request }: ActionArgs) {
         );
     }
 
-    const invitedAdventure = await getAdventureByInviteId({ inviteId });
+    const { adventure, error } = await getJoinableAdventureByInviteId({ inviteId, userId: user.id });
 
-    if (!invitedAdventure) {
+    if (error || !adventure) {
         return json(
-            { errors: { inviteId: "Could not find an adventure" } },
+            { errors: { inviteId: error || "Invalid invite" } },
             { status: 400 }
         );
     }
 
-    const joinersIds = invitedAdventure.joiners.map(joiner => joiner.id);
-
-    if (invitedAdventure.creatorId === user.id || joinersIds.includes(user.id)) {
-        return json(
-            { errors: { inviteId: "You already belongs to that adventure" } },
-            { status: 400 }
-        );
-    }
-
-    if (invitedAdventure.maxJoiners && joinersIds.length >= invitedAdventure.maxJoiners) {
-        return json(
-            { errors: { inviteId: "This adventure is full" } },
-            { status: 400 }
-        );
-    }
-
-    const joinedAdventure = await joinAdventure({ id: invitedAdventure.id, userId: user.id });
+    const joinedAdventure = await joinAdventure({ id: adventure.id, userId: user.id });
 
     return redirect(`/adventures/${joinedAdventure.id}`);
 }

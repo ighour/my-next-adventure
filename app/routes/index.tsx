@@ -7,7 +7,7 @@ export async function loader({ request }: LoaderArgs) {
   if (userId) {
     return redirect("/adventures");
   }
-  return redirect("/join")
+  return redirect("/login")
 }
 
 export function ErrorBoundary({ error }: { error: Error }) {

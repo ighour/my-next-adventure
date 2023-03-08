@@ -4,7 +4,11 @@ import { prisma } from "~/db.server";
 
 export type { Adventure } from "@prisma/client";
 
-export function getCreatedAdventureListItems({ userId }: { userId: User["id"] }) {
+export function getCreatedAdventureListItems({
+  userId,
+}: {
+  userId: User["id"];
+}) {
   return prisma.adventure.findMany({
     where: { creatorId: userId },
     select: {
@@ -15,7 +19,11 @@ export function getCreatedAdventureListItems({ userId }: { userId: User["id"] })
   });
 }
 
-export function getJoinedAdventureListItems({ userId }: { userId: User["id"] }) {
+export function getJoinedAdventureListItems({
+  userId,
+}: {
+  userId: User["id"];
+}) {
   return prisma.adventure.findMany({
     where: { joiners: { some: { id: userId } } },
     select: {
@@ -33,26 +41,27 @@ export async function createAdventureFromTemplate({
   adventureTemplateId: AdventureTemplate["id"];
   userId: User["id"];
 }) {
-  const adventureAndChallengesTemplate = await prisma.adventureTemplate.findFirstOrThrow({
-    where: {
-      id: adventureTemplateId
-    },
-    include: {
-      challengeTemplates: {
-        orderBy: {
-          position: 'asc',
+  const adventureAndChallengesTemplate =
+    await prisma.adventureTemplate.findFirstOrThrow({
+      where: {
+        id: adventureTemplateId,
+      },
+      include: {
+        challengeTemplates: {
+          orderBy: {
+            position: "asc",
+          },
+          select: {
+            position: true,
+            challengeTemplate: {
+              select: {
+                id: true,
+              },
+            },
+          },
         },
-        select: {
-          position: true,
-          challengeTemplate: {
-            select: {
-              id: true
-            }
-          }
-        }
-      }
-    }
-  });
+      },
+    });
 
   return prisma.adventure.create({
     data: {
@@ -63,13 +72,13 @@ export async function createAdventureFromTemplate({
       adventureTemplateId,
       creatorId: userId,
       challenges: {
-        create: adventureAndChallengesTemplate.challengeTemplates.map(template => ({
-          challengeTemplateId: template.challengeTemplate.id,
-          position: template.position,
-          revealed: false,
-          completed: false,
-        }))
-      }
+        create: adventureAndChallengesTemplate.challengeTemplates.map(
+          (template) => ({
+            challengeTemplateId: template.challengeTemplate.id,
+            position: template.position,
+          })
+        ),
+      },
     },
   });
 }
@@ -88,20 +97,21 @@ export function getAdventure({
       maxJoiners: true,
       coverImage: true,
       inviteId: true,
-      creator: { select: { id: true, email: true }},
-      joiners: { select: { email: true }}
+      creator: { select: { id: true, email: true } },
+      joiners: { select: { email: true } },
     },
     where: {
       id,
-      OR: [
-        { creatorId: userId },
-        { joiners: { some: { id: userId } } }
-      ]
+      OR: [{ creatorId: userId }, { joiners: { some: { id: userId } } }],
     },
   });
 }
 
-export function getAdventureByInviteId({ inviteId }: { inviteId: Adventure["inviteId"] }) {
+function getAdventureByInviteId({
+  inviteId,
+}: {
+  inviteId: Adventure["inviteId"];
+}) {
   return prisma.adventure.findFirst({
     where: { inviteId },
     select: {
@@ -110,11 +120,49 @@ export function getAdventureByInviteId({ inviteId }: { inviteId: Adventure["invi
       maxJoiners: true,
       joiners: {
         select: {
-          id: true
-        }
+          id: true,
+        },
       },
     },
   });
+}
+
+export async function getJoinableAdventureByInviteId({
+  inviteId,
+  userId,
+}: {
+  inviteId: Adventure["inviteId"];
+  userId?: User["id"];
+}) {
+  const adventure = await getAdventureByInviteId({ inviteId });
+
+  if (!adventure) {
+    return {
+      adventure: null,
+      error: null,
+    };
+  }
+
+  const joinersIds = adventure.joiners.map((joiner) => joiner.id);
+
+  if (userId && (adventure.creatorId === userId || joinersIds.includes(userId))) {
+    return {
+      adventure: null,
+      error: "You already belongs to that adventure",
+    };
+  }
+
+  if (adventure.maxJoiners && joinersIds.length >= adventure.maxJoiners) {
+    return {
+      adventure: null,
+      error: "This adventure is full",
+    };
+  }
+
+  return {
+    adventure,
+    error: null,
+  };
 }
 
 export async function joinAdventure({
@@ -126,14 +174,14 @@ export async function joinAdventure({
 }) {
   return prisma.adventure.update({
     where: {
-      id
+      id,
     },
     data: {
       joiners: {
         connect: {
-          id: userId
-        }
-      }
-    }
+          id: userId,
+        },
+      },
+    },
   });
 }
