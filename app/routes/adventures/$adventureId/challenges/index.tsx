@@ -375,7 +375,7 @@ export default function ChallengesListPage() {
                     className="mx-2 my-4"
                     key={challenge.id}
                     id={challenge.id}
-                    title={`#${challenge.challengeTemplate.position + 1} ${challenge.challengeTemplate.title}`}
+                    title={`#${challenge.position + 1} ${challenge.challengeTemplate.title}`}
                     description={challenge.challengeTemplate.description}
                     notePlaceholder={challenge.challengeTemplate.notePlaceholder}
                     cost={challenge.challengeTemplate.costEuros}
@@ -386,7 +386,7 @@ export default function ChallengesListPage() {
                     note={challenge.note}
                     completedImage={challenge.completedImage}
                     hints={challenge.challengeTemplate.hints.map(h => h.hint.name)}
-                    coverImage={challenge.challengeTemplate.adventureTemplate.coverImage}
+                    coverImage={data.adventure.adventureTemplate.coverImage}
                     errors={getErrorForChallenge(challenge.id)}
                 />
             )}

@@ -33,12 +33,28 @@ export async function createAdventure({
   adventureTemplateId: AdventureTemplate["id"];
   userId: User["id"];
 }) {
-  const challengeTemplates = await prisma.challengeTemplate.findMany({
+  const adventureAndChallengesTemplate = await prisma.adventureTemplate.findFirst({
     where: {
-      adventureTemplateId
+      id: adventureTemplateId
     },
-    orderBy: { position: "asc" },
+    include: {
+      challengeTemplates: {
+        orderBy: {
+          position: 'asc',
+        },
+        select: {
+          position: true,
+          challengeTemplate: {
+            select: {
+              id: true
+            }
+          }
+        }
+      }
+    }
   });
+
+  const challengeTemplates = adventureAndChallengesTemplate?.challengeTemplates ?? [];
 
   return prisma.adventure.create({
     data: {
@@ -46,7 +62,8 @@ export async function createAdventure({
       creatorId: userId,
       challenges: {
         create: challengeTemplates.map(template => ({
-          challengeTemplateId: template.id
+          challengeTemplateId: template.challengeTemplate.id,
+          position: template.position,
         }))
       }
     },
@@ -63,7 +80,7 @@ export function getAdventure({
     select: {
       id: true,
       inviteId: true,
-      adventureTemplate: { select: { title: true, description: true, maxJoiners: true } },
+      adventureTemplate: { select: { title: true, description: true, maxJoiners: true, coverImage: true } },
       creator: { select: { id: true, email: true }},
       joiners: { select: { email: true }}
     },

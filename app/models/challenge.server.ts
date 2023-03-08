@@ -21,12 +21,12 @@ export function getChallengeListItems({ userId, adventureId }: { userId: User["i
       completed: true,
       note: true,
       completedImage: true,
+      position: true,
       challengeTemplate: {
         select: {
           title: true,
           description: true,
           notePlaceholder: true,
-          position: true,
           costEuros: true,
           timeOfDay: true,
           durationMinutes: true,
@@ -39,15 +39,9 @@ export function getChallengeListItems({ userId, adventureId }: { userId: User["i
               }
             }
           },
-          adventureTemplate: {
-            select: {
-              coverImage: true
-            }
-          }
         }
       },
     },
-    orderBy: { challengeTemplate: { position: "asc" } },
   });
 }
 

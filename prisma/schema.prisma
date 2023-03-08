@@ -96,6 +96,7 @@ model Challenge {
   completed Boolean @default(false)
   note      String?
   completedImage String?
+  position    Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -8,8 +8,6 @@
 
 - [ ] Set navbar and menus
 
-- [ ] Decouple Challeges and Adventure (many to many)
-
 - [ ] Create real adventures / challenges
 
 - [ ] Optimize adventure page & modal

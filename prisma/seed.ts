@@ -288,6 +288,7 @@ async function seed() {
           completedImage: item.completedImage,
           adventureId: adventure.id,
           challengeTemplateId: challengeTemplates[index].id,
+          position: index
         },
       })
     )
@@ -302,6 +303,7 @@ async function seed() {
           note: item.note,
           adventureId: adventure2.id,
           challengeTemplateId: challengeTemplates2[index].id,
+          position: index
         },
       })
     )
