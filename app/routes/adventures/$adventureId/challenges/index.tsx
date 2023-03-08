@@ -13,6 +13,7 @@ import { ClockIcon, CurrencyDollarIcon, HomeIcon, ShoppingCartIcon, SunIcon } fr
 import { EHint } from "~/models/enums";
 
 import defaultCoverImage from "~/assets/adventure_cover.png";
+import ChallengeImageUploadModal, { ChallengeImageUploadModalOpener } from "~/components/ChallengeImageUploadModal";
 
 export async function loader({ request, params }: LoaderArgs) {
     const userId = await requireUserId(request);
@@ -217,32 +218,39 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
             }
 
             return (
-                <imageUploadsFetcher.Form method="post" action="/uploads" encType="multipart/form-data">
-                    <input type="hidden" name="_challengeId" value={id} />
-                    <input
-                        ref={imageRef}
-                        type="file"
-                        name="image"
-                        accept="image/*"
-                        required={true}
-                        aria-invalid={errors?.image ? true : undefined}
-                        aria-errormessage={
-                            errors?.image ? `image-error-${id}` : undefined
-                        }
-                        className="file-input file-input-ghost file-input-xs w-full max-w-xs"
-                    />
-                    {errors?.image && (
-                        <div className="pt-1 text-red-700" id={`image-error-${id}`}>
-                            {errors.image}
-                        </div>
-                    )}
-                    <button
-                        type="submit"
-                        className="btn btn-xs btn-primary"
-                    >
-                        Add image
-                    </button>
-                </imageUploadsFetcher.Form>
+                <>
+                    <ChallengeImageUploadModalOpener id={id} />
+                    <ChallengeImageUploadModal id={id}>
+                        <imageUploadsFetcher.Form method="post" action="/uploads" encType="multipart/form-data">
+                            <input type="hidden" name="_challengeId" value={id} />
+                            <input
+                                ref={imageRef}
+                                type="file"
+                                name="image"
+                                accept="image/*"
+                                required={true}
+                                aria-invalid={errors?.image ? true : undefined}
+                                aria-errormessage={
+                                    errors?.image ? `image-error-${id}` : undefined
+                                }
+                                className="file-input file-input-bordered file-input-md w-full max-w-xs"
+                            />
+                            {errors?.image && (
+                                <div className="pt-1 text-red-700" id={`image-error-${id}`}>
+                                    {errors.image}
+                                </div>
+                            )}
+                            <div className="mt-2">
+                                <button
+                                    type="submit"
+                                    className="btn btn-xs btn-primary"
+                                >
+                                    Add picture
+                                </button>
+                            </div>
+                        </imageUploadsFetcher.Form>
+                    </ChallengeImageUploadModal>
+                </>
             )
         }
         if (revealed) {
