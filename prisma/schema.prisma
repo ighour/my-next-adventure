@@ -37,7 +37,7 @@ model AdventureTemplate {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  challengesTemplates ChallengeTemplate[]
+  challengeTemplates ChallengeTemplatesOnAdventureTemplates[]
   adventures          Adventure[]
 }
 
@@ -46,7 +46,6 @@ model ChallengeTemplate {
   title       String
   description String
   notePlaceholder String?
-  position    Int
   costEuros  Decimal @default(0)
   timeOfDay String // ETimeOfDay
   durationMinutes  Int
@@ -54,14 +53,23 @@ model ChallengeTemplate {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  adventureTemplate   AdventureTemplate @relation(fields: [adventureTemplateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  adventureTemplateId String
-
+  adventureTemplates ChallengeTemplatesOnAdventureTemplates[]
   challenges Challenge[]
   hints HintsOnChallengeTemplates[]
+}
 
+model ChallengeTemplatesOnAdventureTemplates {
+  adventureTemplate       AdventureTemplate     @relation(fields: [adventureTemplateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  adventureTemplateId     String
+  challengeTemplate       ChallengeTemplate     @relation(fields: [challengeTemplateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  challengeTemplateId     String
+
+  position    Int
+
+  assignedAt DateTime @default(now())
+
+  @@id([adventureTemplateId, challengeTemplateId])
   @@unique([adventureTemplateId, position])
-  @@unique([adventureTemplateId, title])
 }
 
 model Adventure {

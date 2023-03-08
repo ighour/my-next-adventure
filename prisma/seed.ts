@@ -99,7 +99,6 @@ async function seed() {
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
       notePlaceholder: "How was the challenge?",
-      position: 0,
       costEuros: 0,
       timeOfDay: ETimeOfDay.ANY,
       durationMinutes: 60,
@@ -116,7 +115,6 @@ async function seed() {
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
       notePlaceholder: "Was it hard to complete the challenge?",
-      position: 1,
       costEuros: 12,
       timeOfDay: ETimeOfDay.ANY,
       durationMinutes: 15,
@@ -128,7 +126,6 @@ async function seed() {
         <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
       `,
       notePlaceholder: "Have you had fun on your challenge?",
-      position: 2,
       costEuros: 75.75,
       timeOfDay: ETimeOfDay.AFTERNOON,
       durationMinutes: 92,
@@ -141,7 +138,6 @@ async function seed() {
         <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
-      position: 3,
       costEuros: 0,
       timeOfDay: ETimeOfDay.NIGHT,
       durationMinutes: 432,
@@ -158,7 +154,6 @@ async function seed() {
         <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
-      position: 4,
       costEuros: 0.32,
       timeOfDay: ETimeOfDay.MORNING,
       durationMinutes: 7,
@@ -167,17 +162,27 @@ async function seed() {
   ];
 
   const challengeTemplates = await Promise.all(
-    baseChallengeTemplates.map((item) =>
+    baseChallengeTemplates.map((item, index) =>
       prisma.challengeTemplate.create({
         data: {
           title: item.title,
           description: item.description,
           notePlaceholder: item.notePlaceholder,
-          position: item.position,
           costEuros: item.costEuros,
           timeOfDay: item.timeOfDay,
           durationMinutes: item.durationMinutes,
-          adventureTemplateId: adventureTemplate.id,
+          adventureTemplates: {
+            create: [
+              {
+                adventureTemplate: {
+                  connect: {
+                    id: adventureTemplate.id
+                  }
+                },
+                position: index
+              }
+            ]
+          },
           hints: {
             create: item.hints.map((hint) => ({
               hint: {
@@ -193,17 +198,27 @@ async function seed() {
   );
 
   const challengeTemplates2 = await Promise.all(
-    baseChallengeTemplates.map((item) =>
+    baseChallengeTemplates.map((item, index) =>
       prisma.challengeTemplate.create({
         data: {
           title: item.title,
           description: item.description,
           notePlaceholder: item.notePlaceholder,
-          position: item.position,
           costEuros: item.costEuros,
           timeOfDay: item.timeOfDay,
           durationMinutes: item.durationMinutes,
-          adventureTemplateId: adventureTemplate2.id,
+          adventureTemplates: {
+            create: [
+              {
+                adventureTemplate: {
+                  connect: {
+                    id: adventureTemplate2.id
+                  }
+                },
+                position: index
+              }
+            ]
+          },
           hints: {
             create: item.hints.map((hint) => ({
               hint: {
