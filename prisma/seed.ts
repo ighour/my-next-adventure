@@ -71,6 +71,7 @@ async function seed() {
     data: {
       title: "Couples Edition 2",
       description: "Lorem ipsum (with cover)...",
+      maxJoiners: 2,
       coverImage:
         "https://daisyui.com/images/stock/photo-1494232410401-ad00d5433cfa.jpg"
     },
@@ -235,6 +236,9 @@ async function seed() {
 
   const adventure = await prisma.adventure.create({
     data: {
+      title: adventureTemplate.title,
+      description: adventureTemplate.description,
+      maxJoiners: adventureTemplate.maxJoiners,
       adventureTemplateId: adventureTemplate.id,
       creatorId: user1.id,
       joiners: {
@@ -245,6 +249,9 @@ async function seed() {
 
   const adventure2 = await prisma.adventure.create({
     data: {
+      title: adventureTemplate.title,
+      description: adventureTemplate.description,
+      maxJoiners: adventureTemplate.maxJoiners,
       adventureTemplateId: adventureTemplate2.id,
       creatorId: user2.id,
       joiners: {

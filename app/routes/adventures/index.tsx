@@ -41,7 +41,7 @@ export default function AdventuresIndexPage() {
                         className="link text-xl px-4"
                         to={adventure.id}
                     >
-                        {adventure.adventureTemplate.title}
+                        {adventure.title}
                     </Link>
                 </li>
             )}
@@ -53,7 +53,7 @@ export default function AdventuresIndexPage() {
                         className="link text-xl px-4"
                         to={adventure.id}
                     >
-                        {adventure.adventureTemplate.title}
+                        {adventure.title}
                     </Link>
                 </li>
             )}

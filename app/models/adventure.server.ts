@@ -9,7 +9,7 @@ export function getCreatedAdventureListItems({ userId }: { userId: User["id"] })
     where: { creatorId: userId },
     select: {
       id: true,
-      adventureTemplate: { select: { title: true } },
+      title: true,
     },
     orderBy: { updatedAt: "desc" },
   });
@@ -20,20 +20,20 @@ export function getJoinedAdventureListItems({ userId }: { userId: User["id"] }) 
     where: { joiners: { some: { id: userId } } },
     select: {
       id: true,
-      adventureTemplate: { select: { title: true } },
+      title: true,
     },
     orderBy: { updatedAt: "desc" },
   });
 }
 
-export async function createAdventure({
+export async function createAdventureFromTemplate({
   adventureTemplateId,
   userId,
 }: {
   adventureTemplateId: AdventureTemplate["id"];
   userId: User["id"];
 }) {
-  const adventureAndChallengesTemplate = await prisma.adventureTemplate.findFirst({
+  const adventureAndChallengesTemplate = await prisma.adventureTemplate.findFirstOrThrow({
     where: {
       id: adventureTemplateId
     },
@@ -54,16 +54,20 @@ export async function createAdventure({
     }
   });
 
-  const challengeTemplates = adventureAndChallengesTemplate?.challengeTemplates ?? [];
-
   return prisma.adventure.create({
     data: {
+      title: adventureAndChallengesTemplate.title,
+      description: adventureAndChallengesTemplate.description,
+      coverImage: adventureAndChallengesTemplate.coverImage,
+      maxJoiners: adventureAndChallengesTemplate.maxJoiners,
       adventureTemplateId,
       creatorId: userId,
       challenges: {
-        create: challengeTemplates.map(template => ({
+        create: adventureAndChallengesTemplate.challengeTemplates.map(template => ({
           challengeTemplateId: template.challengeTemplate.id,
           position: template.position,
+          revealed: false,
+          completed: false,
         }))
       }
     },
@@ -79,8 +83,11 @@ export function getAdventure({
   return prisma.adventure.findFirst({
     select: {
       id: true,
+      title: true,
+      description: true,
+      maxJoiners: true,
+      coverImage: true,
       inviteId: true,
-      adventureTemplate: { select: { title: true, description: true, maxJoiners: true, coverImage: true } },
       creator: { select: { id: true, email: true }},
       joiners: { select: { email: true }}
     },
@@ -100,16 +107,12 @@ export function getAdventureByInviteId({ inviteId }: { inviteId: Adventure["invi
     select: {
       id: true,
       creatorId: true,
+      maxJoiners: true,
       joiners: {
         select: {
           id: true
         }
       },
-      adventureTemplate: {
-        select: {
-          maxJoiners: true
-        }
-      }
     },
   });
 }

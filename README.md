@@ -2,6 +2,8 @@
 
 ## TODO
 
+- [ ] Change revealed and completed to dates
+
 - [ ] User creation: by platform invite link
 
 - [ ] User creation: by adventure invite link

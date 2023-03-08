@@ -4,7 +4,7 @@ import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import * as React from "react";
 
 import { getAdventureTemplateListItems } from "~/models/adventure-template.server";
-import { createAdventure } from "~/models/adventure.server";
+import { createAdventureFromTemplate } from "~/models/adventure.server";
 import { requireUser } from "~/session.server";
 
 export async function loader() {
@@ -30,7 +30,7 @@ export async function action({ request }: ActionArgs) {
         );
     }
 
-    const adventure = await createAdventure({ adventureTemplateId, userId: user.id });
+    const adventure = await createAdventureFromTemplate({ adventureTemplateId, userId: user.id });
 
     return redirect(`/adventures/${adventure.id}`);
 }

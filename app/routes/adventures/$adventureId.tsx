@@ -42,8 +42,8 @@ export default function AdventureDetailsPage() {
       <div className="hero min-h-screen bg-base-200">
         <div className="hero-content text-center">
           <div className="max-w-md">
-            <h1 className="text-5xl font-bold">{data.adventure.adventureTemplate.title}</h1>
-            <p className="py-6">{data.adventure.adventureTemplate.description}</p>
+            <h1 className="text-5xl font-bold">{data.adventure.title}</h1>
+            <p className="py-6">{data.adventure.description}</p>
             <div>
               <CopyToClipboard
                 text={inviteUrl}
@@ -59,9 +59,9 @@ export default function AdventureDetailsPage() {
         </div>
       </div>
       <AdventureModal
-        title={data.adventure.adventureTemplate.title}
+        title={data.adventure.title}
         inviteId={data.adventure.inviteId}
-        maxJoiners={data.adventure.adventureTemplate.maxJoiners}
+        maxJoiners={data.adventure.maxJoiners}
         creator={data.adventure.creator.email}
         joiners={joiners}
       />

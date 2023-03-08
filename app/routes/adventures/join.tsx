@@ -37,7 +37,7 @@ export async function action({ request }: ActionArgs) {
         );
     }
 
-    if (invitedAdventure.adventureTemplate.maxJoiners && joinersIds.length >= invitedAdventure.adventureTemplate.maxJoiners) {
+    if (invitedAdventure.maxJoiners && joinersIds.length >= invitedAdventure.maxJoiners) {
         return json(
             { errors: { inviteId: "This adventure is full" } },
             { status: 400 }

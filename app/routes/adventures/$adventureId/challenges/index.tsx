@@ -394,7 +394,7 @@ export default function ChallengesListPage() {
                     note={challenge.note}
                     completedImage={challenge.completedImage}
                     hints={challenge.challengeTemplate.hints.map(h => h.hint.name)}
-                    coverImage={data.adventure.adventureTemplate.coverImage}
+                    coverImage={data.adventure.coverImage}
                     errors={getErrorForChallenge(challenge.id)}
                 />
             )}

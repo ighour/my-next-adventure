@@ -32,7 +32,7 @@ model AdventureTemplate {
   title       String @unique
   description String
   coverImage String?
-  maxJoiners Int?
+  maxJoiners Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -46,7 +46,7 @@ model ChallengeTemplate {
   title       String
   description String
   notePlaceholder String?
-  costEuros  Decimal @default(0)
+  costEuros  Decimal
   timeOfDay String // ETimeOfDay
   durationMinutes  Int
 
@@ -74,26 +74,30 @@ model ChallengeTemplatesOnAdventureTemplates {
 
 model Adventure {
   id String @id @default(cuid())
-
+  title       String
+  description String
+  coverImage String?
+  maxJoiners Int
   inviteId String @default(cuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  adventureTemplate   AdventureTemplate @relation(fields: [adventureTemplateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  adventureTemplateId String
 
   creator   User @relation("Adventure_createdAdventures", fields: [creatorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   creatorId String
 
   joiners      User[] @relation("Adventure_joinedAdventures")
   challenges Challenge[]
+
+  // @note - Just for reference. Avoid going through it. We may have Free Adventures in future, not coupled to templates.
+  adventureTemplate   AdventureTemplate @relation(fields: [adventureTemplateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  adventureTemplateId String
 }
 
 model Challenge {
   id        String  @id @default(cuid())
-  revealed  Boolean @default(false)
-  completed Boolean @default(false)
+  revealed  Boolean
+  completed Boolean
   note      String?
   completedImage String?
   position    Int
