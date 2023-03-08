@@ -156,8 +156,8 @@ interface IChallengeListItemProps {
     cost: string
     time: string
     duration: number
-    completed: boolean
-    revealed: boolean
+    completedAt: string | null
+    revealedAt: string | null
     note: string | null
     completedImage: string | null
     hints: string[]
@@ -166,7 +166,7 @@ interface IChallengeListItemProps {
     className?: string
 };
 
-function ChallengeListItem({ id, title, description, notePlaceholder, cost, time, duration, completed, revealed, note, completedImage, hints, coverImage, errors, className }: IChallengeListItemProps) {
+function ChallengeListItem({ id, title, description, notePlaceholder, cost, time, duration, completedAt, revealedAt, note, completedImage, hints, coverImage, errors, className }: IChallengeListItemProps) {
     const [modifyingNote, setModifyingNote] = useState(note ?? "");
     const imageUploadsFetcher = useFetcher();
 
@@ -211,7 +211,7 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
     }
 
     const getActionsFormComponent = () => {
-        if (completed) {
+        if (completedAt) {
             // @TODO - cant replace for now
             if (completedImage) {
                 return null
@@ -253,7 +253,7 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
                 </>
             )
         }
-        if (revealed) {
+        if (revealedAt) {
             return (
                 <Form method="post">
                     <input type="hidden" name="_challengeId" value={id} />
@@ -298,7 +298,7 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
                         </figure>
                         <div className="card-body w-96 lg:h-96">
                             <h2 className="card-title px-2">{title}</h2>
-                            <div className={clsx("space-y-4 h-64 overflow-y-auto px-1", `${!revealed ? "blur-sm" : ""}`)} dangerouslySetInnerHTML={{ __html: description }} />
+                            <div className={clsx("space-y-4 h-64 overflow-y-auto px-1", `${!revealedAt ? "blur-sm" : ""}`)} dangerouslySetInnerHTML={{ __html: description }} />
                             <div className="lg:hidden space-y-2 py-2">
                                 {getInfoComponent("flex justify-center space-x-5")}
                                 {getHintsComponent("flex justify-center space-x-5")}
@@ -311,7 +311,7 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
                 </div>
                 {getHintsComponent("hidden lg:flex flex-col items-start space-y-5 h-96 ml-2")}
             </div>
-            {completed &&
+            {completedAt &&
                 <div className="form-control my-2 px-3">
                     <Form method="post">
                         <input type="hidden" name="_challengeId" value={id} />
@@ -389,8 +389,8 @@ export default function ChallengesListPage() {
                     cost={challenge.challengeTemplate.costEuros}
                     time={challenge.challengeTemplate.timeOfDay}
                     duration={challenge.challengeTemplate.durationMinutes}
-                    completed={challenge.completed}
-                    revealed={challenge.revealed}
+                    completedAt={challenge.completedAt}
+                    revealedAt={challenge.revealedAt}
                     note={challenge.note}
                     completedImage={challenge.completedImage}
                     hints={challenge.challengeTemplate.hints.map(h => h.hint.name)}

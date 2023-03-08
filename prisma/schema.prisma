@@ -96,8 +96,8 @@ model Adventure {
 
 model Challenge {
   id        String  @id @default(cuid())
-  revealed  Boolean
-  completed Boolean
+  revealedAt  DateTime?
+  completedAt DateTime?
   note      String?
   completedImage String?
   position    Int

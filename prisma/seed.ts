@@ -289,8 +289,8 @@ async function seed() {
     baseChallenges.map((item, index) =>
       prisma.challenge.create({
         data: {
-          revealed: item.revealed,
-          completed: item.completed,
+          revealedAt: item.revealed ? new Date() : null,
+          completedAt: item.completed ? new Date() : null,
           note: item.note,
           completedImage: item.completedImage,
           adventureId: adventure.id,
@@ -305,8 +305,8 @@ async function seed() {
     baseChallenges.map((item, index) =>
       prisma.challenge.create({
         data: {
-          revealed: item.revealed,
-          completed: item.completed,
+          revealedAt: item.revealed ? new Date() : null,
+          completedAt: item.completed ? new Date() : null,
           note: item.note,
           adventureId: adventure2.id,
           challengeTemplateId: challengeTemplates2[index].id,

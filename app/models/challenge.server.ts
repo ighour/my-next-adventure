@@ -17,8 +17,8 @@ export function getChallengeListItems({ userId, adventureId }: { userId: User["i
     },
     select: {
       id: true,
-      revealed: true,
-      completed: true,
+      revealedAt: true,
+      completedAt: true,
       note: true,
       completedImage: true,
       position: true,
@@ -54,8 +54,8 @@ export function getChallenge({
   return prisma.challenge.findFirst({
     select: {
       id: true,
-      revealed: true,
-      completed: true,
+      revealedAt: true,
+      completedAt: true,
       note: true,
       challengeTemplate: { select: { title: true, description: true } },
     },
@@ -79,7 +79,7 @@ export function revealChallenge({
 }) {
   return prisma.challenge.updateMany({
     data: {
-      revealed: true,
+      revealedAt: new Date(),
     },
     where: {
       id,
@@ -101,7 +101,7 @@ export function completeChallenge({
 }) {
   return prisma.challenge.updateMany({
     data: {
-      completed: true,
+      completedAt: new Date(),
     },
     where: {
       id,
