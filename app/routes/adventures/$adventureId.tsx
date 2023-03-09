@@ -7,9 +7,8 @@ import { getAdventure } from "~/models/adventure.server";
 import { requireUserId } from "~/session.server";
 
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useEffect, useState } from "react";
 import { createNotificationWithTitleAndDescription } from "~/utils/notifications";
-import AdventureModal, { AdventureModalOpener } from "~/components/AdventureModal";
+import Modal, { ModalOpener } from "~/components/Modal";
 
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);
@@ -28,6 +27,8 @@ export default function AdventureDetailsPage() {
 
   const joiners = data.adventure.joiners.map(joiner => joiner.email);
 
+  const modalId = "my-adventure";
+
   return (
     <>
       <div className="hero min-h-screen bg-base-200">
@@ -44,18 +45,43 @@ export default function AdventureDetailsPage() {
                   Invite Code
                 </button>
               </CopyToClipboard>
-              <AdventureModalOpener className="mx-1 my-1" />
+              <ModalOpener
+                id={modalId}
+                buttonName="Info"
+                className="mx-1 my-1 btn-secondary"
+              />
             </div>
           </div>
         </div>
       </div>
-      <AdventureModal
-        title={data.adventure.title}
-        inviteId={data.adventure.inviteId}
-        maxJoiners={data.adventure.maxJoiners}
-        creator={data.adventure.creator.email}
-        joiners={joiners}
-      />
+      <Modal
+        id={modalId}
+      >
+        <h2 className="text-xl font-bold mb-2">{data.adventure.title}</h2>
+        <ul className="space-y-2 text-md">
+          <li>
+            1. You can invite other people to your adventure by using the code <span className="underline font-semibold">{data.adventure.inviteId}</span>
+          </li>
+          <li>
+            2. This adventure is limited to <span className="underline font-semibold">{data.adventure.maxJoiners + 1}</span> people
+          </li>
+          <li>
+            3. Adventure creator is <span className="underline font-semibold">{data.adventure.creator.email}</span>
+          </li>
+        </ul>
+        {joiners.length > 0 &&
+          <>
+            <div className="mt-2">4. Other adventurers are:</div>
+            <ul className="space-y-2 text-md">
+              {joiners.map(joiner =>
+                <li key={joiner}>
+                  - {joiner}
+                </li>
+              )}
+            </ul>
+          </>
+        }
+      </Modal>
       <Outlet />
     </>
   );

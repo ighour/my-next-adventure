@@ -13,7 +13,7 @@ import { ClockIcon, CurrencyDollarIcon, HomeIcon, ShoppingCartIcon, SunIcon } fr
 import { EHint } from "~/models/enums";
 
 import defaultCoverImage from "~/assets/adventure_cover.png";
-import ChallengeImageUploadModal, { ChallengeImageUploadModalOpener } from "~/components/ChallengeImageUploadModal";
+import Modal, { ModalOpener } from "~/components/Modal";
 
 export async function loader({ request, params }: LoaderArgs) {
     const userId = await requireUserId(request);
@@ -217,39 +217,52 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
                 return null
             }
 
+            const modalId = `challenge-image-upload-${id}`;
+
             return (
                 <>
-                    <ChallengeImageUploadModalOpener id={id} />
-                    <ChallengeImageUploadModal id={id}>
-                        <imageUploadsFetcher.Form method="post" action="/uploads" encType="multipart/form-data">
-                            <input type="hidden" name="_challengeId" value={id} />
-                            <input
-                                ref={imageRef}
-                                type="file"
-                                name="image"
-                                accept="image/*"
-                                required={true}
-                                aria-invalid={errors?.image ? true : undefined}
-                                aria-errormessage={
-                                    errors?.image ? `image-error-${id}` : undefined
-                                }
-                                className="file-input file-input-bordered file-input-md w-full max-w-xs"
-                            />
-                            {errors?.image && (
-                                <div className="pt-1 text-red-700" id={`image-error-${id}`}>
-                                    {errors.image}
+                    <ModalOpener
+                        id={modalId}
+                        buttonName="Add Picture"
+                        className="btn-xs btn-primary"
+                    />
+                    <Modal
+                        id={modalId}
+                    >
+                        <h2 className="text-xl font-bold mb-2">Challenge Picture</h2>
+                        <p className="my-2">Let's upload the best picture you took for this challenge!</p>
+                        <p className="my-2">Note: you can't change it later</p>
+                        <div className="mt-2">
+                            <imageUploadsFetcher.Form method="post" action="/uploads" encType="multipart/form-data">
+                                <input type="hidden" name="_challengeId" value={id} />
+                                <input
+                                    ref={imageRef}
+                                    type="file"
+                                    name="image"
+                                    accept="image/*"
+                                    required={true}
+                                    aria-invalid={errors?.image ? true : undefined}
+                                    aria-errormessage={
+                                        errors?.image ? `image-error-${id}` : undefined
+                                    }
+                                    className="file-input file-input-bordered file-input-md w-full max-w-xs"
+                                />
+                                {errors?.image && (
+                                    <div className="pt-1 text-red-700" id={`image-error-${id}`}>
+                                        {errors.image}
+                                    </div>
+                                )}
+                                <div className="mt-2">
+                                    <button
+                                        type="submit"
+                                        className="btn btn-xs btn-primary"
+                                    >
+                                        Add picture
+                                    </button>
                                 </div>
-                            )}
-                            <div className="mt-2">
-                                <button
-                                    type="submit"
-                                    className="btn btn-xs btn-primary"
-                                >
-                                    Add picture
-                                </button>
-                            </div>
-                        </imageUploadsFetcher.Form>
-                    </ChallengeImageUploadModal>
+                            </imageUploadsFetcher.Form>
+                        </div>
+                    </Modal>
                 </>
             )
         }
