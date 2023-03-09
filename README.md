@@ -2,8 +2,6 @@
 
 ## TODO
 
-- [ ] Add timer before being able to reveal next challenge
-
 - [ ] Optimize login / register views
 
 - [ ] List Adventures

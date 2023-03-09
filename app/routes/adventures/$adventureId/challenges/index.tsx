@@ -14,6 +14,8 @@ import { EHint } from "~/models/enums";
 
 import defaultCoverImage from "~/assets/adventure_cover.png";
 import Modal, { ModalOpener } from "~/components/Modal";
+import dayjs from "dayjs";
+import { useCountdown } from "~/hooks/useCountdown";
 
 export async function loader({ request, params }: LoaderArgs) {
     const userId = await requireUserId(request);
@@ -166,10 +168,11 @@ interface IChallengeListItemProps {
     coverImage: string | null
     errors?: TActionErrorData
     badge?: string
+    canOnlyBeRevealedInFuture?: boolean
     className?: string
 };
 
-function ChallengeListItem({ id, title, description, notePlaceholder, cost, time, duration, completedAt, revealedAt, note, completedImage, hints, coverImage, errors, badge, className }: IChallengeListItemProps) {
+function ChallengeListItem({ id, title, description, notePlaceholder, cost, time, duration, completedAt, revealedAt, note, completedImage, hints, coverImage, errors, badge, canOnlyBeRevealedInFuture, className }: IChallengeListItemProps) {
     const [modifyingNote, setModifyingNote] = useState(note ?? "");
     const imageUploadsFetcher = useFetcher();
 
@@ -293,6 +296,7 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
                     name="_action"
                     value="reveal"
                     className="btn btn-xs btn-primary"
+                    disabled={canOnlyBeRevealedInFuture}
                 >
                     Reveal it
                 </button>
@@ -381,6 +385,59 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
     );
 }
 
+function NextChallengeCountdown({ canBeRevealedAt }: { canBeRevealedAt: string }) {
+    const [daysForReveal, hoursForReveal, minutesForReveal, secondsForReveal] = useCountdown(canBeRevealedAt);
+    const canRevealNextChallenge = daysForReveal <= 0 && hoursForReveal <= 0 && minutesForReveal <= 0 && secondsForReveal <= 0;
+
+    if (canRevealNextChallenge) {
+        return null
+    }
+
+    return (
+        <div className="mt-32 w-80 lg:w-[32rem] flex flex-col items-center">
+            <div className="divider">Next Challenge in</div>
+            <div className="grid grid-flow-col gap-5 text-center auto-cols-max">
+                <div className="flex flex-col">
+                    <span className="countdown font-mono text-5xl">
+                        <span style={
+                            // @ts-ignore
+                            { "--value": daysForReveal }
+                        }></span>
+                    </span>
+                    days
+                </div>
+                <div className="flex flex-col">
+                    <span className="countdown font-mono text-5xl">
+                        <span style={
+                            // @ts-ignore
+                            { "--value": hoursForReveal }
+                        }></span>
+                    </span>
+                    hours
+                </div>
+                <div className="flex flex-col">
+                    <span className="countdown font-mono text-5xl">
+                        <span style={
+                            // @ts-ignore
+                            { "--value": minutesForReveal }
+                        }></span>
+                    </span>
+                    min
+                </div>
+                <div className="flex flex-col">
+                    <span className="countdown font-mono text-5xl">
+                        <span style={
+                            // @ts-ignore
+                            { "--value": secondsForReveal }
+                        }></span>
+                    </span>
+                    sec
+                </div>
+            </div>
+        </div>
+    )
+}
+
 export default function ChallengesListPage() {
     const data = useLoaderData<typeof loader>();
     const actionData = useActionData<typeof action>();
@@ -394,6 +451,8 @@ export default function ChallengesListPage() {
             return errors
         }
     }
+
+    const canOnlyBeRevealedInFuture = data.nextUnrevealedChallenge?.canBeRevealedAt ? dayjs().isBefore(data.nextUnrevealedChallenge?.canBeRevealedAt) : false
 
     return (
         <div className="flex flex-col justify-center items-center">
@@ -418,24 +477,32 @@ export default function ChallengesListPage() {
                 />
             )}
             {data.nextUnrevealedChallenge &&
-                <ChallengeListItem
-                    className="mx-2 my-4 mt-12"
-                    id={data.nextUnrevealedChallenge.id}
-                    title={`#${data.nextUnrevealedChallenge.position + 1} ${data.nextUnrevealedChallenge.challengeTemplate.title}`}
-                    description={data.nextUnrevealedChallenge.challengeTemplate.description}
-                    notePlaceholder={data.nextUnrevealedChallenge.challengeTemplate.notePlaceholder}
-                    cost={data.nextUnrevealedChallenge.challengeTemplate.costEuros}
-                    time={data.nextUnrevealedChallenge.challengeTemplate.timeOfDay}
-                    duration={data.nextUnrevealedChallenge.challengeTemplate.durationMinutes}
-                    completedAt={data.nextUnrevealedChallenge.completedAt}
-                    revealedAt={data.nextUnrevealedChallenge.revealedAt}
-                    note={data.nextUnrevealedChallenge.note}
-                    completedImage={data.nextUnrevealedChallenge.completedImage}
-                    hints={data.nextUnrevealedChallenge.challengeTemplate.hints.map(h => h.hint.name)}
-                    coverImage={data.adventure.coverImage}
-                    errors={getErrorForChallenge(data.nextUnrevealedChallenge.id)}
-                    badge="New"
-                />
+                <>
+                    {canOnlyBeRevealedInFuture && data.nextUnrevealedChallenge.canBeRevealedAt &&
+                        <NextChallengeCountdown
+                            canBeRevealedAt={data.nextUnrevealedChallenge.canBeRevealedAt}
+                        />
+                    }
+                    <ChallengeListItem
+                        className="mx-2 my-4 mt-12"
+                        id={data.nextUnrevealedChallenge.id}
+                        title={`#${data.nextUnrevealedChallenge.position + 1} ${data.nextUnrevealedChallenge.challengeTemplate.title}`}
+                        description={data.nextUnrevealedChallenge.challengeTemplate.description}
+                        notePlaceholder={data.nextUnrevealedChallenge.challengeTemplate.notePlaceholder}
+                        cost={data.nextUnrevealedChallenge.challengeTemplate.costEuros}
+                        time={data.nextUnrevealedChallenge.challengeTemplate.timeOfDay}
+                        duration={data.nextUnrevealedChallenge.challengeTemplate.durationMinutes}
+                        completedAt={data.nextUnrevealedChallenge.completedAt}
+                        revealedAt={data.nextUnrevealedChallenge.revealedAt}
+                        note={data.nextUnrevealedChallenge.note}
+                        completedImage={data.nextUnrevealedChallenge.completedImage}
+                        hints={data.nextUnrevealedChallenge.challengeTemplate.hints.map(h => h.hint.name)}
+                        coverImage={data.adventure.coverImage}
+                        errors={getErrorForChallenge(data.nextUnrevealedChallenge.id)}
+                        badge="New"
+                        canOnlyBeRevealedInFuture={canOnlyBeRevealedInFuture}
+                    />
+                </>
             }
         </div>
     );

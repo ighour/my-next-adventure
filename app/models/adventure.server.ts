@@ -69,6 +69,7 @@ export async function createAdventureFromTemplate({
       description: adventureAndChallengesTemplate.description,
       coverImage: adventureAndChallengesTemplate.coverImage,
       maxJoiners: adventureAndChallengesTemplate.maxJoiners,
+      nextChallengeRevealHours: adventureAndChallengesTemplate.nextChallengeRevealHours,
       adventureTemplateId,
       creatorId: userId,
       challenges: {

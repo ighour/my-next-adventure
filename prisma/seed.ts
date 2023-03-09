@@ -7,6 +7,8 @@ import { EHint, ETimeOfDay } from "~/models/enums";
 const prisma = new PrismaClient();
 
 async function seed() {
+  const now = dayjs();
+
   // cleanup the existing database
   await prisma.challengeTemplate.deleteMany().catch(() => {
     // no worries if it doesn't exist yet
@@ -70,7 +72,7 @@ async function seed() {
   });
   await prisma.userInvite.create({
     data: {
-      validUntil: dayjs().add(1, "month").toDate(),
+      validUntil: now.add(1, "month").toDate(),
     },
   });
 
@@ -78,7 +80,8 @@ async function seed() {
     data: {
       title: "Couples Edition",
       description: "Lorem ipsum...",
-      maxJoiners: 1
+      maxJoiners: 1,
+      nextChallengeRevealHours: 0
     },
   });
 
@@ -87,6 +90,7 @@ async function seed() {
       title: "Couples Edition 2",
       description: "Lorem ipsum (with cover)...",
       maxJoiners: 2,
+      nextChallengeRevealHours: 36,
       coverImage:
         "https://daisyui.com/images/stock/photo-1494232410401-ad00d5433cfa.jpg"
     },
@@ -254,6 +258,7 @@ async function seed() {
       title: adventureTemplate.title,
       description: adventureTemplate.description,
       maxJoiners: adventureTemplate.maxJoiners,
+      nextChallengeRevealHours: adventureTemplate.nextChallengeRevealHours,
       adventureTemplateId: adventureTemplate.id,
       creatorId: user1.id,
       joiners: {
@@ -267,6 +272,7 @@ async function seed() {
       title: adventureTemplate.title,
       description: adventureTemplate.description,
       maxJoiners: adventureTemplate.maxJoiners,
+      nextChallengeRevealHours: adventureTemplate2.nextChallengeRevealHours,
       adventureTemplateId: adventureTemplate2.id,
       creatorId: user2.id,
       joiners: {
@@ -277,16 +283,19 @@ async function seed() {
 
   const baseChallenges = [
     {
+      canBeRevealedAt: now,
       revealed: true,
       completed: true,
       note: `"Smells like a love spirit". Delicious granola made by four hands and two eyes. A lot of love in one recipe.`,
       completedImage: "https://healingcenterseattle.org/thcroot/wp-content/uploads/2020/10/volunteerGroup.jpg"
     },
     {
+      canBeRevealedAt: now,
       revealed: true,
       completed: false,
     },
     {
+      canBeRevealedAt: now,
       revealed: false,
       completed: false,
     },
@@ -310,7 +319,8 @@ async function seed() {
           completedImage: item.completedImage,
           adventureId: adventure.id,
           challengeTemplateId: challengeTemplates[index].id,
-          position: index
+          position: index,
+          canBeRevealedAt: item.canBeRevealedAt?.toISOString()
         },
       })
     )

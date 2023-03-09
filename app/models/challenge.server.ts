@@ -1,4 +1,5 @@
 import type { Adventure, Challenge, User } from "@prisma/client";
+import dayjs from "dayjs";
 
 import { prisma } from "~/db.server";
 
@@ -24,6 +25,7 @@ function getBaseChallengeListItemsQuery({
       completedAt: true,
       note: true,
       completedImage: true,
+      canBeRevealedAt: true,
       position: true,
       challengeTemplate: {
         select: {
@@ -115,23 +117,54 @@ export function getChallenge({
   });
 }
 
-export function revealChallenge({
+export async function revealChallenge({
   id,
   userId,
 }: Pick<Challenge, "id"> & {
   userId: User["id"];
 }) {
-  return prisma.challenge.updateMany({
-    data: {
-      revealedAt: new Date(),
-    },
+  const challenge = await prisma.challenge.findFirstOrThrow({
     where: {
       id,
       adventure: {
         OR: [{ creatorId: userId }, { joiners: { some: { id: userId } } }],
       },
+      canBeRevealedAt: {
+        lte: dayjs().toISOString()
+      }
+    },
+    select: {
+      id: true,
+      position: true,
+      adventure: {
+        select: {
+          id: true,
+          nextChallengeRevealHours: true
+        }
+      }
+    }
+  })
+
+  const now = dayjs();
+
+  await prisma.challenge.update({
+    data: {
+      revealedAt: now.toISOString(),
+    },
+    where: {
+      id: challenge.id,
     },
   });
+
+  await prisma.challenge.updateMany({
+    data: {
+      canBeRevealedAt: now.add(challenge.adventure.nextChallengeRevealHours, "hours").toISOString(),
+    },
+    where: {
+      adventureId: challenge.adventure.id,
+      position: challenge.position + 1
+    },
+  })
 }
 
 export function completeChallenge({
