@@ -2,8 +2,6 @@
 
 ## TODO
 
-- [ ] Fix adventure with no Hint size
-
 - [ ] Add timer before being able to reveal next challenge
 
 - [ ] Optimize login / register views

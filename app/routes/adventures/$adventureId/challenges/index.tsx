@@ -207,7 +207,7 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
 
     const getHintsComponent = (className?: string) => {
         return (
-            <div className={clsx("font-semibold", className)}>
+            <div className={clsx("font-semibold lg:w-8", className)}>
                 {hints.map(hint => getIconComponentByName(hint, { key: hint }))}
             </div>
         )
