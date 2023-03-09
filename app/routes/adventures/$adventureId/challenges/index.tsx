@@ -385,62 +385,10 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
     );
 }
 
-function NextChallengeCountdown({ canBeRevealedAt }: { canBeRevealedAt: string }) {
-    const [daysForReveal, hoursForReveal, minutesForReveal, secondsForReveal] = useCountdown(canBeRevealedAt);
-    const canRevealNextChallenge = daysForReveal <= 0 && hoursForReveal <= 0 && minutesForReveal <= 0 && secondsForReveal <= 0;
-
-    if (canRevealNextChallenge) {
-        return null
-    }
-
-    return (
-        <div className="mt-32 w-80 lg:w-[32rem] flex flex-col items-center">
-            <div className="divider">Next Challenge in</div>
-            <div className="grid grid-flow-col gap-5 text-center auto-cols-max">
-                <div className="flex flex-col">
-                    <span className="countdown font-mono text-5xl">
-                        <span style={
-                            // @ts-ignore
-                            { "--value": daysForReveal }
-                        }></span>
-                    </span>
-                    days
-                </div>
-                <div className="flex flex-col">
-                    <span className="countdown font-mono text-5xl">
-                        <span style={
-                            // @ts-ignore
-                            { "--value": hoursForReveal }
-                        }></span>
-                    </span>
-                    hours
-                </div>
-                <div className="flex flex-col">
-                    <span className="countdown font-mono text-5xl">
-                        <span style={
-                            // @ts-ignore
-                            { "--value": minutesForReveal }
-                        }></span>
-                    </span>
-                    min
-                </div>
-                <div className="flex flex-col">
-                    <span className="countdown font-mono text-5xl">
-                        <span style={
-                            // @ts-ignore
-                            { "--value": secondsForReveal }
-                        }></span>
-                    </span>
-                    sec
-                </div>
-            </div>
-        </div>
-    )
-}
-
 export default function ChallengesListPage() {
     const data = useLoaderData<typeof loader>();
     const actionData = useActionData<typeof action>();
+    const [daysForReveal, hoursForReveal, minutesForReveal, secondsForReveal] = useCountdown(data.nextUnrevealedChallenge?.canBeRevealedAt ?? dayjs().toISOString());
 
     const errors = actionData && 'errors' in actionData ? actionData.errors as TActionErrorData : null;
 
@@ -452,7 +400,7 @@ export default function ChallengesListPage() {
         }
     }
 
-    const canOnlyBeRevealedInFuture = data.nextUnrevealedChallenge?.canBeRevealedAt ? dayjs().isBefore(data.nextUnrevealedChallenge?.canBeRevealedAt) : false
+    const canOnlyBeRevealedInFuture = daysForReveal > 0 || hoursForReveal > 0 || minutesForReveal > 0 || secondsForReveal > 0;
 
     return (
         <div className="flex flex-col justify-center items-center">
@@ -478,10 +426,48 @@ export default function ChallengesListPage() {
             )}
             {data.nextUnrevealedChallenge &&
                 <>
-                    {canOnlyBeRevealedInFuture && data.nextUnrevealedChallenge.canBeRevealedAt &&
-                        <NextChallengeCountdown
-                            canBeRevealedAt={data.nextUnrevealedChallenge.canBeRevealedAt}
-                        />
+                    {canOnlyBeRevealedInFuture &&
+                        <div className="mt-32 w-80 lg:w-[32rem] flex flex-col items-center">
+                            <div className="divider">Next Challenge in</div>
+                            <div className="grid grid-flow-col gap-5 text-center auto-cols-max">
+                                <div className="flex flex-col">
+                                    <span className="countdown font-mono text-5xl">
+                                        <span style={
+                                            // @ts-ignore
+                                            { "--value": daysForReveal }
+                                        }></span>
+                                    </span>
+                                    days
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="countdown font-mono text-5xl">
+                                        <span style={
+                                            // @ts-ignore
+                                            { "--value": hoursForReveal }
+                                        }></span>
+                                    </span>
+                                    hours
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="countdown font-mono text-5xl">
+                                        <span style={
+                                            // @ts-ignore
+                                            { "--value": minutesForReveal }
+                                        }></span>
+                                    </span>
+                                    min
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="countdown font-mono text-5xl">
+                                        <span style={
+                                            // @ts-ignore
+                                            { "--value": secondsForReveal }
+                                        }></span>
+                                    </span>
+                                    sec
+                                </div>
+                            </div>
+                        </div>
                     }
                     <ChallengeListItem
                         className="mx-2 my-4 mt-12"

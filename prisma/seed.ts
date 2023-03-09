@@ -335,7 +335,8 @@ async function seed() {
           note: item.note,
           adventureId: adventure2.id,
           challengeTemplateId: challengeTemplates2[index].id,
-          position: index
+          position: index,
+          canBeRevealedAt: item.canBeRevealedAt?.toISOString()
         },
       })
     )
