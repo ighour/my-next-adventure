@@ -291,11 +291,11 @@ async function seed() {
       completed: false,
     },
     {
-      revealed: true,
+      revealed: false,
       completed: false,
     },
     {
-      revealed: true,
+      revealed: false,
       completed: false,
     },
   ];

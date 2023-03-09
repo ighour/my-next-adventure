@@ -4,15 +4,18 @@ import { prisma } from "~/db.server";
 
 export type { Challenge } from "@prisma/client";
 
-export function getChallengeListItems({ userId, adventureId }: { userId: User["id"], adventureId: Adventure["id"] }) {
-  return prisma.challenge.findMany({
-    where: { 
+function getBaseChallengeListItemsQuery({
+  userId,
+  adventureId,
+}: {
+  userId: User["id"];
+  adventureId: Adventure["id"];
+}) {
+  return {
+    where: {
       adventureId,
       adventure: {
-        OR: [
-          { creatorId: userId },
-          { joiners: { some: { id: userId } } }
-        ]
+        OR: [{ creatorId: userId }, { joiners: { some: { id: userId } } }],
       },
     },
     select: {
@@ -34,14 +37,58 @@ export function getChallengeListItems({ userId, adventureId }: { userId: User["i
             select: {
               hint: {
                 select: {
-                  name: true
-                }
-              }
-            }
+                  name: true,
+                },
+              },
+            },
           },
-        }
+        },
       },
     },
+  };
+}
+
+export function getRevealedChallengeListItems({
+  userId,
+  adventureId,
+}: {
+  userId: User["id"];
+  adventureId: Adventure["id"];
+}) {
+  const baseQuery = getBaseChallengeListItemsQuery({ userId, adventureId });
+
+  return prisma.challenge.findMany({
+    ...baseQuery,
+    where: {
+      ...baseQuery.where,
+      revealedAt: {
+        not: null
+      }
+    },
+    orderBy: {
+      position: 'asc'
+    }
+  });
+}
+
+export function getNextUnrevealedChallengeListItem({
+  userId,
+  adventureId,
+}: {
+  userId: User["id"];
+  adventureId: Adventure["id"];
+}) {
+  const baseQuery = getBaseChallengeListItemsQuery({ userId, adventureId });
+
+  return prisma.challenge.findFirst({
+    ...baseQuery,
+    where: {
+      ...baseQuery.where,
+      revealedAt: null
+    },
+    orderBy: {
+      position: 'asc'
+    }
   });
 }
 
@@ -62,11 +109,8 @@ export function getChallenge({
     where: {
       id,
       adventure: {
-        OR: [
-          { creatorId: userId },
-          { joiners: { some: { id: userId } } }
-        ]
-      }
+        OR: [{ creatorId: userId }, { joiners: { some: { id: userId } } }],
+      },
     },
   });
 }
@@ -84,11 +128,8 @@ export function revealChallenge({
     where: {
       id,
       adventure: {
-        OR: [
-          { creatorId: userId },
-          { joiners: { some: { id: userId } } }
-        ]
-      }
+        OR: [{ creatorId: userId }, { joiners: { some: { id: userId } } }],
+      },
     },
   });
 }
@@ -106,11 +147,8 @@ export function completeChallenge({
     where: {
       id,
       adventure: {
-        OR: [
-          { creatorId: userId },
-          { joiners: { some: { id: userId } } }
-        ]
-      }
+        OR: [{ creatorId: userId }, { joiners: { some: { id: userId } } }],
+      },
     },
   });
 }
@@ -130,11 +168,8 @@ export function updateNote({
     where: {
       id,
       adventure: {
-        OR: [
-          { creatorId: userId },
-          { joiners: { some: { id: userId } } }
-        ]
-      }
+        OR: [{ creatorId: userId }, { joiners: { some: { id: userId } } }],
+      },
     },
   });
 }
@@ -154,11 +189,8 @@ export function addCompletedImage({
     where: {
       id,
       adventure: {
-        OR: [
-          { creatorId: userId },
-          { joiners: { some: { id: userId } } }
-        ]
-      }
+        OR: [{ creatorId: userId }, { joiners: { some: { id: userId } } }],
+      },
     },
   });
 }

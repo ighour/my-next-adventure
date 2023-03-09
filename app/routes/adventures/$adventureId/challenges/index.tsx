@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
 
 import { getAdventure } from "~/models/adventure.server";
-import { completeChallenge, getChallengeListItems, revealChallenge, updateNote } from "~/models/challenge.server";
+import { completeChallenge, getNextUnrevealedChallengeListItem, getRevealedChallengeListItems, revealChallenge, updateNote } from "~/models/challenge.server";
 import { requireUserId } from "~/session.server";
 import { ClockIcon, CurrencyDollarIcon, HomeIcon, ShoppingCartIcon, SunIcon } from '@heroicons/react/24/outline'
 import { EHint } from "~/models/enums";
@@ -24,9 +24,11 @@ export async function loader({ request, params }: LoaderArgs) {
         throw new Response("Not Found", { status: 404 });
     }
 
-    const challenges = await getChallengeListItems({ userId, adventureId: adventure.id });
+    const revealedChallenges = await getRevealedChallengeListItems({ userId, adventureId: adventure.id });
 
-    return json({ adventure, challenges });
+    const nextUnrevealedChallenge = await getNextUnrevealedChallengeListItem({ userId, adventureId: adventure.id });
+
+    return json({ adventure, revealedChallenges, nextUnrevealedChallenge });
 }
 
 export async function action({ request }: ActionArgs) {
@@ -163,10 +165,11 @@ interface IChallengeListItemProps {
     hints: string[]
     coverImage: string | null
     errors?: TActionErrorData
+    badge?: string
     className?: string
 };
 
-function ChallengeListItem({ id, title, description, notePlaceholder, cost, time, duration, completedAt, revealedAt, note, completedImage, hints, coverImage, errors, className }: IChallengeListItemProps) {
+function ChallengeListItem({ id, title, description, notePlaceholder, cost, time, duration, completedAt, revealedAt, note, completedImage, hints, coverImage, errors, badge, className }: IChallengeListItemProps) {
     const [modifyingNote, setModifyingNote] = useState(note ?? "");
     const imageUploadsFetcher = useFetcher();
 
@@ -302,22 +305,25 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
             <div className="flex items-end">
                 <div className="flex flex-col items-end">
                     {getInfoComponent("hidden lg:flex justify-center space-x-5 w-96 mb-1")}
-                    <div className="card lg:card-side bg-base-100 shadow-xl">
-                        <figure className="w-96">
-                            <img
-                                src={completedImage ?? coverImage ?? defaultCoverImage}
-                                alt="Adventure cover"
-                            />
-                        </figure>
-                        <div className="card-body w-96 lg:h-96">
-                            <h2 className="card-title px-2">{title}</h2>
-                            <div className={clsx("space-y-4 h-64 overflow-y-auto px-1", `${!revealedAt ? "blur-sm" : ""}`)} dangerouslySetInnerHTML={{ __html: description }} />
-                            <div className="lg:hidden space-y-2 py-2">
-                                {getInfoComponent("flex justify-center space-x-5")}
-                                {getHintsComponent("flex justify-center space-x-5")}
-                            </div>
-                            <div className="card-actions justify-end pt-2 flex justify-center lg:justify-end">
-                                {getActionsFormComponent()}
+                    <div className="indicator">
+                        {badge && <span className="indicator-item indicator-start badge badge-primary">{badge}</span>}
+                        <div className="card lg:card-side bg-base-100 shadow-xl">
+                            <figure className="w-96">
+                                <img
+                                    src={completedImage ?? coverImage ?? defaultCoverImage}
+                                    alt="Adventure cover"
+                                />
+                            </figure>
+                            <div className="card-body w-96 lg:h-96">
+                                <h2 className="card-title px-2">{title}</h2>
+                                <div className={clsx("space-y-4 h-64 overflow-y-auto px-1", `${!revealedAt ? "blur-sm" : ""}`)} dangerouslySetInnerHTML={{ __html: description }} />
+                                <div className="lg:hidden space-y-2 py-2">
+                                    {getInfoComponent("flex justify-center space-x-5")}
+                                    {getHintsComponent("flex justify-center space-x-5")}
+                                </div>
+                                <div className="card-actions justify-end pt-2 flex justify-center lg:justify-end">
+                                    {getActionsFormComponent()}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -391,7 +397,7 @@ export default function ChallengesListPage() {
 
     return (
         <div className="flex flex-col justify-center items-center">
-            {data.challenges.map(challenge =>
+            {data.revealedChallenges.map(challenge =>
                 <ChallengeListItem
                     className="mx-2 my-4"
                     key={challenge.id}
@@ -411,6 +417,26 @@ export default function ChallengesListPage() {
                     errors={getErrorForChallenge(challenge.id)}
                 />
             )}
+            {data.nextUnrevealedChallenge &&
+                <ChallengeListItem
+                    className="mx-2 my-4 mt-12"
+                    id={data.nextUnrevealedChallenge.id}
+                    title={`#${data.nextUnrevealedChallenge.position + 1} ${data.nextUnrevealedChallenge.challengeTemplate.title}`}
+                    description={data.nextUnrevealedChallenge.challengeTemplate.description}
+                    notePlaceholder={data.nextUnrevealedChallenge.challengeTemplate.notePlaceholder}
+                    cost={data.nextUnrevealedChallenge.challengeTemplate.costEuros}
+                    time={data.nextUnrevealedChallenge.challengeTemplate.timeOfDay}
+                    duration={data.nextUnrevealedChallenge.challengeTemplate.durationMinutes}
+                    completedAt={data.nextUnrevealedChallenge.completedAt}
+                    revealedAt={data.nextUnrevealedChallenge.revealedAt}
+                    note={data.nextUnrevealedChallenge.note}
+                    completedImage={data.nextUnrevealedChallenge.completedImage}
+                    hints={data.nextUnrevealedChallenge.challengeTemplate.hints.map(h => h.hint.name)}
+                    coverImage={data.adventure.coverImage}
+                    errors={getErrorForChallenge(data.nextUnrevealedChallenge.id)}
+                    badge="New"
+                />
+            }
         </div>
     );
 }

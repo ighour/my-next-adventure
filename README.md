@@ -2,11 +2,11 @@
 
 ## TODO
 
-- [ ] Optimize login / register views
-
-- [ ] Can reveal only next challenge
+- [ ] Fix adventure with no Hint size
 
 - [ ] Add timer before being able to reveal next challenge
+
+- [ ] Optimize login / register views
 
 - [ ] List Adventures
 
