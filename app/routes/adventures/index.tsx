@@ -37,9 +37,15 @@ export default function AdventuresIndexPage() {
                 <h2 className="text-2xl mb-2">Created Adventures</h2>
                 <div className="flex flex-wrap">
                     {data.createdAdventureListItems.map(adventure => {
-                        const newCount = adventure.challenges.filter(c => !c.revealedAt).length
-                        const activeCount = adventure.challenges.filter(c => !c.completedAt).length
-                        const completedCount = adventure.challenges.filter(c => c.revealedAt).length
+                        const { newCount, activeCount, completedCount } = adventure.challenges.reduce((all, item) => {
+                            if (!item.revealedAt) {
+                                return { ...all, newCount: all.newCount + 1 }
+                            }
+                            if (!item.completedAt) {
+                                return { ...all, activeCount: all.activeCount + 1 }
+                            }
+                            return { ...all, completedCount: all.completedCount + 1 }
+                        }, { newCount: 0, activeCount: 0, completedCount: 0 })
                         const adventurersCount = adventure.joiners.length + 1;
                         return (
                             <div className="card w-72 h-72 m-3 overflow-hidden bg-base-100 shadow-xl image-full" key={adventure.id}>
@@ -77,9 +83,15 @@ export default function AdventuresIndexPage() {
                 <h2 className="text-2xl mb-2">Joined Adventures</h2>
                 <div className="flex flex-wrap">
                     {data.joinedAdventureListItems.map(adventure => {
-                        const newCount = adventure.challenges.filter(c => !c.revealedAt).length
-                        const activeCount = adventure.challenges.filter(c => !c.completedAt).length
-                        const completedCount = adventure.challenges.filter(c => c.revealedAt).length
+                        const { newCount, activeCount, completedCount } = adventure.challenges.reduce((all, item) => {
+                            if (!item.revealedAt) {
+                                return { ...all, newCount: all.newCount + 1 }
+                            }
+                            if (!item.completedAt) {
+                                return { ...all, activeCount: all.activeCount + 1 }
+                            }
+                            return { ...all, completedCount: all.completedCount + 1 }
+                        }, { newCount: 0, activeCount: 0, completedCount: 0 })
                         const adventurersCount = adventure.joiners.length + 1;
                         return (
                             <div className="card w-72 h-72 m-3 overflow-hidden bg-base-100 shadow-xl image-full" key={adventure.id}>
