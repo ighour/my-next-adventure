@@ -60,7 +60,7 @@ model AdventureTemplate {
 
 model ChallengeTemplate {
   id          String @id @default(cuid())
-  title       String
+  title       String @unique
   description String
   notePlaceholder String?
   costEuros  Decimal

@@ -188,7 +188,7 @@ async function seed() {
     baseChallengeTemplates.map((item, index) =>
       prisma.challengeTemplate.create({
         data: {
-          title: item.title,
+          title: `${item.title} (${index+1})`,
           description: item.description,
           notePlaceholder: item.notePlaceholder,
           costEuros: item.costEuros,
