@@ -1,11 +1,15 @@
 import type { ActionArgs, MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import clsx from "clsx";
 import * as React from "react";
+import { useState } from "react";
 
 import { getAdventureTemplateListItems } from "~/models/adventure-template.server";
 import { createAdventureFromTemplate } from "~/models/adventure.server";
 import { requireUser } from "~/session.server";
+
+import defaultCoverImage from "~/assets/adventure_cover.png";
 
 export async function loader() {
     const adventureTemplateListItems = await getAdventureTemplateListItems();
@@ -37,50 +41,56 @@ export async function action({ request }: ActionArgs) {
 
 export const meta: MetaFunction = () => {
     return {
-      title: "New Adventure",
+        title: "New Adventure",
     };
-  };
+};
 
 export default function NewAdventurePage() {
     const data = useLoaderData<typeof loader>();
     const actionData = useActionData<typeof action>();
-    const adventureTemplateRef = React.useRef<HTMLSelectElement>(null);
+    const adventureTemplateIdRef = React.useRef<HTMLSelectElement>(null);
+    const [selectedAdventureTemplateId, setSelectedAdventureTemplateId] = useState(data.adventureTemplateListItems[0].id);
 
     React.useEffect(() => {
         if (actionData?.errors?.adventureTemplateId) {
-            adventureTemplateRef.current?.focus();
+            adventureTemplateIdRef.current?.focus();
         }
     }, [actionData]);
-    return (
-        <>
-            <h2 className="text-3xl mb-2">Start a new adventure</h2>
 
+    const onChangeAdventureTemplate = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedAdventureTemplateId(event.target.value)
+    }
+
+    const selectedAdventureTemplate = data.adventureTemplateListItems.find(atli => atli.id === selectedAdventureTemplateId);
+
+    return (
+        <div className="mx-auto w-full max-w-md px-8">
+            <h2 className="text-2xl mb-5">Create an Adventure</h2>
             <Form
                 method="post"
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 8,
-                    width: "100%",
-                }}
+                className="space-y-6"
             >
-                <div>
-                    <label className="flex w-full flex-col gap-1">
-                        <span>Edition: </span>
-                        <select
-                            ref={adventureTemplateRef}
-                            name="adventureTemplateId"
-                            className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
-                            aria-invalid={actionData?.errors?.adventureTemplateId ? true : undefined}
-                            aria-errormessage={
-                                actionData?.errors?.adventureTemplateId ? "adventure-template-id-error" : undefined
-                            }
-                        >
-                            {data.adventureTemplateListItems.map(template =>
-                                <option key={template.id} value={template.id}>{template.title}</option>
-                            )}
-                        </select>
+                <div className="form-control w-full">
+                    <label className="label" htmlFor="adventure-template-id">
+                        <span className="label-text">Adventure Edition</span>
                     </label>
+                    <select
+                        ref={adventureTemplateIdRef}
+                        id="adventureTemplateId"
+                        required
+                        autoFocus={true}
+                        name="adventureTemplateId"
+                        className={clsx("select select-bordered", `${actionData?.errors?.adventureTemplateId ? "select-error" : ""}`)}
+                        aria-invalid={actionData?.errors?.adventureTemplateId ? true : undefined}
+                        aria-errormessage={
+                            actionData?.errors?.adventureTemplateId ? "adventure-template-id-error" : undefined
+                        }
+                        onChange={onChangeAdventureTemplate}
+                    >
+                        {data.adventureTemplateListItems.map(template =>
+                            <option key={template.id} value={template.id}>{template.title}</option>
+                        )}
+                    </select>
                     {actionData?.errors?.adventureTemplateId && (
                         <div className="pt-1 text-red-700" id="adventure-template-id-error">
                             {actionData.errors.adventureTemplateId}
@@ -88,15 +98,27 @@ export default function NewAdventurePage() {
                     )}
                 </div>
 
-                <div className="text-right">
-                    <button
-                        type="submit"
-                        className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
-                    >
-                        Start
-                    </button>
-                </div>
+                {selectedAdventureTemplate &&
+                    <div>
+                        <div className="card w-96 h-96 overflow-hidden bg-base-100 shadow-xl image-full">
+                            <figure><img src={selectedAdventureTemplate.coverImage ?? defaultCoverImage} alt="Shoes" /></figure>
+                            <div className="card-body">
+                                <div>
+                                    <p className="mb-3 font-bold">{selectedAdventureTemplate.maxJoiners + 1} adventurers</p>
+                                    <p>{selectedAdventureTemplate.description}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <button
+                    type="submit"
+                    className="btn btn-block btn-circle btn-primary"
+                >
+                    Create
+                </button>
             </Form>
-        </>
+        </div>
     );
 }

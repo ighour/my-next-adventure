@@ -7,6 +7,9 @@ export function getAdventureTemplateListItems() {
     select: {
       id: true,
       title: true,
+      coverImage: true,
+      description: true,
+      maxJoiners: true,
     },
     orderBy: { updatedAt: "desc" },
   });
