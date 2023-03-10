@@ -6,6 +6,7 @@ import * as React from "react";
 import { createUserSession, getUserId } from "~/session.server";
 import { verifyLogin } from "~/models/user.server";
 import { safeRedirect, validateEmail } from "~/utils";
+import clsx from "clsx";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
@@ -80,89 +81,80 @@ export default function LoginPage() {
   }, [actionData]);
 
   return (
-    <div className="flex min-h-full flex-col justify-center">
+    <main className="bg-base-200 p-6 min-h-screen flex flex-col justify-center items-center">
+      <h2 className="text-3xl font-bold my-10 text-base-content">My Next Challenge</h2>
       <div className="mx-auto w-full max-w-md px-8">
         <Form method="post" className="space-y-6">
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Email address
+          <div className="form-control w-full">
+            <label className="label" htmlFor="email">
+              <span className="label-text">Email address</span>
             </label>
-            <div className="mt-1">
-              <input
-                ref={emailRef}
-                id="email"
-                required
-                autoFocus={true}
-                name="email"
-                type="email"
-                autoComplete="email"
-                aria-invalid={actionData?.errors?.email ? true : undefined}
-                aria-describedby="email-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
-              />
-              {actionData?.errors?.email && (
-                <div className="pt-1 text-red-700" id="email-error">
-                  {actionData.errors.email}
-                </div>
-              )}
-            </div>
+            <input
+              ref={emailRef}
+              id="email"
+              required
+              autoFocus={true}
+              name="email"
+              type="email"
+              autoComplete="email"
+              aria-invalid={actionData?.errors?.email ? true : undefined}
+              aria-describedby="email-error"
+              className={clsx("input input-bordered", `${actionData?.errors?.email ? "input-error" : ""}`)}
+              placeholder="your@email.here"
+            />
+            {actionData?.errors?.email && (
+              <div className="pt-1 text-red-700" id="email-error">
+                {actionData.errors.email}
+              </div>
+            )}
           </div>
 
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Password
+          <div className="form-control w-full">
+            <label className="label" htmlFor="password">
+              <span className="label-text">Password</span>
             </label>
-            <div className="mt-1">
-              <input
-                id="password"
-                ref={passwordRef}
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                aria-invalid={actionData?.errors?.password ? true : undefined}
-                aria-describedby="password-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
-              />
-              {actionData?.errors?.password && (
-                <div className="pt-1 text-red-700" id="password-error">
-                  {actionData.errors.password}
-                </div>
-              )}
-            </div>
+            <input
+              ref={passwordRef}
+              id="password"
+              required
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              aria-invalid={actionData?.errors?.password ? true : undefined}
+              aria-describedby="password-error"
+              className={clsx("input input-bordered", `${actionData?.errors?.password ? "input-error" : ""}`)}
+              placeholder="type here"
+            />
+            {actionData?.errors?.password && (
+              <div className="pt-1 text-red-700" id="password-error">
+                {actionData.errors.password}
+              </div>
+            )}
           </div>
 
           <input type="hidden" name="redirectTo" value={redirectTo} />
           <button
             type="submit"
-            className="w-full rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+            className="btn btn-block btn-circle btn-primary"
           >
             Log in
           </button>
           <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember"
-                name="remember"
-                type="checkbox"
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <label
-                htmlFor="remember"
-                className="ml-2 block text-sm text-gray-900"
-              >
-                Remember me
+            <div className="form-control">
+              <label className="label cursor-pointer" htmlFor="remember">
+                <input
+                  id="remember"
+                  name="remember"
+                  type="checkbox"
+                  className="checkbox checkbox-sm"
+                />
+                <span className="label-text ml-2">Remember me</span>
               </label>
             </div>
-            <div className="text-center text-sm text-gray-500">
+            <div className="text-center text-sm text-base-content">
               Don't have an account?{" "}
               <Link
-                className="text-blue-500 underline"
+                className="link link-primary"
                 to={{
                   pathname: "/join",
                   search: searchParams.toString(),
@@ -174,6 +166,6 @@ export default function LoginPage() {
           </div>
         </Form>
       </div>
-    </div>
+    </main>
   );
 }
