@@ -1,4 +1,4 @@
-import type { ActionArgs } from "@remix-run/node";
+import type { ActionArgs, MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import * as React from "react";
@@ -34,6 +34,12 @@ export async function action({ request }: ActionArgs) {
 
     return redirect(`/adventures/${adventure.id}`);
 }
+
+export const meta: MetaFunction = () => {
+    return {
+      title: "New Adventure",
+    };
+  };
 
 export default function NewAdventurePage() {
     const data = useLoaderData<typeof loader>();

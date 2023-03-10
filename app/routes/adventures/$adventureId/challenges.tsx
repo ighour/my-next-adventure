@@ -1,4 +1,4 @@
-import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, useActionData, useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
@@ -384,6 +384,12 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
         </div>
     );
 }
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+    return {
+      title: `${data.adventure.title}`,
+    };
+  };
 
 export default function ChallengesListPage() {
     const data = useLoaderData<typeof loader>();
