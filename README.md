@@ -2,8 +2,6 @@
 
 ## TODO
 
-- [ ] Optimize login / register views
-
 - [ ] List Adventures
 
 - [ ] Set app theme
@@ -13,6 +11,8 @@
 - [ ] Create real adventures / challenges
 
 - [ ] Optimize adventure page & modal
+
+- [ ] Change password / Lost password / Email login
 
 - [ ] Set theme based on Adventure?
 

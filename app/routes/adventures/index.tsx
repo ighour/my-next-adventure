@@ -33,30 +33,41 @@ export default function AdventuresIndexPage() {
                     + Join an adventure
                 </Link>
             </li>
-            <div className="divider"></div>
-            <li>Adventures created by me:</li>
-            {data.createdAdventureListItems.map(adventure =>
-                <li key={adventure.id}>
-                    <Link
-                        className="link text-xl px-4"
-                        to={adventure.id}
-                    >
-                        {adventure.title}
-                    </Link>
-                </li>
-            )}
-            <div className="divider"></div>
-            <li>Adventures that I joined:</li>
-            {data.joinedAdventureListItems.map(adventure =>
-                <li key={adventure.id}>
-                    <Link
-                        className="link text-xl px-4"
-                        to={adventure.id}
-                    >
-                        {adventure.title}
-                    </Link>
-                </li>
-            )}
+
+            {data.createdAdventureListItems.length > 0 &&
+                <>
+                    <div className="divider"></div>
+                    <li>Adventures created by me:</li>
+                    {data.createdAdventureListItems.map(adventure =>
+                        <li key={adventure.id}>
+                            <Link
+                                className="link text-xl px-4"
+                                to={adventure.id}
+                            >
+                                {adventure.title}
+                            </Link>
+                        </li>
+                    )}
+                </>
+            }
+
+            {data.joinedAdventureListItems.length > 0 &&
+                <>
+                    <div className="divider"></div>
+                    <li>Adventures that I joined:</li>
+                    {data.joinedAdventureListItems.map(adventure =>
+                        <li key={adventure.id}>
+                            <Link
+                                className="link text-xl px-4"
+                                to={adventure.id}
+                            >
+                                {adventure.title}
+                            </Link>
+                        </li>
+                    )}
+                </>
+            }
+
         </ul>
     );
 }
