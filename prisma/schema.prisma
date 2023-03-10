@@ -76,6 +76,8 @@ model ChallengeTemplate {
 }
 
 model ChallengeTemplatesOnAdventureTemplates {
+  id          String @id @default(cuid())
+
   adventureTemplate       AdventureTemplate     @relation(fields: [adventureTemplateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   adventureTemplateId     String
   challengeTemplate       ChallengeTemplate     @relation(fields: [challengeTemplateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -85,7 +87,7 @@ model ChallengeTemplatesOnAdventureTemplates {
 
   assignedAt DateTime @default(now())
 
-  @@id([adventureTemplateId, challengeTemplateId])
+  @@unique([adventureTemplateId, challengeTemplateId])
   @@unique([adventureTemplateId, position])
 }
 

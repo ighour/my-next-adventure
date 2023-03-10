@@ -31,6 +31,9 @@ async function seed() {
   await prisma.userInvite.deleteMany().catch(() => {
     // no worries if it doesn't exist yet
   });
+  await prisma.challengeTemplatesOnAdventureTemplates.deleteMany().catch(() => {
+    // no worries if it doesn't exist yet
+  });
 
   const hashedPassword = await bcrypt.hash("celio@a.a", 10);
 
