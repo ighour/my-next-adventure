@@ -21,10 +21,10 @@ export const meta: MetaFunction = () => {
 
 export default function AdventuresPage() {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col min-h-screen">
       <Navbar />
 
-      <main className="bg-base-200 p-6">
+      <main className="bg-base-200 p-6 min-h-screen">
         <Outlet />
       </main>
     </div>

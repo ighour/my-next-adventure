@@ -14,6 +14,24 @@ export function getCreatedAdventureListItems({
     select: {
       id: true,
       title: true,
+      coverImage: true,
+      createdAt: true,
+      challenges: {
+        select: {
+          revealedAt: true,
+          completedAt: true,
+        }
+      },
+      creator: {
+        select: {
+          email: true,
+        }
+      },
+      joiners: {
+        select: {
+          email: true,
+        }
+      }
     },
     orderBy: { updatedAt: "desc" },
   });
@@ -29,6 +47,24 @@ export function getJoinedAdventureListItems({
     select: {
       id: true,
       title: true,
+      coverImage: true,
+      createdAt: true,
+      challenges: {
+        select: {
+          revealedAt: true,
+          completedAt: true,
+        }
+      },
+      creator: {
+        select: {
+          email: true,
+        }
+      },
+      joiners: {
+        select: {
+          email: true,
+        }
+      }
     },
     orderBy: { updatedAt: "desc" },
   });

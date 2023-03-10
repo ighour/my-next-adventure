@@ -2,8 +2,6 @@
 
 ## TODO
 
-- [ ] List Adventures
-
 - [ ] Set app theme
 
 - [ ] Set navbar and menus
@@ -13,6 +11,10 @@
 - [ ] Optimize adventure page & modal
 
 - [ ] Change password / Lost password / Email login
+
+- [ ] Use username instead of emails
+
+- [ ] Add navigation backwards
 
 - [ ] Set theme based on Adventure?
 

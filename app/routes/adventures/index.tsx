@@ -4,6 +4,8 @@ import { Link, useLoaderData } from "@remix-run/react";
 
 import { requireUserId } from "~/session.server";
 import { getCreatedAdventureListItems, getJoinedAdventureListItems } from "~/models/adventure.server";
+import defaultCoverImage from "~/assets/adventure_cover.png";
+import dayjs from "dayjs";
 
 export async function loader({ request }: LoaderArgs) {
     const userId = await requireUserId(request);
@@ -16,58 +18,100 @@ export default function AdventuresIndexPage() {
     const data = useLoaderData<typeof loader>();
 
     return (
-        <ul>
-            <li>
+        <>
+            <div className="flex justify-center items-center">
                 <Link
-                    className="link text-xl px-4"
                     to="new"
+                    className="m-2"
                 >
-                    + Start a new adventure
+                    <button className="btn btn-primary">Create Adventure</button>
                 </Link>
-            </li>
-            <li>
                 <Link
-                    className="link text-xl px-4"
                     to="join"
+                    className="m-2"
                 >
-                    + Join an adventure
+                    <button className="btn btn-primary">Join Adventure</button>
                 </Link>
-            </li>
+            </div>
+            <div className="my-5">
+                <h2 className="text-2xl mb-2">Created Adventures</h2>
+                <div className="flex flex-wrap">
+                    {data.createdAdventureListItems.map(adventure => {
+                        const newCount = adventure.challenges.filter(c => !c.revealedAt).length
+                        const activeCount = adventure.challenges.filter(c => !c.completedAt).length
+                        const completedCount = adventure.challenges.filter(c => c.revealedAt).length
+                        const adventurersCount = adventure.joiners.length + 1;
+                        return (
+                            <div className="card w-72 h-72 m-3 overflow-hidden bg-base-100 shadow-xl image-full" key={adventure.id}>
+                                <figure><img src={adventure.coverImage ?? defaultCoverImage} alt="Shoes" /></figure>
+                                <div className="card-body">
+                                    <div className="flex-1">
+                                        <h2 className="card-title mb-2">{adventure.title}</h2>
+                                        <ul className="my-2">
+                                            <li>{dayjs(adventure.createdAt).format("YYYY-MM-DD")}</li>
+                                            <li>{adventurersCount} adventurers</li>
+                                        </ul>
+                                        {(newCount > 0 || activeCount > 0 || completedCount > 0) &&
+                                            <ul className="my-2">
+                                                {newCount > 0 && <li>{newCount}x new</li>}
+                                                {activeCount > 0 && <li>{activeCount}x active</li>}
+                                                {completedCount > 0 && <li>{completedCount}x completed</li>}
+                                            </ul>
+                                        }
+                                    </div>
+                                    <div className="card-actions justify-end">
+                                        <Link
+                                            to={adventure.id}
+                                        >
+                                            <button className="btn btn-ghost">Open</button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
 
-            {data.createdAdventureListItems.length > 0 &&
-                <>
-                    <div className="divider"></div>
-                    <li>Adventures created by me:</li>
-                    {data.createdAdventureListItems.map(adventure =>
-                        <li key={adventure.id}>
-                            <Link
-                                className="link text-xl px-4"
-                                to={adventure.id}
-                            >
-                                {adventure.title}
-                            </Link>
-                        </li>
-                    )}
-                </>
-            }
-
-            {data.joinedAdventureListItems.length > 0 &&
-                <>
-                    <div className="divider"></div>
-                    <li>Adventures that I joined:</li>
-                    {data.joinedAdventureListItems.map(adventure =>
-                        <li key={adventure.id}>
-                            <Link
-                                className="link text-xl px-4"
-                                to={adventure.id}
-                            >
-                                {adventure.title}
-                            </Link>
-                        </li>
-                    )}
-                </>
-            }
-
-        </ul>
+            <div className="my-5">
+                <h2 className="text-2xl mb-2">Joined Adventures</h2>
+                <div className="flex flex-wrap">
+                    {data.joinedAdventureListItems.map(adventure => {
+                        const newCount = adventure.challenges.filter(c => !c.revealedAt).length
+                        const activeCount = adventure.challenges.filter(c => !c.completedAt).length
+                        const completedCount = adventure.challenges.filter(c => c.revealedAt).length
+                        const adventurersCount = adventure.joiners.length + 1;
+                        return (
+                            <div className="card w-72 h-72 m-3 overflow-hidden bg-base-100 shadow-xl image-full" key={adventure.id}>
+                                <figure><img src={adventure.coverImage ?? defaultCoverImage} alt="Shoes" /></figure>
+                                <div className="card-body">
+                                    <div className="flex-1">
+                                        <h2 className="card-title mb-2">{adventure.title}</h2>
+                                        <ul className="my-2">
+                                            <li>{dayjs(adventure.createdAt).format("YYYY-MM-DD")}</li>
+                                            <li>{adventurersCount} adventurers</li>
+                                        </ul>
+                                        {(newCount > 0 || activeCount > 0 || completedCount > 0) &&
+                                            <ul className="my-2">
+                                                {newCount > 0 && <li>{newCount}x new</li>}
+                                                {activeCount > 0 && <li>{activeCount}x active</li>}
+                                                {completedCount > 0 && <li>{completedCount}x completed</li>}
+                                            </ul>
+                                        }
+                                    </div>
+                                    <div className="card-actions justify-end">
+                                        <Link
+                                            to={adventure.id}
+                                        >
+                                            <button className="btn btn-ghost">Open</button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
+        </>
     );
 }
