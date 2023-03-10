@@ -4,17 +4,13 @@
 
 - [ ] Set app theme
 
-- [ ] Set navbar and menus
-
 - [ ] Create real adventures / challenges
-
-- [ ] Optimize adventure page & modal
 
 - [ ] Change password / Lost password / Email login
 
 - [ ] Use username instead of emails
 
-- [ ] Add navigation backwards
+- [ ] Review nomenclatures (adventure, challenge etc)
 
 - [ ] Set theme based on Adventure?
 
