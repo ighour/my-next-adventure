@@ -1,6 +1,7 @@
 import type { ActionArgs, MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, useActionData, useSearchParams } from "@remix-run/react";
+import { Form, useActionData } from "@remix-run/react";
+import { clsx } from "clsx";
 import * as React from "react";
 
 import { getJoinableAdventureByInviteId, joinAdventure } from "~/models/adventure.server";
@@ -35,16 +36,13 @@ export async function action({ request }: ActionArgs) {
 
 export const meta: MetaFunction = () => {
     return {
-      title: "Join Adventure",
+        title: "Join Adventure",
     };
-  };
+};
 
 export default function JoinAdventurePage() {
     const actionData = useActionData<typeof action>();
-    const [searchParams] = useSearchParams();
     const inviteIdRef = React.useRef<HTMLInputElement>(null);
-
-    const inviteId = searchParams.get("invite");
 
     React.useEffect(() => {
         if (actionData?.errors?.inviteId) {
@@ -53,33 +51,28 @@ export default function JoinAdventurePage() {
     }, [actionData]);
 
     return (
-        <>
-            <h2 className="text-3xl mb-2">Join an adventure</h2>
-
+        <div className="mx-auto w-full max-w-md px-8">
+            <h2 className="text-2xl mb-5">Join an Adventure</h2>
             <Form
                 method="post"
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 8,
-                    width: "100%",
-                }}
+                className="space-y-6"
             >
-
-                <div>
-                    <label className="flex w-full flex-col gap-1">
-                        <span>Adventure Code </span>
-                        <input
-                            ref={inviteIdRef}
-                            name="inviteId"
-                            className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
-                            aria-invalid={actionData?.errors?.inviteId ? true : undefined}
-                            aria-errormessage={
-                                actionData?.errors?.inviteId ? "invite-id-error" : undefined
-                            }
-                            defaultValue={inviteId || ""}
-                        />
+                <div className="form-control w-full">
+                    <label className="label" htmlFor="inviteId">
+                        <span className="label-text">Adventure Code</span>
                     </label>
+                    <input
+                        ref={inviteIdRef}
+                        id="inviteId"
+                        required
+                        autoFocus={true}
+                        name="inviteId"
+                        type="text"
+                        aria-invalid={actionData?.errors?.inviteId ? true : undefined}
+                        aria-describedby="invite-id-error"
+                        className={clsx("input input-bordered", `${actionData?.errors?.inviteId ? "input-error" : ""}`)}
+                        placeholder="s2A52..."
+                    />
                     {actionData?.errors?.inviteId && (
                         <div className="pt-1 text-red-700" id="invite-id-error">
                             {actionData.errors.inviteId}
@@ -87,15 +80,13 @@ export default function JoinAdventurePage() {
                     )}
                 </div>
 
-                <div className="text-right">
-                    <button
-                        type="submit"
-                        className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
-                    >
-                        Join
-                    </button>
-                </div>
+                <button
+                    type="submit"
+                    className="btn btn-block btn-circle btn-primary"
+                >
+                    Join
+                </button>
             </Form>
-        </>
+        </div>
     );
 }
