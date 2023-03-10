@@ -25,7 +25,7 @@ export async function loader({ request, params }: LoaderArgs) {
 export default function AdventureDetailsPage() {
   const data = useLoaderData<typeof loader>();
 
-  const joiners = data.adventure.joiners.map(joiner => joiner.email);
+  const joiners = data.adventure.joiners.map(joiner => `@${joiner.username}`);
 
   const modalId = "my-adventure";
 
@@ -66,7 +66,7 @@ export default function AdventureDetailsPage() {
             2. This adventure is limited to <span className="underline font-semibold">{data.adventure.maxJoiners + 1}</span> people
           </li>
           <li>
-            3. Adventure creator is <span className="underline font-semibold">{data.adventure.creator.email}</span>
+            3. Adventure creator is <span className="underline font-semibold">@{data.adventure.creator.username}</span>
           </li>
         </ul>
         {joiners.length > 0 &&

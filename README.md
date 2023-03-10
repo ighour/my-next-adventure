@@ -2,15 +2,13 @@
 
 ## TODO
 
-- [ ] Set app theme
-
 - [ ] Create real adventures / challenges
 
 - [ ] Change password / Lost password / Email login
 
-- [ ] Use username instead of emails
-
 - [ ] Review nomenclatures (adventure, challenge etc)
+
+- [ ] Set app theme ?
 
 - [ ] Set theme based on Adventure?
 

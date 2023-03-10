@@ -5,8 +5,8 @@ import * as React from "react";
 
 import { getUserId, createUserSession } from "~/session.server";
 
-import { createUser, createUserFromUserInvite, getUserByEmail } from "~/models/user.server";
-import { safeRedirect, validateEmail } from "~/utils";
+import { createUser, createUserFromUserInvite, getUserByEmail, getUserByUsername } from "~/models/user.server";
+import { safeRedirect, validateEmail, validateUsername } from "~/utils";
 import { deactivateUserInvite, getValidUserInvite } from "~/models/user-invite.server";
 import { getJoinableAdventureByInviteId, joinAdventure } from "~/models/adventure.server";
 import clsx from "clsx";
@@ -20,12 +20,14 @@ export async function loader({ request }: LoaderArgs) {
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const email = formData.get("email");
+  const username = formData.get("username");
   const password = formData.get("password");
   const inviteCode = formData.get("inviteCode");
   const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
 
   const baseErrors = {
     email: null,
+    username: null,
     password: null,
     inviteCode: null
   };
@@ -33,6 +35,13 @@ export async function action({ request }: ActionArgs) {
   if (!validateEmail(email)) {
     return json(
       { errors: { ...baseErrors, email: "Email is invalid" } },
+      { status: 400 }
+    );
+  }
+
+  if (!validateUsername(username)) {
+    return json(
+      { errors: { ...baseErrors, username: "Username is invalid" } },
       { status: 400 }
     );
   }
@@ -71,9 +80,22 @@ export async function action({ request }: ActionArgs) {
     );
   }
 
+  const existingUsername = await getUserByUsername(username);
+  if (existingUsername) {
+    return json(
+      {
+        errors: {
+          ...baseErrors,
+          username: "This username is already being used",
+        },
+      },
+      { status: 400 }
+    );
+  }
+
   const { userInvite, error: userInviteError } = await getValidUserInvite({ inviteCode });
   if (userInvite) {
-    const user = await createUserFromUserInvite(email, password, inviteCode);
+    const user = await createUserFromUserInvite(email, username, password, inviteCode);
     // @TODO - create user and update invite in transaction
     await deactivateUserInvite({ inviteCode, userId: user.id })
     return createUserSession({
@@ -86,7 +108,7 @@ export async function action({ request }: ActionArgs) {
 
   const { adventure, error: adventureInviteError } = await getJoinableAdventureByInviteId({ inviteId: inviteCode });
   if (adventure) {
-    const user = await createUser(email, password);
+    const user = await createUser(email, username, password);
     const joinedAdventure = await joinAdventure({ id: adventure.id, userId: user.id });
     return createUserSession({
       request,
@@ -118,12 +140,15 @@ export default function Join() {
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
   const actionData = useActionData<typeof action>();
   const emailRef = React.useRef<HTMLInputElement>(null);
+  const usernameRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
   const inviteCodeRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
     if (actionData?.errors?.email) {
       emailRef.current?.focus();
+    } else if (actionData?.errors?.username) {
+      usernameRef.current?.focus();
     } else if (actionData?.errors?.password) {
       passwordRef.current?.focus();
     } else if (actionData?.errors?.inviteCode) {
@@ -184,6 +209,28 @@ export default function Join() {
           </div>
 
           <div className="form-control w-full">
+            <label className="label" htmlFor="username">
+              <span className="label-text">Username</span>
+            </label>
+            <input
+              ref={usernameRef}
+              id="username"
+              required
+              name="username"
+              type="text"
+              aria-invalid={actionData?.errors?.username ? true : undefined}
+              aria-describedby="username-error"
+              className={clsx("input input-bordered", `${actionData?.errors?.username ? "input-error" : ""}`)}
+              placeholder="yourusername"
+            />
+            {actionData?.errors?.username && (
+              <div className="pt-1 text-red-700" id="username-error">
+                {actionData.errors.username}
+              </div>
+            )}
+          </div>
+
+          <div className="form-control w-full">
             <label className="label" htmlFor="inviteCode">
               <span className="label-text">Invite Code</span>
             </label>
@@ -214,7 +261,7 @@ export default function Join() {
           </button>
           <div className="flex items-center justify-center">
             <div className="text-center text-sm text-base-content">
-            Already have an account?{" "}
+              Already have an account?{" "}
               <Link
                 className="link link-primary"
                 to={{

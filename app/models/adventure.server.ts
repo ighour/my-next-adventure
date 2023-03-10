@@ -24,12 +24,12 @@ export function getCreatedAdventureListItems({
       },
       creator: {
         select: {
-          email: true,
+          username: true,
         }
       },
       joiners: {
         select: {
-          email: true,
+          username: true,
         }
       }
     },
@@ -57,12 +57,12 @@ export function getJoinedAdventureListItems({
       },
       creator: {
         select: {
-          email: true,
+          username: true,
         }
       },
       joiners: {
         select: {
-          email: true,
+          username: true,
         }
       }
     },
@@ -134,8 +134,8 @@ export function getAdventure({
       maxJoiners: true,
       coverImage: true,
       inviteId: true,
-      creator: { select: { id: true, email: true } },
-      joiners: { select: { email: true } },
+      creator: { select: { id: true, username: true } },
+      joiners: { select: { username: true } },
     },
     where: {
       id,
