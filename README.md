@@ -4,6 +4,8 @@
 
 ### Closed Alpha
 
+- [ ] Adventure can have repeated challenges, but adventure template not.
+
 - [ ] Invites
 - Use one table for invites, can be relationed to Users or Adventures. Add type enum to it. Add optional remainingUses. Add optional expireAt.
 - Change invite DB nomenclature to invite.
@@ -16,15 +18,6 @@
 - https://www.mailgun.com/pricing/ (prod?)
 - https://sendgrid.com/pricing/ (prod?)
 
-- [ ] App Internationalization
-- - Check for packages and tools
-- - Start with port and eng
-
-- [ ] Adventure + Challenge Internationalization
-- - Check for packages and tools (would it work?? or need to save in DB??)
-- - Idea: intermediate table with AdventureTemplate and ChallengeTemplate lang. Can only have challenges from same lang as adventure. When create the adventure, save data from the lang and save which lang it is.
-- - Show lang in adventure listing and details.
-
 - [ ] Review nomenclatures (adventure, challenge etc)
 - - My Next Adventure (Adventure/Edition + Challenge)
 - - I Dare You (Edition + Challenge)
@@ -34,6 +27,15 @@
 - [ ] Set app theme
 
 ### Future
+
+- [ ] App Internationalization
+- - Check for packages and tools
+- - Start with port and eng
+
+- [ ] Adventure + Challenge Internationalization
+- - Check for packages and tools (would it work?? or need to save in DB??)
+- - Idea: intermediate table with AdventureTemplate and ChallengeTemplate lang. Can only have challenges from same lang as adventure. When create the adventure, save data from the lang and save which lang it is.
+- - Show lang in adventure listing and details.
 
 - [ ] Can replace-delete current image? Save ID and get full url instead of full url?
 
