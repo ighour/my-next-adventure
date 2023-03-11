@@ -34,6 +34,7 @@
 
 - [ ] Adventure + Challenge Internationalization
 - - Check for packages and tools (would it work?? or need to save in DB??)
+- - Can only manage content from same language of app. How to show this in a nice way to user?
 - - Idea: intermediate table with AdventureTemplate and ChallengeTemplate lang. Can only have challenges from same lang as adventure. When create the adventure, save data from the lang and save which lang it is.
 - - Show lang in adventure listing and details.
 
