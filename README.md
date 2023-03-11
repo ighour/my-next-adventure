@@ -2,23 +2,19 @@
 
 ## TODO
 
-- [ ] Create real adventures / challenges. Check GPT help.
-
-- [ ] Review nomenclatures (adventure, challenge etc)
-- - My Next Adventure (Adventure/Edition + Challenge)
-- - I Dare You (Edition + Challenge)
-
-- [ ] Magic email
-- https://github.com/sergiodxa/remix-auth/blob/v2.6.0/docs/strategies/kcd.md
-- https://www.mailing.run/ (dev?)
-- https://www.mailgun.com/pricing/ (prod?)
-- https://sendgrid.com/pricing/ (prod?)
+### Closed Alpha
 
 - [ ] Invites
 - Use one table for invites, can be relationed to Users or Adventures. Add type enum to it. Add optional remainingUses. Add optional expireAt.
 - Change invite DB nomenclature to invite.
 - Use friendly 8 digits invite (letters+numbers), and need to be unique (whe creating, try again if generated a existing one).
 - Adventure get invite will upsert invite (add default remainingUses and expireAt) (create new one if remaningUses or expireAt requires it).
+
+- [ ] Magic email
+- https://github.com/sergiodxa/remix-auth/blob/v2.6.0/docs/strategies/kcd.md
+- https://www.mailing.run/ (dev?)
+- https://www.mailgun.com/pricing/ (prod?)
+- https://sendgrid.com/pricing/ (prod?)
 
 - [ ] App Internationalization
 - - Check for packages and tools
@@ -29,17 +25,27 @@
 - - Idea: intermediate table with AdventureTemplate and ChallengeTemplate lang. Can only have challenges from same lang as adventure. When create the adventure, save data from the lang and save which lang it is.
 - - Show lang in adventure listing and details.
 
-- [ ] Set app theme ?
+- [ ] Review nomenclatures (adventure, challenge etc)
+- - My Next Adventure (Adventure/Edition + Challenge)
+- - I Dare You (Edition + Challenge)
 
-- [ ] Set theme based on Adventure?
+- [ ] Create real adventures / challenges. Check GPT help.
 
-- [ ] Add draft/published idea for templates?
+- [ ] Set app theme
+
+### Future
 
 - [ ] Can replace-delete current image? Save ID and get full url instead of full url?
 
-- [ ] Free adventures (not coupled to templates), get challenges on fly ?
-
 - [ ] Reset password by email ?
+
+### Maybe
+
+- [ ] Set theme based on Adventure
+
+- [ ] Add draft/published idea for templates
+
+- [ ] Free adventures (not coupled to templates), get challenges on fly ?
 
 - [ ] Invites ?
 - Create no-auth/unauth needed route for adventure invites (/invites/adventure?invite=1234) and add share link copy:
