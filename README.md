@@ -7,7 +7,7 @@
 - [ ] Invites
 - Use one table for invites, can be relationed to Users or Adventures.
 - remainingUses. Can relation to many users.
-- Change invite DB nomenclature to invite.
+- Change invite DB nomenclature to inviteCode.
 - Use friendly 8 digits invite (letters+numbers), and need to be unique (whe creating, try again if generated a existing one).
 - Adventure get invite will upsert invite (add default remainingUses and expireAt) (create new one if remaningUses or expireAt requires it).
 

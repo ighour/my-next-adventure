@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import dayjs from "dayjs";
 import { EHint, ETimeOfDay, EUserInviteType } from "~/models/enums";
+import { createUserInvite } from "~/models/user-invite.server";
 
 const prisma = new PrismaClient();
 
@@ -71,16 +72,12 @@ async function seed() {
     },
   });
 
-  await prisma.userInvite.create({
-    data: {
-      type: EUserInviteType.PLATFORM,
-      expireAt: now.toISOString(),
-    },
+  await createUserInvite({
+    type: EUserInviteType.PLATFORM,
+    expireAt: now.toDate(),
   });
-  await prisma.userInvite.create({
-    data: {
-      type: EUserInviteType.PLATFORM,
-    },
+  await createUserInvite({
+    type: EUserInviteType.PLATFORM,
   });
 
   const adventureTemplate = await prisma.adventureTemplate.create({

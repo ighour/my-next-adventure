@@ -73,3 +73,18 @@ export function validateEmail(email: unknown): email is string {
 export function validateUsername(username: unknown): username is string {
   return typeof username === "string" && username.length > 3 && /^([a-z0-9_]+)$/i.test(username);
 }
+
+export function generateRandomAlphanumeric(length: number): string {
+  const base = Math.random();
+
+  if (length < 1 || length > 10) {
+    throw new Error("Safe only between 1 and 10 characters");
+  }
+
+  // Can't proceed if base is 0. Try again.
+  if (base === 0) {
+    return generateRandomAlphanumeric(length);
+  }
+
+  return base.toString(36).substring(2, 2 + length);
+}
