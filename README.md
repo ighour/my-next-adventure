@@ -4,8 +4,6 @@
 
 ### Closed Alpha
 
-- [ ] Adventure can have repeated challenges, but adventure template not.
-
 - [ ] Invites
 - Use one table for invites, can be relationed to Users or Adventures. Add type enum to it. Add optional remainingUses. Add optional expireAt.
 - Change invite DB nomenclature to invite.

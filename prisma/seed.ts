@@ -206,35 +206,7 @@ async function seed() {
                   }
                 },
                 position: index
-              }
-            ]
-          },
-          hints: {
-            create: item.hints.map((hint) => ({
-              hint: {
-                connect: {
-                  id: hintsByKey[hint].id,
-                },
               },
-            })),
-          },
-        },
-      })
-    )
-  );
-
-  const challengeTemplates2 = await Promise.all(
-    baseChallengeTemplates.map((item, index) =>
-      prisma.challengeTemplate.create({
-        data: {
-          title: item.title,
-          description: item.description,
-          notePlaceholder: item.notePlaceholder,
-          costEuros: item.costEuros,
-          timeOfDay: item.timeOfDay,
-          durationMinutes: item.durationMinutes,
-          adventureTemplates: {
-            create: [
               {
                 adventureTemplate: {
                   connect: {
@@ -275,14 +247,28 @@ async function seed() {
 
   const adventure2 = await prisma.adventure.create({
     data: {
-      title: adventureTemplate.title,
-      description: adventureTemplate.description,
-      maxJoiners: adventureTemplate.maxJoiners,
+      title: adventureTemplate2.title,
+      description: adventureTemplate2.description,
+      maxJoiners: adventureTemplate2.maxJoiners,
       nextChallengeRevealHours: adventureTemplate2.nextChallengeRevealHours,
       adventureTemplateId: adventureTemplate2.id,
       creatorId: user2.id,
       joiners: {
         connect: [{ id: user1.id }],
+      },
+    },
+  });
+
+  const adventure3 = await prisma.adventure.create({
+    data: {
+      title: adventureTemplate.title + " 3",
+      description: adventureTemplate.description,
+      maxJoiners: adventureTemplate.maxJoiners,
+      nextChallengeRevealHours: adventureTemplate.nextChallengeRevealHours,
+      adventureTemplateId: adventureTemplate.id,
+      creatorId: user1.id,
+      joiners: {
+        connect: [{ id: user2.id }],
       },
     },
   });
@@ -340,7 +326,23 @@ async function seed() {
           completedAt: item.completed ? new Date() : null,
           note: item.note,
           adventureId: adventure2.id,
-          challengeTemplateId: challengeTemplates2[index].id,
+          challengeTemplateId: challengeTemplates[index].id,
+          position: index,
+          canBeRevealedAt: item.canBeRevealedAt?.toISOString()
+        },
+      })
+    )
+  );
+
+  await Promise.all(
+    baseChallenges.map((item, index) =>
+      prisma.challenge.create({
+        data: {
+          revealedAt: item.revealed ? new Date() : null,
+          completedAt: item.completed ? new Date() : null,
+          note: item.note,
+          adventureId: adventure3.id,
+          challengeTemplateId: challengeTemplates[0].id,
           position: index,
           canBeRevealedAt: item.canBeRevealedAt?.toISOString()
         },
