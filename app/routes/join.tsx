@@ -22,14 +22,14 @@ export async function action({ request }: ActionArgs) {
   const email = formData.get("email");
   const username = formData.get("username");
   const password = formData.get("password");
-  const inviteCode = formData.get("inviteCode");
+  const code = formData.get("code");
   const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
 
   const baseErrors = {
     email: null,
     username: null,
     password: null,
-    inviteCode: null
+    code: null
   };
 
   if (!validateEmail(email)) {
@@ -60,9 +60,9 @@ export async function action({ request }: ActionArgs) {
     );
   }
 
-  if (typeof inviteCode !== "string" || inviteCode.length === 0) {
+  if (typeof code !== "string" || code.length === 0) {
     return json(
-      { errors: { ...baseErrors, inviteCode: "Invite Code is required" } },
+      { errors: { ...baseErrors, code: "Invite Code is required" } },
       { status: 400 }
     );
   }
@@ -93,11 +93,11 @@ export async function action({ request }: ActionArgs) {
     );
   }
 
-  const { userInvite, error: userInviteError } = await getValidUserInvite({ inviteCode });
+  const { userInvite, error: userInviteError } = await getValidUserInvite({ code });
   if (userInvite) {
-    const user = await createUserFromUserInvite(email, username, password, inviteCode);
+    const user = await createUserFromUserInvite(email, username, password, code);
     // @TODO - create user and update invite in transaction
-    await deactivateUserInvite({ inviteCode, userId: user.id })
+    await deactivateUserInvite({ code, userId: user.id })
     return createUserSession({
       request,
       userId: user.id,
@@ -106,7 +106,7 @@ export async function action({ request }: ActionArgs) {
     });
   }
 
-  const { adventure, error: adventureInviteError } = await getJoinableAdventureByInviteId({ inviteId: inviteCode });
+  const { adventure, error: adventureInviteError } = await getJoinableAdventureByInviteId({ inviteId: code });
   if (adventure) {
     const user = await createUser(email, username, password);
     const joinedAdventure = await joinAdventure({ id: adventure.id, userId: user.id });
@@ -122,7 +122,7 @@ export async function action({ request }: ActionArgs) {
     {
       errors: {
         ...baseErrors,
-        inviteCode: userInviteError || adventureInviteError || "Invalid invite code",
+        code: userInviteError || adventureInviteError || "Invalid invite code",
       },
     },
     { status: 400 }
@@ -142,7 +142,7 @@ export default function Join() {
   const emailRef = React.useRef<HTMLInputElement>(null);
   const usernameRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
-  const inviteCodeRef = React.useRef<HTMLInputElement>(null);
+  const codeRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
     if (actionData?.errors?.email) {
@@ -151,8 +151,8 @@ export default function Join() {
       usernameRef.current?.focus();
     } else if (actionData?.errors?.password) {
       passwordRef.current?.focus();
-    } else if (actionData?.errors?.inviteCode) {
-      inviteCodeRef.current?.focus();
+    } else if (actionData?.errors?.code) {
+      codeRef.current?.focus();
     }
   }, [actionData]);
 
@@ -231,23 +231,23 @@ export default function Join() {
           </div>
 
           <div className="form-control w-full">
-            <label className="label" htmlFor="inviteCode">
+            <label className="label" htmlFor="code">
               <span className="label-text">Invite Code</span>
             </label>
             <input
-              ref={inviteCodeRef}
-              id="inviteCode"
+              ref={codeRef}
+              id="code"
               required
-              name="inviteCode"
+              name="code"
               type="text"
-              aria-invalid={actionData?.errors?.inviteCode ? true : undefined}
-              aria-describedby="invite-code-error"
-              className={clsx("input input-bordered", `${actionData?.errors?.inviteCode ? "input-error" : ""}`)}
+              aria-invalid={actionData?.errors?.code ? true : undefined}
+              aria-describedby="code-error"
+              className={clsx("input input-bordered", `${actionData?.errors?.code ? "input-error" : ""}`)}
               placeholder="s2Ad1..."
             />
-            {actionData?.errors?.inviteCode && (
-              <div className="pt-1 text-red-700" id="invite-code-error">
-                {actionData.errors.inviteCode}
+            {actionData?.errors?.code && (
+              <div className="pt-1 text-red-700" id="code-error">
+                {actionData.errors.code}
               </div>
             )}
           </div>

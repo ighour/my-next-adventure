@@ -33,7 +33,7 @@ export async function createUser(email: User["email"], username: User["username"
   });
 }
 
-export async function createUserFromUserInvite(email: User["email"], username: User["username"], password: string, inviteCode: UserInvite["id"]) {
+export async function createUserFromUserInvite(email: User["email"], username: User["username"], password: string, code: UserInvite["code"]) {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   return prisma.user.create({
@@ -47,7 +47,7 @@ export async function createUserFromUserInvite(email: User["email"], username: U
       },
       userInvite: {
         connect: {
-          code: inviteCode,
+          code,
         },
       }
     },
