@@ -1,18 +1,18 @@
-import type { User, UserInvite } from "@prisma/client";
+import type { User, Invite } from "@prisma/client";
 import dayjs from "dayjs";
 
 import { prisma } from "~/db.server";
 import { generateRandomAlphanumeric } from "~/utils";
-import type { EUserInviteType } from "./enums";
+import type { EInviteType } from "./enums";
 
-export type { UserInvite } from "@prisma/client";
+export type { Invite } from "@prisma/client";
 
-export async function getValidUserInvite({
+export async function getValidInvite({
   code,
 }: {
-  code: UserInvite["id"];
+  code: Invite["code"];
 }) {
-  const userInvite = await prisma.userInvite.findFirst({
+  const invite = await prisma.invite.findFirst({
     where: {
       code,
     },
@@ -23,39 +23,39 @@ export async function getValidUserInvite({
     },
   });
 
-  if (!userInvite) {
+  if (!invite) {
     return {
-      userInvite: null,
+      invite: null,
       error: null,
     };
   }
-  if (userInvite.usedAt) {
+  if (invite.usedAt) {
     return {
-      userInvite: null,
+      invite: null,
       error: "Invite code was already used before",
     };
   }
-  if (userInvite.expireAt && dayjs(userInvite.expireAt).isBefore(dayjs())) {
+  if (invite.expireAt && dayjs(invite.expireAt).isBefore(dayjs())) {
     return {
-      userInvite: null,
+      invite: null,
       error: "Invite code is not valid anymore",
     };
   }
 
   return {
-    userInvite,
+    invite,
     error: null,
   };
 }
 
-export function deactivateUserInvite({
+export function deactivateInvite({
   code,
   userId,
 }: {
-  code: UserInvite["id"];
+  code: Invite["code"];
   userId: User["id"];
 }) {
-  return prisma.userInvite.update({
+  return prisma.invite.update({
     where: {
       code,
     },
@@ -70,16 +70,16 @@ export function deactivateUserInvite({
   });
 }
 
-export async function createUserInvite({
+export async function createInvite({
   type,
   expireAt,
 }: {
-  type: EUserInviteType;
-  expireAt?: UserInvite["expireAt"];
-}): Promise<UserInvite> {
+  type: EInviteType;
+  expireAt?: Invite["expireAt"];
+}): Promise<Invite> {
   const code = generateRandomAlphanumeric(8).toUpperCase();
 
-  const codeCount = await prisma.userInvite.count({
+  const codeCount = await prisma.invite.count({
     where: {
       code,
     }
@@ -87,10 +87,10 @@ export async function createUserInvite({
 
   // Make it unique
   if (codeCount > 0) {
-    return await createUserInvite({ type, expireAt });
+    return await createInvite({ type, expireAt });
   }
 
-  return prisma.userInvite.create({
+  return prisma.invite.create({
     data: {
       code: code,
       type,

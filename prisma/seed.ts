@@ -2,8 +2,8 @@ import type { Hint } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import dayjs from "dayjs";
-import { EHint, ETimeOfDay, EUserInviteType } from "~/models/enums";
-import { createUserInvite } from "~/models/user-invite.server";
+import { EHint, ETimeOfDay, EInviteType } from "~/models/enums";
+import { createInvite } from "~/models/invite.server";
 
 const prisma = new PrismaClient();
 
@@ -29,12 +29,15 @@ async function seed() {
   await prisma.user.deleteMany().catch(() => {
     // no worries if it doesn't exist yet
   });
-  await prisma.userInvite.deleteMany().catch(() => {
+  await prisma.invite.deleteMany().catch(() => {
     // no worries if it doesn't exist yet
   });
   await prisma.challengeTemplatesOnAdventureTemplates.deleteMany().catch(() => {
     // no worries if it doesn't exist yet
   });
+  // await prisma.userOnInvites.deleteMany().catch(() => {
+  //   // no worries if it doesn't exist yet
+  // });
 
   const hashedPassword = await bcrypt.hash("celio@a.a", 10);
 
@@ -72,12 +75,12 @@ async function seed() {
     },
   });
 
-  await createUserInvite({
-    type: EUserInviteType.PLATFORM,
+  await createInvite({
+    type: EInviteType.PLATFORM,
     expireAt: now.toDate(),
   });
-  await createUserInvite({
-    type: EUserInviteType.PLATFORM,
+  await createInvite({
+    type: EInviteType.PLATFORM,
   });
 
   const adventureTemplate = await prisma.adventureTemplate.create({

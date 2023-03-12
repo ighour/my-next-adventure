@@ -13,7 +13,7 @@ export enum EHint {
   SHOPPING_CART = "SHOPPING_CART",
 }
 
-export enum EUserInviteType {
+export enum EInviteType {
   PLATFORM = "PLATFORM",
   ADVENTURE = "ADVENTURE",
 }

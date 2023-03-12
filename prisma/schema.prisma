@@ -16,7 +16,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   password Password?
-  userInvite UserInvite?
+  invite Invite?
 
   createdAdventures          Adventure[] @relation("Adventure_createdAdventures")
   joinedAdventures          Adventure[] @relation("Adventure_joinedAdventures")
@@ -29,10 +29,10 @@ model Password {
   userId String @unique
 }
 
-model UserInvite {
+model Invite {
   id    String @id @default(cuid())
 
-  type String // EUserInviteType
+  type String // EInviteType
   code String @default(cuid()) @unique
 
   expireAt DateTime?
@@ -44,6 +44,18 @@ model UserInvite {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+// model UserOnInvites {
+//   id        String  @id @default(cuid())
+
+//   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+//   userId     String
+//   invite   Hint @relation(fields: [inviteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+//   inviteId String
+//   assignedAt DateTime @default(now())
+
+//   @@unique([challengeTemplateId, hintId])
+// }
 
 model AdventureTemplate {
   id          String @id @default(cuid())
@@ -144,11 +156,13 @@ model Hint {
 }
 
 model HintsOnChallengeTemplates {
+  id        String  @id @default(cuid())
+
   challengeTemplate       ChallengeTemplate     @relation(fields: [challengeTemplateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   challengeTemplateId     String
   hint   Hint @relation(fields: [hintId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   hintId String
   assignedAt DateTime @default(now())
 
-  @@id([challengeTemplateId, hintId])
+  @@unique([challengeTemplateId, hintId])
 }

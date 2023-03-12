@@ -15,7 +15,7 @@ CREATE TABLE "Password" (
 );
 
 -- CreateTable
-CREATE TABLE "UserInvite" (
+CREATE TABLE "Invite" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "type" TEXT NOT NULL,
     "code" TEXT NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE "UserInvite" (
     "usedById" TEXT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "UserInvite_usedById_fkey" FOREIGN KEY ("usedById") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT "Invite_usedById_fkey" FOREIGN KEY ("usedById") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -105,11 +105,10 @@ CREATE TABLE "Hint" (
 
 -- CreateTable
 CREATE TABLE "HintsOnChallengeTemplates" (
+    "id" TEXT NOT NULL PRIMARY KEY,
     "challengeTemplateId" TEXT NOT NULL,
     "hintId" TEXT NOT NULL,
     "assignedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    PRIMARY KEY ("challengeTemplateId", "hintId"),
     CONSTRAINT "HintsOnChallengeTemplates_challengeTemplateId_fkey" FOREIGN KEY ("challengeTemplateId") REFERENCES "ChallengeTemplate" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT "HintsOnChallengeTemplates_hintId_fkey" FOREIGN KEY ("hintId") REFERENCES "Hint" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -132,10 +131,10 @@ CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 CREATE UNIQUE INDEX "Password_userId_key" ON "Password"("userId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "UserInvite_code_key" ON "UserInvite"("code");
+CREATE UNIQUE INDEX "Invite_code_key" ON "Invite"("code");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "UserInvite_usedById_key" ON "UserInvite"("usedById");
+CREATE UNIQUE INDEX "Invite_usedById_key" ON "Invite"("usedById");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "AdventureTemplate_title_key" ON "AdventureTemplate"("title");
@@ -148,6 +147,9 @@ CREATE UNIQUE INDEX "ChallengeTemplatesOnAdventureTemplates_adventureTemplateId_
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ChallengeTemplatesOnAdventureTemplates_adventureTemplateId_position_key" ON "ChallengeTemplatesOnAdventureTemplates"("adventureTemplateId", "position");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "HintsOnChallengeTemplates_challengeTemplateId_hintId_key" ON "HintsOnChallengeTemplates"("challengeTemplateId", "hintId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_Adventure_joinedAdventures_AB_unique" ON "_Adventure_joinedAdventures"("A", "B");

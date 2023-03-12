@@ -5,9 +5,9 @@ import * as React from "react";
 
 import { getUserId, createUserSession } from "~/session.server";
 
-import { createUser, createUserFromUserInvite, getUserByEmail, getUserByUsername } from "~/models/user.server";
+import { createUser, createUserFromInvite, getUserByEmail, getUserByUsername } from "~/models/user.server";
 import { safeRedirect, validateEmail, validateUsername } from "~/utils";
-import { deactivateUserInvite, getValidUserInvite } from "~/models/user-invite.server";
+import { deactivateInvite, getValidInvite } from "~/models/invite.server";
 import { getJoinableAdventureByInviteId, joinAdventure } from "~/models/adventure.server";
 import clsx from "clsx";
 
@@ -93,11 +93,11 @@ export async function action({ request }: ActionArgs) {
     );
   }
 
-  const { userInvite, error: userInviteError } = await getValidUserInvite({ code });
-  if (userInvite) {
-    const user = await createUserFromUserInvite(email, username, password, code);
+  const { invite, error: inviteError } = await getValidInvite({ code });
+  if (invite) {
+    const user = await createUserFromInvite(email, username, password, code);
     // @TODO - create user and update invite in transaction
-    await deactivateUserInvite({ code, userId: user.id })
+    await deactivateInvite({ code, userId: user.id })
     return createUserSession({
       request,
       userId: user.id,
@@ -122,7 +122,7 @@ export async function action({ request }: ActionArgs) {
     {
       errors: {
         ...baseErrors,
-        code: userInviteError || adventureInviteError || "Invalid invite code",
+        code: inviteError || adventureInviteError || "Invalid invite code",
       },
     },
     { status: 400 }
