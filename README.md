@@ -4,9 +4,6 @@
 
 ### Closed Alpha
 
-- [ ] Register
-- Username validation characters only alphanumeric and _
-
 - [ ] Invites
 - Use one table for invites, can be relationed to Users or Adventures.
 - remainingUses. Can relation to many users.

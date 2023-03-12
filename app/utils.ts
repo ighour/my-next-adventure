@@ -71,5 +71,5 @@ export function validateEmail(email: unknown): email is string {
 }
 
 export function validateUsername(username: unknown): username is string {
-  return typeof username === "string" && username.length > 3;
+  return typeof username === "string" && username.length > 3 && /^([a-z0-9_]+)$/i.test(username);
 }

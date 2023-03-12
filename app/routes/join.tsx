@@ -269,7 +269,7 @@ export default function Join() {
                   search: searchParams.toString(),
                 }}
               >
-                Sign up
+                Sign in
               </Link>
             </div>
           </div>
