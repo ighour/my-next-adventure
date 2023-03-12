@@ -17,8 +17,9 @@ CREATE TABLE "Password" (
 -- CreateTable
 CREATE TABLE "UserInvite" (
     "id" TEXT NOT NULL PRIMARY KEY,
+    "type" TEXT NOT NULL,
     "code" TEXT NOT NULL,
-    "validUntil" DATETIME NOT NULL,
+    "expireAt" DATETIME,
     "usedAt" DATETIME,
     "usedById" TEXT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

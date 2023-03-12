@@ -5,19 +5,6 @@ import { prisma } from "~/db.server";
 
 export type { UserInvite } from "@prisma/client";
 
-function getUserInvite({ inviteCode }: { inviteCode: UserInvite["id"] }) {
-  return prisma.userInvite.findFirst({
-    where: { 
-      code: inviteCode,
-    },
-    select: {
-      id: true,
-      validUntil: true,
-      usedAt: true,
-    },
-  });
-}
-
 export async function getValidUserInvite({ inviteCode }: { inviteCode: UserInvite["id"] }) {
   const userInvite = await prisma.userInvite.findFirst({
     where: { 
@@ -25,7 +12,7 @@ export async function getValidUserInvite({ inviteCode }: { inviteCode: UserInvit
     },
     select: {
       id: true,
-      validUntil: true,
+      expireAt: true,
       usedAt: true,
     },
   });
@@ -42,7 +29,7 @@ export async function getValidUserInvite({ inviteCode }: { inviteCode: UserInvit
       error: "Invite code was already used before",
     };
   }
-  if (dayjs(userInvite.validUntil).isBefore(dayjs())) {
+  if (userInvite.expireAt && dayjs(userInvite.expireAt).isBefore(dayjs())) {
     return {
       userInvite: null,
       error: "Invite code is not valid anymore",

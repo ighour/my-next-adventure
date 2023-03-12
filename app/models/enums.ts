@@ -12,3 +12,8 @@ export enum EHint {
   HOME = "HOME",
   SHOPPING_CART = "SHOPPING_CART",
 }
+
+export enum EUserInviteType {
+  PLATFORM = "PLATFORM",
+  ADVENTURE = "ADVENTURE",
+}

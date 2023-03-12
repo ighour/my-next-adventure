@@ -32,11 +32,12 @@ model Password {
 model UserInvite {
   id    String @id @default(cuid())
 
+  type String // EUserInviteType
   code String @default(cuid()) @unique
 
-  validUntil DateTime
+  expireAt DateTime?
+
   usedAt DateTime?
-  
   usedBy User? @relation(fields: [usedById], references: [id], onDelete: Cascade, onUpdate: Cascade)
   usedById String? @unique
 

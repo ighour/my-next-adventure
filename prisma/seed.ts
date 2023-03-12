@@ -2,7 +2,7 @@ import type { Hint } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import dayjs from "dayjs";
-import { EHint, ETimeOfDay } from "~/models/enums";
+import { EHint, ETimeOfDay, EUserInviteType } from "~/models/enums";
 
 const prisma = new PrismaClient();
 
@@ -73,12 +73,13 @@ async function seed() {
 
   await prisma.userInvite.create({
     data: {
-      validUntil: new Date(),
+      type: EUserInviteType.PLATFORM,
+      expireAt: now.toISOString(),
     },
   });
   await prisma.userInvite.create({
     data: {
-      validUntil: now.add(1, "month").toDate(),
+      type: EUserInviteType.PLATFORM,
     },
   });
 
