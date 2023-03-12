@@ -1,5 +1,6 @@
 import type { Password, User, Invite } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import dayjs from "dayjs";
 
 import { prisma } from "~/db.server";
 
@@ -49,7 +50,8 @@ export async function createUserFromInvite(email: User["email"], username: User[
         connect: {
           code,
         },
-      }
+      },
+      invitedAt: dayjs().toISOString()
     },
   });
 }

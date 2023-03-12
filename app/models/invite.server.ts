@@ -1,4 +1,4 @@
-import type { User, Invite } from "@prisma/client";
+import type { Invite } from "@prisma/client";
 import dayjs from "dayjs";
 
 import { prisma } from "~/db.server";
@@ -7,11 +7,7 @@ import type { EInviteType } from "./enums";
 
 export type { Invite } from "@prisma/client";
 
-export async function getValidInvite({
-  code,
-}: {
-  code: Invite["code"];
-}) {
+export async function getValidInvite({ code }: { code: Invite["code"] }) {
   const invite = await prisma.invite.findFirst({
     where: {
       code,
@@ -19,7 +15,7 @@ export async function getValidInvite({
     select: {
       id: true,
       expireAt: true,
-      usedAt: true,
+      remainingUses: true,
     },
   });
 
@@ -29,10 +25,10 @@ export async function getValidInvite({
       error: null,
     };
   }
-  if (invite.usedAt) {
+  if (invite.remainingUses !== null && invite.remainingUses <= 0) {
     return {
       invite: null,
-      error: "Invite code was already used before",
+      error: "No remaining uses for this invite code",
     };
   }
   if (invite.expireAt && dayjs(invite.expireAt).isBefore(dayjs())) {
@@ -48,23 +44,14 @@ export async function getValidInvite({
   };
 }
 
-export function deactivateInvite({
-  code,
-  userId,
-}: {
-  code: Invite["code"];
-  userId: User["id"];
-}) {
+export function decrementInvite({ code }: { code: Invite["code"] }) {
   return prisma.invite.update({
     where: {
       code,
     },
     data: {
-      usedAt: new Date(),
-      usedBy: {
-        connect: {
-          id: userId,
-        },
+      remainingUses: {
+        decrement: 1,
       },
     },
   });
@@ -72,9 +59,11 @@ export function deactivateInvite({
 
 export async function createInvite({
   type,
+  remainingUses,
   expireAt,
 }: {
   type: EInviteType;
+  remainingUses?: Invite["remainingUses"];
   expireAt?: Invite["expireAt"];
 }): Promise<Invite> {
   const code = generateRandomAlphanumeric(8).toUpperCase();
@@ -82,7 +71,7 @@ export async function createInvite({
   const codeCount = await prisma.invite.count({
     where: {
       code,
-    }
+    },
   });
 
   // Make it unique
@@ -94,6 +83,7 @@ export async function createInvite({
     data: {
       code: code,
       type,
+      remainingUses,
       expireAt,
     },
   });

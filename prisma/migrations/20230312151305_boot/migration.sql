@@ -4,7 +4,10 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "username" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
+    "updatedAt" DATETIME NOT NULL,
+    "inviteId" TEXT,
+    "invitedAt" DATETIME,
+    CONSTRAINT "User_inviteId_fkey" FOREIGN KEY ("inviteId") REFERENCES "Invite" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -20,11 +23,9 @@ CREATE TABLE "Invite" (
     "type" TEXT NOT NULL,
     "code" TEXT NOT NULL,
     "expireAt" DATETIME,
-    "usedAt" DATETIME,
-    "usedById" TEXT,
+    "remainingUses" INTEGER,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "Invite_usedById_fkey" FOREIGN KEY ("usedById") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    "updatedAt" DATETIME NOT NULL
 );
 
 -- CreateTable
@@ -132,9 +133,6 @@ CREATE UNIQUE INDEX "Password_userId_key" ON "Password"("userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Invite_code_key" ON "Invite"("code");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Invite_usedById_key" ON "Invite"("usedById");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "AdventureTemplate_title_key" ON "AdventureTemplate"("title");

@@ -16,10 +16,13 @@ model User {
   updatedAt DateTime @updatedAt
 
   password Password?
-  invite Invite?
 
   createdAdventures          Adventure[] @relation("Adventure_createdAdventures")
   joinedAdventures          Adventure[] @relation("Adventure_joinedAdventures")
+
+  invite   Invite?   @relation(fields: [inviteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  inviteId String?
+  invitedAt DateTime?
 }
 
 model Password {
@@ -33,29 +36,16 @@ model Invite {
   id    String @id @default(cuid())
 
   type String // EInviteType
-  code String @default(cuid()) @unique
+  code String @unique
 
   expireAt DateTime?
-
-  usedAt DateTime?
-  usedBy User? @relation(fields: [usedById], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  usedById String? @unique
+  remainingUses Int?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  users User[]
 }
-
-// model UserOnInvites {
-//   id        String  @id @default(cuid())
-
-//   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-//   userId     String
-//   invite   Hint @relation(fields: [inviteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-//   inviteId String
-//   assignedAt DateTime @default(now())
-
-//   @@unique([challengeTemplateId, hintId])
-// }
 
 model AdventureTemplate {
   id          String @id @default(cuid())

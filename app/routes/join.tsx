@@ -7,7 +7,7 @@ import { getUserId, createUserSession } from "~/session.server";
 
 import { createUser, createUserFromInvite, getUserByEmail, getUserByUsername } from "~/models/user.server";
 import { safeRedirect, validateEmail, validateUsername } from "~/utils";
-import { deactivateInvite, getValidInvite } from "~/models/invite.server";
+import { decrementInvite, getValidInvite } from "~/models/invite.server";
 import { getJoinableAdventureByInviteId, joinAdventure } from "~/models/adventure.server";
 import clsx from "clsx";
 
@@ -97,7 +97,7 @@ export async function action({ request }: ActionArgs) {
   if (invite) {
     const user = await createUserFromInvite(email, username, password, code);
     // @TODO - create user and update invite in transaction
-    await deactivateInvite({ code, userId: user.id })
+    await decrementInvite({ code })
     return createUserSession({
       request,
       userId: user.id,
