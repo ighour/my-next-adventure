@@ -9,6 +9,7 @@ import { requireUserId } from "~/session.server";
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { createNotificationWithTitleAndDescription } from "~/utils/notifications";
 import Modal, { ModalOpener } from "~/components/Modal";
+import { getOrCreateValidInviteFromAdventure } from "~/models/invite.server";
 
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);
@@ -19,7 +20,13 @@ export async function loader({ request, params }: LoaderArgs) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  return json({ adventure });
+  const invite = await getOrCreateValidInviteFromAdventure({
+    adventureId: params.adventureId,
+    maxJoiners: adventure.maxJoiners,
+    currentJoinersCount: adventure.joiners.length,
+  });
+
+  return json({ adventure, invite });
 }
 
 export default function AdventureDetailsPage() {
@@ -37,14 +44,16 @@ export default function AdventureDetailsPage() {
             <h1 className="text-5xl font-bold">{data.adventure.title}</h1>
             <p className="py-6">{data.adventure.description}</p>
             <div>
-              <CopyToClipboard
-                text={data.adventure.inviteId}
-                onCopy={() => { createNotificationWithTitleAndDescription({ title: "Copied adventure invite link", description: "Share it with other adventurers." }) }}
-              >
-                <button className="btn btn-primary mx-1 my-1">
-                  Invite Code
-                </button>
-              </CopyToClipboard>
+              {data.invite &&
+                <CopyToClipboard
+                  text={data.invite.code}
+                  onCopy={() => { createNotificationWithTitleAndDescription({ title: "Copied adventure invite link", description: "Share it with other adventurers." }) }}
+                >
+                  <button className="btn btn-primary mx-1 my-1">
+                    Invite Code
+                  </button>
+                </CopyToClipboard>
+              }
               <ModalOpener
                 id={modalId}
                 buttonName="Info"
@@ -59,9 +68,16 @@ export default function AdventureDetailsPage() {
       >
         <h2 className="text-xl font-bold mb-2">{data.adventure.title}</h2>
         <ul className="space-y-2 text-md">
-          <li>
-            1. You can invite other people to your adventure by using the code <span className="underline font-semibold">{data.adventure.inviteId}</span>
-          </li>
+          {data.invite &&
+            <li>
+              1. You can invite other people to your adventure by using the code <span className="underline font-semibold">{data.invite.code}</span>
+            </li>
+          }
+          {!data.invite &&
+            <li>
+              1. Your adventure is full.
+            </li>
+          }
           <li>
             2. This adventure is limited to <span className="underline font-semibold">{data.adventure.maxJoiners + 1}</span> people
           </li>

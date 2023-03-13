@@ -4,10 +4,6 @@
 
 ### Closed Alpha
 
-- [ ] Invites
-- Use Invite table for Adventures invite.
-- Adventure get invite will upsert invite (add default remainingUses and expireAt) (create new one if remaningUses or expireAt requires it).
-
 - [ ] Magic email
 - https://github.com/sergiodxa/remix-auth/blob/v2.6.0/docs/strategies/kcd.md
 - https://www.mailing.run/ (dev?)
@@ -37,6 +33,8 @@
 - [ ] Can replace-delete current image? Save ID and get full url instead of full url?
 
 - [ ] Reset password by email ?
+
+- [ ] Optimize DB queries and schemas
 
 ### Maybe
 

@@ -25,7 +25,9 @@ CREATE TABLE "Invite" (
     "expireAt" DATETIME,
     "remainingUses" INTEGER,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
+    "updatedAt" DATETIME NOT NULL,
+    "adventureId" TEXT,
+    CONSTRAINT "Invite_adventureId_fkey" FOREIGN KEY ("adventureId") REFERENCES "Adventure" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -72,7 +74,6 @@ CREATE TABLE "Adventure" (
     "coverImage" TEXT,
     "maxJoiners" INTEGER NOT NULL,
     "nextChallengeRevealHours" INTEGER NOT NULL,
-    "inviteId" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
     "creatorId" TEXT NOT NULL,

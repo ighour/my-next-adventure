@@ -19,33 +19,16 @@ function getBaseChallengeListItemsQuery({
         OR: [{ creatorId: userId }, { joiners: { some: { id: userId } } }],
       },
     },
-    select: {
-      id: true,
-      revealedAt: true,
-      completedAt: true,
-      note: true,
-      completedImage: true,
-      canBeRevealedAt: true,
-      position: true,
+    include: {
       challengeTemplate: {
-        select: {
-          title: true,
-          description: true,
-          notePlaceholder: true,
-          costEuros: true,
-          timeOfDay: true,
-          durationMinutes: true,
+        include: {
           hints: {
-            select: {
-              hint: {
-                select: {
-                  name: true,
-                },
-              },
-            },
-          },
-        },
-      },
+            include: {
+              hint: true
+            }
+          }
+        }
+      }
     },
   };
 }
@@ -101,19 +84,15 @@ export function getChallenge({
   userId: User["id"];
 }) {
   return prisma.challenge.findFirst({
-    select: {
-      id: true,
-      revealedAt: true,
-      completedAt: true,
-      note: true,
-      challengeTemplate: { select: { title: true, description: true } },
-    },
     where: {
       id,
       adventure: {
         OR: [{ creatorId: userId }, { joiners: { some: { id: userId } } }],
       },
     },
+    include: {
+      challengeTemplate: true,
+    }
   });
 }
 
@@ -133,15 +112,8 @@ export async function revealChallenge({
         lte: dayjs().toISOString()
       }
     },
-    select: {
-      id: true,
-      position: true,
-      adventure: {
-        select: {
-          id: true,
-          nextChallengeRevealHours: true
-        }
-      }
+    include: {
+      adventure: true,
     }
   })
 

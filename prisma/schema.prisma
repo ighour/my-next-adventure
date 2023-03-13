@@ -45,6 +45,9 @@ model Invite {
   updatedAt DateTime @updatedAt
 
   users User[]
+
+  adventure   Adventure?   @relation(fields: [adventureId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  adventureId String?
 }
 
 model AdventureTemplate {
@@ -103,8 +106,6 @@ model Adventure {
   maxJoiners Int
   nextChallengeRevealHours Int
 
-  inviteId String @default(cuid())
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -113,6 +114,8 @@ model Adventure {
 
   joiners      User[] @relation("Adventure_joinedAdventures")
   challenges Challenge[]
+
+  invites Invite[]
 
   // @note - Just for reference. Avoid going through it. We may have Free Adventures in future, not coupled to templates.
   adventureTemplate   AdventureTemplate @relation(fields: [adventureTemplateId], references: [id], onDelete: Cascade, onUpdate: Cascade)

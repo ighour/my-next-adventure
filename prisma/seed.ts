@@ -60,7 +60,7 @@ async function seed() {
       },
     },
   });
-  await prisma.user.create({
+  const user3 = await prisma.user.create({
     data: {
       email: "a@a.a",
       username: "aaa",
@@ -275,6 +275,23 @@ async function seed() {
     },
   });
 
+  const adventure4 = await prisma.adventure.create({
+    data: {
+      title: adventureTemplate.title + " 4",
+      description: adventureTemplate.description,
+      maxJoiners: adventureTemplate.maxJoiners,
+      nextChallengeRevealHours: adventureTemplate.nextChallengeRevealHours,
+      adventureTemplateId: adventureTemplate.id,
+      creatorId: user3.id
+    },
+  });
+
+
+  await createInvite({
+    type: EInviteType.ADVENTURE,
+    adventureId: adventure4.id,
+  });
+
   const baseChallenges = [
     {
       canBeRevealedAt: now,
@@ -344,6 +361,22 @@ async function seed() {
           completedAt: item.completed ? new Date() : null,
           note: item.note,
           adventureId: adventure3.id,
+          challengeTemplateId: challengeTemplates[0].id,
+          position: index,
+          canBeRevealedAt: item.canBeRevealedAt?.toISOString()
+        },
+      })
+    )
+  );
+
+  await Promise.all(
+    baseChallenges.map((item, index) =>
+      prisma.challenge.create({
+        data: {
+          revealedAt: item.revealed ? new Date() : null,
+          completedAt: item.completed ? new Date() : null,
+          note: item.note,
+          adventureId: adventure4.id,
           challengeTemplateId: challengeTemplates[0].id,
           position: index,
           canBeRevealedAt: item.canBeRevealedAt?.toISOString()

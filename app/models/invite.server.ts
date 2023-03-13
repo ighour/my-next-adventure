@@ -1,21 +1,21 @@
-import type { Invite } from "@prisma/client";
+import type { Adventure, Invite } from "@prisma/client";
 import dayjs from "dayjs";
 
 import { prisma } from "~/db.server";
 import { generateRandomAlphanumeric } from "~/utils";
-import type { EInviteType } from "./enums";
+import { EInviteType } from "./enums";
 
 export type { Invite } from "@prisma/client";
 
-export async function getValidInvite({ code }: { code: Invite["code"] }) {
+export async function getValidInviteFromCode({
+  code,
+}: {
+  code: Invite["code"];
+}) {
   const invite = await prisma.invite.findFirst({
     where: {
       code,
-    },
-    select: {
-      id: true,
-      expireAt: true,
-      remainingUses: true,
+      type: EInviteType.PLATFORM,
     },
   });
 
@@ -44,6 +44,47 @@ export async function getValidInvite({ code }: { code: Invite["code"] }) {
   };
 }
 
+export async function getOrCreateValidInviteFromAdventure({
+  adventureId,
+  maxJoiners,
+  currentJoinersCount,
+}: {
+  adventureId: Adventure["id"];
+  maxJoiners: number;
+  currentJoinersCount: number;
+}) {
+  if (currentJoinersCount >= maxJoiners) {
+    return null
+  }
+
+  const invite = await prisma.invite.findFirst({
+    where: {
+      type: EInviteType.ADVENTURE,
+      adventureId,
+      expireAt: {
+        gte: dayjs().toISOString(),
+      },
+      remainingUses: {
+        gte: 1,
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  if (invite) {
+    return invite;
+  }
+
+  return await createInvite({
+    type: EInviteType.ADVENTURE,
+    remainingUses: maxJoiners - currentJoinersCount,
+    expireAt: dayjs().add(1, 'month').toDate(),
+    adventureId,
+  });
+}
+
 export function decrementInvite({ code }: { code: Invite["code"] }) {
   return prisma.invite.update({
     where: {
@@ -61,10 +102,12 @@ export async function createInvite({
   type,
   remainingUses,
   expireAt,
+  adventureId,
 }: {
   type: EInviteType;
   remainingUses?: Invite["remainingUses"];
   expireAt?: Invite["expireAt"];
+  adventureId?: Adventure["id"];
 }): Promise<Invite> {
   const code = generateRandomAlphanumeric(8).toUpperCase();
 
@@ -85,6 +128,7 @@ export async function createInvite({
       type,
       remainingUses,
       expireAt,
+      adventureId,
     },
   });
 }

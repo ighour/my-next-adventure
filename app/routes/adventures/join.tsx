@@ -4,27 +4,27 @@ import { Form, useActionData } from "@remix-run/react";
 import { clsx } from "clsx";
 import * as React from "react";
 
-import { getJoinableAdventureByInviteId, joinAdventure } from "~/models/adventure.server";
+import { getJoinableAdventureByInviteCode, joinAdventure } from "~/models/adventure.server";
 import { requireUser } from "~/session.server";
 
 export async function action({ request }: ActionArgs) {
     const user = await requireUser(request);
 
     const formData = await request.formData();
-    const inviteId = formData.get("inviteId");
+    const code = formData.get("code");
 
-    if (typeof inviteId !== "string" || inviteId.length === 0) {
+    if (typeof code !== "string" || code.length === 0) {
         return json(
-            { errors: { inviteId: "You need to add an adventure code" } },
+            { errors: { code: "You need to add an adventure code" } },
             { status: 400 }
         );
     }
 
-    const { adventure, error } = await getJoinableAdventureByInviteId({ inviteId, userId: user.id });
+    const { adventure, error } = await getJoinableAdventureByInviteCode({ code, userId: user.id });
 
     if (error || !adventure) {
         return json(
-            { errors: { inviteId: error || "Invalid invite" } },
+            { errors: { code: error || "Invalid invite" } },
             { status: 400 }
         );
     }
@@ -42,11 +42,11 @@ export const meta: MetaFunction = () => {
 
 export default function JoinAdventurePage() {
     const actionData = useActionData<typeof action>();
-    const inviteIdRef = React.useRef<HTMLInputElement>(null);
+    const codeRef = React.useRef<HTMLInputElement>(null);
 
     React.useEffect(() => {
-        if (actionData?.errors?.inviteId) {
-            inviteIdRef.current?.focus();
+        if (actionData?.errors?.code) {
+            codeRef.current?.focus();
         }
     }, [actionData]);
 
@@ -58,24 +58,24 @@ export default function JoinAdventurePage() {
                 className="space-y-6"
             >
                 <div className="form-control w-full">
-                    <label className="label" htmlFor="inviteId">
+                    <label className="label" htmlFor="code">
                         <span className="label-text">Adventure Code</span>
                     </label>
                     <input
-                        ref={inviteIdRef}
-                        id="inviteId"
+                        ref={codeRef}
+                        id="code"
                         required
                         autoFocus={true}
-                        name="inviteId"
+                        name="code"
                         type="text"
-                        aria-invalid={actionData?.errors?.inviteId ? true : undefined}
-                        aria-describedby="invite-id-error"
-                        className={clsx("input input-bordered", `${actionData?.errors?.inviteId ? "input-error" : ""}`)}
+                        aria-invalid={actionData?.errors?.code ? true : undefined}
+                        aria-describedby="code-error"
+                        className={clsx("input input-bordered", `${actionData?.errors?.code ? "input-error" : ""}`)}
                         placeholder="s2A52..."
                     />
-                    {actionData?.errors?.inviteId && (
-                        <div className="pt-1 text-red-700" id="invite-id-error">
-                            {actionData.errors.inviteId}
+                    {actionData?.errors?.code && (
+                        <div className="pt-1 text-red-700" id="code-error">
+                            {actionData.errors.code}
                         </div>
                     )}
                 </div>

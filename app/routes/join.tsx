@@ -7,8 +7,8 @@ import { getUserId, createUserSession } from "~/session.server";
 
 import { createUser, createUserFromInvite, getUserByEmail, getUserByUsername } from "~/models/user.server";
 import { safeRedirect, validateEmail, validateUsername } from "~/utils";
-import { decrementInvite, getValidInvite } from "~/models/invite.server";
-import { getJoinableAdventureByInviteId, joinAdventure } from "~/models/adventure.server";
+import { decrementInvite, getValidInviteFromCode } from "~/models/invite.server";
+import { getJoinableAdventureByInviteCode, joinAdventure } from "~/models/adventure.server";
 import clsx from "clsx";
 
 export async function loader({ request }: LoaderArgs) {
@@ -93,7 +93,7 @@ export async function action({ request }: ActionArgs) {
     );
   }
 
-  const { invite, error: inviteError } = await getValidInvite({ code });
+  const { invite, error: inviteError } = await getValidInviteFromCode({ code });
   if (invite) {
     const user = await createUserFromInvite(email, username, password, code);
     // @TODO - create user and update invite in transaction
@@ -106,10 +106,11 @@ export async function action({ request }: ActionArgs) {
     });
   }
 
-  const { adventure, error: adventureInviteError } = await getJoinableAdventureByInviteId({ inviteId: code });
+  const { adventure, error: adventureInviteError } = await getJoinableAdventureByInviteCode({ code });
   if (adventure) {
     const user = await createUser(email, username, password);
     const joinedAdventure = await joinAdventure({ id: adventure.id, userId: user.id });
+    await decrementInvite({ code });
     return createUserSession({
       request,
       userId: user.id,

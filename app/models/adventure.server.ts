@@ -1,4 +1,5 @@
-import type { Adventure, AdventureTemplate, User } from "@prisma/client";
+import type { Adventure, AdventureTemplate, Invite, User } from "@prisma/client";
+import dayjs from "dayjs";
 
 import { prisma } from "~/db.server";
 
@@ -11,27 +12,10 @@ export function getCreatedAdventureListItems({
 }) {
   return prisma.adventure.findMany({
     where: { creatorId: userId },
-    select: {
-      id: true,
-      title: true,
-      coverImage: true,
-      createdAt: true,
-      challenges: {
-        select: {
-          revealedAt: true,
-          completedAt: true,
-        }
-      },
-      creator: {
-        select: {
-          username: true,
-        }
-      },
-      joiners: {
-        select: {
-          username: true,
-        }
-      }
+    include: {
+      challenges: true,
+      creator: true,
+      joiners: true,
     },
     orderBy: { updatedAt: "desc" },
   });
@@ -44,27 +28,10 @@ export function getJoinedAdventureListItems({
 }) {
   return prisma.adventure.findMany({
     where: { joiners: { some: { id: userId } } },
-    select: {
-      id: true,
-      title: true,
-      coverImage: true,
-      createdAt: true,
-      challenges: {
-        select: {
-          revealedAt: true,
-          completedAt: true,
-        }
-      },
-      creator: {
-        select: {
-          username: true,
-        }
-      },
-      joiners: {
-        select: {
-          username: true,
-        }
-      }
+    include: {
+      challenges: true,
+      creator: true,
+      joiners: true,
     },
     orderBy: { updatedAt: "desc" },
   });
@@ -87,14 +54,9 @@ export async function createAdventureFromTemplate({
           orderBy: {
             position: "asc",
           },
-          select: {
-            position: true,
-            challengeTemplate: {
-              select: {
-                id: true,
-              },
-            },
-          },
+          include: {
+            challengeTemplate: true,
+          }
         },
       },
     });
@@ -127,51 +89,49 @@ export function getAdventure({
   userId: User["id"];
 }) {
   return prisma.adventure.findFirst({
-    select: {
-      id: true,
-      title: true,
-      description: true,
-      maxJoiners: true,
-      coverImage: true,
-      inviteId: true,
-      creator: { select: { id: true, username: true } },
-      joiners: { select: { username: true } },
-    },
     where: {
       id,
       OR: [{ creatorId: userId }, { joiners: { some: { id: userId } } }],
     },
+    include: {
+      creator: true,
+      joiners: true,
+    }
   });
 }
 
-function getAdventureByInviteId({
-  inviteId,
+function getValidAdventureByInviteCode({
+  code,
 }: {
-  inviteId: Adventure["inviteId"];
+  code: Invite["code"];
 }) {
   return prisma.adventure.findFirst({
-    where: { inviteId },
-    select: {
-      id: true,
-      creatorId: true,
-      maxJoiners: true,
-      joiners: {
-        select: {
-          id: true,
+    where: {
+      invites: {
+        some: {
+          code,
         },
       },
+    },
+    include: {
+      joiners: true,
+      invites: {
+        where: {
+          code,
+        }
+      }
     },
   });
 }
 
-export async function getJoinableAdventureByInviteId({
-  inviteId,
+export async function getJoinableAdventureByInviteCode({
+  code,
   userId,
 }: {
-  inviteId: Adventure["inviteId"];
+  code: Invite["code"];
   userId?: User["id"];
 }) {
-  const adventure = await getAdventureByInviteId({ inviteId });
+  const adventure = await getValidAdventureByInviteCode({ code });
 
   if (!adventure) {
     return {
@@ -193,6 +153,22 @@ export async function getJoinableAdventureByInviteId({
     return {
       adventure: null,
       error: "This adventure is full",
+    };
+  }
+
+  const [invite] = adventure.invites;
+
+  if (invite.expireAt && dayjs().isAfter(invite.expireAt)) {
+    return {
+      adventure: null,
+      error: "This invite code has expired",
+    };
+  }
+
+  if (invite.remainingUses !== null && invite.remainingUses <= 0) {
+    return {
+      adventure: null,
+      error: "This invite can't be used anymore",
     };
   }
 
