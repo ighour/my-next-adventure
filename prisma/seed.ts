@@ -2,8 +2,9 @@ import type { Hint } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import dayjs from "dayjs";
-import { EHint, ETimeOfDay, EInviteType } from "~/models/enums";
+import { EHint, EInviteType } from "~/models/enums";
 import { createInvite } from "~/models/invite.server";
+import { ETimeOfDayCode } from "~/models/locales";
 
 const prisma = new PrismaClient();
 
@@ -30,9 +31,6 @@ async function seed() {
     // no worries if it doesn't exist yet
   });
   await prisma.invite.deleteMany().catch(() => {
-    // no worries if it doesn't exist yet
-  });
-  await prisma.challengeTemplatesOnAdventureTemplates.deleteMany().catch(() => {
     // no worries if it doesn't exist yet
   });
 
@@ -128,7 +126,7 @@ async function seed() {
       `,
       notePlaceholder: "How was the challenge?",
       cost: 0,
-      timeOfDay: ETimeOfDay.ANY,
+      timeOfDay: ETimeOfDayCode.ANY,
       durationMinutes: 60,
       hints: [EHint.HOME],
     },
@@ -144,7 +142,7 @@ async function seed() {
       `,
       notePlaceholder: "Was it hard to complete the challenge?",
       cost: 12,
-      timeOfDay: ETimeOfDay.ANY,
+      timeOfDay: ETimeOfDayCode.ANY,
       durationMinutes: 15,
       hints: [EHint.HOME, EHint.SHOPPING_CART],
     },
@@ -155,7 +153,7 @@ async function seed() {
       `,
       notePlaceholder: "Have you had fun on your challenge?",
       cost: 75.75,
-      timeOfDay: ETimeOfDay.AFTERNOON,
+      timeOfDay: ETimeOfDayCode.AFTERNOON,
       durationMinutes: 92,
       hints: [],
     },
@@ -167,7 +165,7 @@ async function seed() {
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
       cost: 0,
-      timeOfDay: ETimeOfDay.NIGHT,
+      timeOfDay: ETimeOfDayCode.NIGHT,
       durationMinutes: 432,
       hints: [EHint.HOME],
     },
@@ -183,7 +181,7 @@ async function seed() {
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
       cost: 0.32,
-      timeOfDay: ETimeOfDay.MORNING,
+      timeOfDay: ETimeOfDayCode.MORNING,
       durationMinutes: 7,
       hints: [EHint.SHOPPING_CART],
     },

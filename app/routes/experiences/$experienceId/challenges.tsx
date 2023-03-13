@@ -10,12 +10,14 @@ import { getAdventure } from "~/models/adventure.server";
 import { completeChallenge, getNextUnrevealedChallengeListItem, getRevealedChallengeListItems, revealChallenge, updateNote } from "~/models/challenge.server";
 import { requireUserId } from "~/session.server";
 import { ClockIcon, CurrencyDollarIcon, HomeIcon, ShoppingCartIcon, SunIcon } from '@heroicons/react/24/outline'
-import { EHint, ETimeOfDay, ETimeOfDayPT } from "~/models/enums";
+import { EHint } from "~/models/enums";
 
 import defaultCoverImage from "~/assets/adventure_cover.png";
 import Modal, { ModalOpener } from "~/components/Modal";
 import dayjs from "dayjs";
 import { useCountdown } from "~/hooks/useCountdown";
+import { getTimeOfDay } from "~/utils/locales";
+import { ELanguageCode, ETimeOfDayCode } from "~/models/locales";
 
 export async function loader({ request, params }: LoaderArgs) {
     const userId = await requireUserId(request);
@@ -149,11 +151,6 @@ function getFormattedDuration(duration: number) {
     return "> 5H";
 }
 
-// @TODO - other languages
-const getLocalizedTime = (time: ETimeOfDay) => {
-    return ETimeOfDayPT[time];
-}
-
 // @TODO - get automatically from action
 export type TActionErrorData = { _challengeId: string, note?: string, image?: string };
 
@@ -204,7 +201,7 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
                     {getIconComponentByName("currency-dollar", { className: "mr-1" })} {getFormattedCost(cost)}
                 </span>
                 <span className="flex items-center">
-                    {getIconComponentByName("sun", { className: "mr-1" })} {getLocalizedTime(time as ETimeOfDay)}
+                    {getIconComponentByName("sun", { className: "mr-1" })} {getTimeOfDay(time as ETimeOfDayCode, ELanguageCode.PT)}
                 </span>
                 <span className="flex items-center">
                     {getIconComponentByName("clock", { className: "mr-1" })} {getFormattedDuration(duration)}
