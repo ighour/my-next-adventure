@@ -8,6 +8,7 @@
 - https://www.mailing.run/ (dev?)
 - https://www.mailgun.com/pricing/ (prod?)
 - https://sendgrid.com/pricing/ (prod?)
+- https://github.com/sergiodxa/remix-auth
 
 - [ ] Create real experiences / challenges. Check GPT help.
 
