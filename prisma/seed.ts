@@ -2,7 +2,7 @@ import type { Hint } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import dayjs from "dayjs";
-import { EHint, EInviteType } from "~/enums";
+import { EDurationCode, EHint, EInviteType } from "~/enums";
 import { createInvite } from "~/models/invite.server";
 import { ECurrencyCode, ELanguageCode, ETimeOfDayCode } from "~/enums";
 
@@ -127,7 +127,7 @@ async function seed() {
       notePlaceholder: "How was the challenge?",
       cost: ECurrencyCode.FREE,
       timeOfDay: ETimeOfDayCode.ANY,
-      durationMinutes: 60,
+      duration: EDurationCode.HOUR,
       hints: [EHint.HOME],
       languageCode: ELanguageCode.PT,
     },
@@ -144,7 +144,7 @@ async function seed() {
       notePlaceholder: "Was it hard to complete the challenge?",
       cost: ECurrencyCode.LOW,
       timeOfDay: ETimeOfDayCode.ANY,
-      durationMinutes: 15,
+      duration: EDurationCode.QUARTER_HOUR,
       hints: [EHint.HOME, EHint.SHOPPING_CART],
       languageCode: ELanguageCode.PT,
     },
@@ -156,7 +156,7 @@ async function seed() {
       notePlaceholder: "Have you had fun on your challenge?",
       cost: ECurrencyCode.HIGH,
       timeOfDay: ETimeOfDayCode.AFTERNOON,
-      durationMinutes: 92,
+      duration: EDurationCode.HALF_HOUR,
       hints: [],
       languageCode: ELanguageCode.PT,
     },
@@ -169,7 +169,7 @@ async function seed() {
       `,
       cost: ECurrencyCode.FREE,
       timeOfDay: ETimeOfDayCode.NIGHT,
-      durationMinutes: 432,
+      duration: EDurationCode.HALF_DAY,
       hints: [EHint.HOME],
       languageCode: ELanguageCode.PT,
     },
@@ -186,7 +186,7 @@ async function seed() {
       `,
       cost: ECurrencyCode.MEDIUM,
       timeOfDay: ETimeOfDayCode.MORNING,
-      durationMinutes: 7,
+      duration: EDurationCode.DAY,
       hints: [EHint.SHOPPING_CART],
       languageCode: ELanguageCode.PT,
     },
@@ -201,7 +201,7 @@ async function seed() {
           notePlaceholder: item.notePlaceholder,
           cost: item.cost,
           timeOfDay: item.timeOfDay,
-          durationMinutes: item.durationMinutes,
+          duration: item.duration,
           languageCode: item.languageCode,
           adventureTemplates: {
             create: [

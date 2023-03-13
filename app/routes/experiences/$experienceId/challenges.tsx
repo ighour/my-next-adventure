@@ -10,14 +10,14 @@ import { getAdventure } from "~/models/adventure.server";
 import { completeChallenge, getNextUnrevealedChallengeListItem, getRevealedChallengeListItems, revealChallenge, updateNote } from "~/models/challenge.server";
 import { requireUserId } from "~/session.server";
 import { ClockIcon, CurrencyDollarIcon, HomeIcon, ShoppingCartIcon, SunIcon } from '@heroicons/react/24/outline'
-import { ECurrencyCode, EHint } from "~/enums";
+import { EHint } from "~/enums";
 
 import defaultCoverImage from "~/assets/adventure_cover.png";
 import Modal, { ModalOpener } from "~/components/Modal";
 import dayjs from "dayjs";
 import { useCountdown } from "~/hooks/useCountdown";
-import { getLocalizedCost, getLocalizedTimeOfDay } from "~/utils/locales";
-import type { ETimeOfDayCode, ELanguageCode } from "~/enums";
+import { getLocalizedCost, getLocalizedDuration, getLocalizedTimeOfDay } from "~/utils/locales";
+import type { ETimeOfDayCode, ELanguageCode , ECurrencyCode, EDurationCode} from "~/enums";
 
 export async function loader({ request, params }: LoaderArgs) {
     const userId = await requireUserId(request);
@@ -87,46 +87,6 @@ function getIconComponentByName(name: string, props?: { className?: string, key?
     }
 }
 
-function getFormattedDuration(duration: number) {
-    if (duration <= 1) {
-        return "1M";
-    }
-    if (duration <= 5) {
-        return "5M";
-    }
-    if (duration <= 10) {
-        return "10M";
-    }
-    if (duration <= 15) {
-        return "15M";
-    }
-    if (duration <= 30) {
-        return "30M";
-    }
-    if (duration <= 45) {
-        return "45M";
-    }
-    if (duration <= 60) {
-        return "1H";
-    }
-    if (duration <= 90) {
-        return "1H30M";
-    }
-    if (duration <= 120) {
-        return "2H";
-    }
-    if (duration <= 180) {
-        return "3H";
-    }
-    if (duration <= 240) {
-        return "4H";
-    }
-    if (duration <= 300) {
-        return "5H";
-    }
-    return "> 5H";
-}
-
 // @TODO - get automatically from action
 export type TActionErrorData = { _challengeId: string, note?: string, image?: string };
 
@@ -138,7 +98,7 @@ interface IChallengeListItemProps {
     cost: string
     time: string
     languageCode: string
-    duration: number
+    duration: string
     completedAt: string | null
     revealedAt: string | null
     note: string | null
@@ -181,7 +141,7 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
                     {getIconComponentByName("sun", { className: "mr-1" })} {getLocalizedTimeOfDay(time as ETimeOfDayCode, languageCode as ELanguageCode)}
                 </span>
                 <span className="flex items-center">
-                    {getIconComponentByName("clock", { className: "mr-1" })} {getFormattedDuration(duration)}
+                    {getIconComponentByName("clock", { className: "mr-1" })} {getLocalizedDuration(duration as EDurationCode, languageCode as ELanguageCode)}
                 </span>
             </div>
         )
@@ -400,7 +360,7 @@ export default function ChallengesListPage() {
                     cost={challenge.challengeTemplate.cost}
                     time={challenge.challengeTemplate.timeOfDay}
                     languageCode={challenge.challengeTemplate.languageCode}
-                    duration={challenge.challengeTemplate.durationMinutes}
+                    duration={challenge.challengeTemplate.duration}
                     completedAt={challenge.completedAt}
                     revealedAt={challenge.revealedAt}
                     note={challenge.note}
@@ -464,7 +424,7 @@ export default function ChallengesListPage() {
                         cost={data.nextUnrevealedChallenge.challengeTemplate.cost}
                         time={data.nextUnrevealedChallenge.challengeTemplate.timeOfDay}
                         languageCode={data.nextUnrevealedChallenge.challengeTemplate.languageCode}
-                        duration={data.nextUnrevealedChallenge.challengeTemplate.durationMinutes}
+                        duration={data.nextUnrevealedChallenge.challengeTemplate.duration}
                         completedAt={data.nextUnrevealedChallenge.completedAt}
                         revealedAt={data.nextUnrevealedChallenge.revealedAt}
                         note={data.nextUnrevealedChallenge.note}

@@ -50,7 +50,7 @@ CREATE TABLE "ChallengeTemplate" (
     "notePlaceholder" TEXT,
     "cost" TEXT NOT NULL,
     "timeOfDay" TEXT NOT NULL,
-    "durationMinutes" INTEGER NOT NULL,
+    "duration" TEXT NOT NULL,
     "languageCode" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL

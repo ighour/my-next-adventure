@@ -1,4 +1,4 @@
-import { ECurrencyCode, ELanguageCode, ETimeOfDayCode } from "~/enums";
+import { ECurrencyCode, EDurationCode, ELanguageCode, ETimeOfDayCode } from "~/enums";
 
 export function getLocalizedTimeOfDay(timeOfDayCode: ETimeOfDayCode, languageCode: ELanguageCode) {
     switch(timeOfDayCode) {
@@ -54,5 +54,31 @@ export function getLocalizedCost(currencyCode: ECurrencyCode, languageCode: ELan
                 default: return "HIGH";
             }
         default: throw new Error("Missing cost code"); 
+    }
+}
+
+export function getLocalizedDuration(durationCode: EDurationCode, languageCode: ELanguageCode) {
+    switch(durationCode) {
+        case EDurationCode.QUARTER_HOUR:
+            switch(languageCode) {
+                default: return "15m";
+            }
+        case EDurationCode.HALF_HOUR:
+            switch(languageCode) {
+                default: return "30m";
+            }
+        case EDurationCode.HOUR:
+            switch(languageCode) {
+                default: return "1h";
+            }
+        case EDurationCode.HALF_DAY:
+            switch(languageCode) {
+                default: return "<1d";
+            }
+        case EDurationCode.DAY:
+            switch(languageCode) {
+                default: return "1d";
+            }
+        default: throw new Error("Missing duration code"); 
     }
 }

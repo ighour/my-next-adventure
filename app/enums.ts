@@ -26,3 +26,11 @@ export enum ETimeOfDayCode {
   EVENING = "EVENING",
   NIGHT = "NIGHT"
 }
+
+export enum EDurationCode {
+  QUARTER_HOUR = "QUARTER_HOUR",
+  HALF_HOUR = "HALF_HOUR",
+  HOUR = "HOUR",
+  HALF_DAY = "HALF_DAY",
+  DAY = "DAY",
+}

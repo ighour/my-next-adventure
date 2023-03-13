@@ -72,7 +72,7 @@ model ChallengeTemplate {
   notePlaceholder String?
   cost String // ECurrencyCode
   timeOfDay String // ETimeOfDayCode
-  durationMinutes  Int
+  duration  String // EDurationCode
 
   languageCode String // ELanguageCode
 
