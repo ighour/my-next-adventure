@@ -3,12 +3,10 @@
 
 ### Closed Alpha
 
-- [ ] Magic email
-- https://github.com/sergiodxa/remix-auth/blob/v2.6.0/docs/strategies/kcd.md
-- https://www.mailing.run/ (dev?)
-- https://www.mailgun.com/pricing/ (prod?)
-- https://sendgrid.com/pricing/ (prod?)
-- https://github.com/sergiodxa/remix-auth
+- [ ] Simple reset password flow
+- - Request change password page and send email with link
+- - Change password page (reads token from link)
+- - (see if it is faster to use magic link and remix auth)
 
 - [ ] Create real experiences / challenges. Check GPT help.
 
@@ -40,6 +38,13 @@
 - Adventurers -> Aventureiros (Adventurers)
 - Adventurer (Owner) -> Organizador (Organizer)
 - Adventurer (Joiner) -> Cúmplice (Accomplice)
+
+- [ ] Magic email
+- https://github.com/sergiodxa/remix-auth/blob/v2.6.0/docs/strategies/kcd.md
+- https://www.mailing.run/ (dev?)
+- https://www.mailgun.com/pricing/ (prod?)
+- https://sendgrid.com/pricing/ (prod?)
+- https://github.com/sergiodxa/remix-auth
 
 ### Maybe
 
