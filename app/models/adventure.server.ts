@@ -145,14 +145,14 @@ export async function getJoinableAdventureByInviteCode({
   if (userId && (adventure.creatorId === userId || joinersIds.includes(userId))) {
     return {
       adventure: null,
-      error: "You already belongs to that adventure",
+      error: "Você já faz parte desta experiência",
     };
   }
 
   if (adventure.maxJoiners && joinersIds.length >= adventure.maxJoiners) {
     return {
       adventure: null,
-      error: "This adventure is full",
+      error: "Essa experiência não aceita mais aventureiros",
     };
   }
 
@@ -161,14 +161,14 @@ export async function getJoinableAdventureByInviteCode({
   if (invite.expireAt && dayjs().isAfter(invite.expireAt)) {
     return {
       adventure: null,
-      error: "This invite code has expired",
+      error: "Código de Convite expirado",
     };
   }
 
   if (invite.remainingUses !== null && invite.remainingUses <= 0) {
     return {
       adventure: null,
-      error: "This invite can't be used anymore",
+      error: "Código de Convite já utilizado",
     };
   }
 

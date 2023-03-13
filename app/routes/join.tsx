@@ -34,35 +34,35 @@ export async function action({ request }: ActionArgs) {
 
   if (!validateEmail(email)) {
     return json(
-      { errors: { ...baseErrors, email: "Email is invalid" } },
+      { errors: { ...baseErrors, email: "Email é inválido" } },
       { status: 400 }
     );
   }
 
   if (!validateUsername(username)) {
     return json(
-      { errors: { ...baseErrors, username: "Username is invalid" } },
+      { errors: { ...baseErrors, username: "Nome de usuário é inválido" } },
       { status: 400 }
     );
   }
 
   if (typeof password !== "string" || password.length === 0) {
     return json(
-      { errors: { ...baseErrors, password: "Password is required" } },
+      { errors: { ...baseErrors, password: "Senha é obrigatório" } },
       { status: 400 }
     );
   }
 
   if (password.length < 8) {
     return json(
-      { errors: { ...baseErrors, password: "Password is too short" } },
+      { errors: { ...baseErrors, password: "Senha muito curta (mínimo de 8 dígitos)" } },
       { status: 400 }
     );
   }
 
   if (typeof code !== "string" || code.length === 0) {
     return json(
-      { errors: { ...baseErrors, code: "Invite Code is required" } },
+      { errors: { ...baseErrors, code: "Código de Convite obrigatório" } },
       { status: 400 }
     );
   }
@@ -73,7 +73,7 @@ export async function action({ request }: ActionArgs) {
       {
         errors: {
           ...baseErrors,
-          email: "A user already exists with this email",
+          email: "Email já pertencente a um aventureiro",
         },
       },
       { status: 400 }
@@ -86,7 +86,7 @@ export async function action({ request }: ActionArgs) {
       {
         errors: {
           ...baseErrors,
-          username: "This username is already being used",
+          username: "Nome de usuário já pertencente a um aventureiro",
         },
       },
       { status: 400 }
@@ -115,7 +115,7 @@ export async function action({ request }: ActionArgs) {
       request,
       userId: user.id,
       remember: false,
-      redirectTo: `/adventures/${joinedAdventure.id}`,
+      redirectTo: `/experiences/${joinedAdventure.id}`,
     });
   }
 
@@ -123,7 +123,7 @@ export async function action({ request }: ActionArgs) {
     {
       errors: {
         ...baseErrors,
-        code: inviteError || adventureInviteError || "Invalid invite code",
+        code: inviteError || adventureInviteError || "Código de Convite inválido",
       },
     },
     { status: 400 }
@@ -132,7 +132,7 @@ export async function action({ request }: ActionArgs) {
 
 export const meta: MetaFunction = () => {
   return {
-    title: "Sign Up",
+    title: "Registro",
   };
 };
 
@@ -159,12 +159,12 @@ export default function Join() {
 
   return (
     <main className="bg-base-200 p-6 min-h-screen flex flex-col justify-center items-center">
-      <h2 className="text-3xl font-bold my-10 text-base-content">My Next Challenge</h2>
+      <h2 className="text-3xl font-bold my-10 text-base-content">Fora da Caixa</h2>
       <div className="mx-auto w-full max-w-md px-8">
         <Form method="post" className="space-y-6">
           <div className="form-control w-full">
             <label className="label" htmlFor="email">
-              <span className="label-text">Email address</span>
+              <span className="label-text">Email</span>
             </label>
             <input
               ref={emailRef}
@@ -177,7 +177,7 @@ export default function Join() {
               aria-invalid={actionData?.errors?.email ? true : undefined}
               aria-describedby="email-error"
               className={clsx("input input-bordered", `${actionData?.errors?.email ? "input-error" : ""}`)}
-              placeholder="your@email.here"
+              placeholder="seu@email.aqui"
             />
             {actionData?.errors?.email && (
               <div className="pt-1 text-red-700" id="email-error">
@@ -188,7 +188,7 @@ export default function Join() {
 
           <div className="form-control w-full">
             <label className="label" htmlFor="password">
-              <span className="label-text">Password</span>
+              <span className="label-text">Senha</span>
             </label>
             <input
               ref={passwordRef}
@@ -200,7 +200,7 @@ export default function Join() {
               aria-invalid={actionData?.errors?.password ? true : undefined}
               aria-describedby="password-error"
               className={clsx("input input-bordered", `${actionData?.errors?.password ? "input-error" : ""}`)}
-              placeholder="type here"
+              placeholder="sua senha aqui"
             />
             {actionData?.errors?.password && (
               <div className="pt-1 text-red-700" id="password-error">
@@ -211,7 +211,7 @@ export default function Join() {
 
           <div className="form-control w-full">
             <label className="label" htmlFor="username">
-              <span className="label-text">Username</span>
+              <span className="label-text">Nome de Usuário</span>
             </label>
             <input
               ref={usernameRef}
@@ -222,7 +222,7 @@ export default function Join() {
               aria-invalid={actionData?.errors?.username ? true : undefined}
               aria-describedby="username-error"
               className={clsx("input input-bordered", `${actionData?.errors?.username ? "input-error" : ""}`)}
-              placeholder="yourusername"
+              placeholder="seu usuario aqui"
             />
             {actionData?.errors?.username && (
               <div className="pt-1 text-red-700" id="username-error">
@@ -233,7 +233,7 @@ export default function Join() {
 
           <div className="form-control w-full">
             <label className="label" htmlFor="code">
-              <span className="label-text">Invite Code</span>
+              <span className="label-text">Código de Convite</span>
             </label>
             <input
               ref={codeRef}
@@ -244,7 +244,7 @@ export default function Join() {
               aria-invalid={actionData?.errors?.code ? true : undefined}
               aria-describedby="code-error"
               className={clsx("input input-bordered", `${actionData?.errors?.code ? "input-error" : ""}`)}
-              placeholder="s2Ad1..."
+              placeholder="1SI4L..."
             />
             {actionData?.errors?.code && (
               <div className="pt-1 text-red-700" id="code-error">
@@ -258,11 +258,11 @@ export default function Join() {
             type="submit"
             className="btn btn-block btn-circle btn-primary"
           >
-            Create Account
+            Criar Conta
           </button>
           <div className="flex items-center justify-center">
             <div className="text-center text-sm text-base-content">
-              Already have an account?{" "}
+              Já tem uma conta?{" "}
               <Link
                 className="link link-primary"
                 to={{
@@ -270,7 +270,7 @@ export default function Join() {
                   search: searchParams.toString(),
                 }}
               >
-                Sign in
+                Login
               </Link>
             </div>
           </div>

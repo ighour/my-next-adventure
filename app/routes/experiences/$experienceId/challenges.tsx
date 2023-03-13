@@ -10,7 +10,7 @@ import { getAdventure } from "~/models/adventure.server";
 import { completeChallenge, getNextUnrevealedChallengeListItem, getRevealedChallengeListItems, revealChallenge, updateNote } from "~/models/challenge.server";
 import { requireUserId } from "~/session.server";
 import { ClockIcon, CurrencyDollarIcon, HomeIcon, ShoppingCartIcon, SunIcon } from '@heroicons/react/24/outline'
-import { EHint } from "~/models/enums";
+import { EHint, ETimeOfDay, ETimeOfDayPT } from "~/models/enums";
 
 import defaultCoverImage from "~/assets/adventure_cover.png";
 import Modal, { ModalOpener } from "~/components/Modal";
@@ -19,9 +19,9 @@ import { useCountdown } from "~/hooks/useCountdown";
 
 export async function loader({ request, params }: LoaderArgs) {
     const userId = await requireUserId(request);
-    invariant(params.adventureId, "adventureId not found");
+    invariant(params.experienceId, "experienceId not found");
 
-    const adventure = await getAdventure({ userId, id: params.adventureId });
+    const adventure = await getAdventure({ userId, id: params.experienceId });
     if (!adventure) {
         throw new Response("Not Found", { status: 404 });
     }
@@ -52,7 +52,7 @@ export async function action({ request }: ActionArgs) {
 
         if (typeof note !== "string" || note.length === 0) {
             return json(
-                { errors: { _challengeId, note: "Invalid note" } },
+                { errors: { _challengeId, note: "Comentário inválido" } },
                 { status: 400 }
             );
         }
@@ -89,7 +89,7 @@ function getFormattedCost(cost: string) {
     let numericCost = Number(cost);
 
     if (numericCost <= 0) {
-        return "FREE";
+        return "GRÁTIS";
     }
     if (numericCost < 1) {
         return "1";
@@ -149,6 +149,11 @@ function getFormattedDuration(duration: number) {
     return "> 5H";
 }
 
+// @TODO - other languages
+const getLocalizedTime = (time: ETimeOfDay) => {
+    return ETimeOfDayPT[time];
+}
+
 // @TODO - get automatically from action
 export type TActionErrorData = { _challengeId: string, note?: string, image?: string };
 
@@ -199,7 +204,7 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
                     {getIconComponentByName("currency-dollar", { className: "mr-1" })} {getFormattedCost(cost)}
                 </span>
                 <span className="flex items-center">
-                    {getIconComponentByName("sun", { className: "mr-1" })} {time}
+                    {getIconComponentByName("sun", { className: "mr-1" })} {getLocalizedTime(time as ETimeOfDay)}
                 </span>
                 <span className="flex items-center">
                     {getIconComponentByName("clock", { className: "mr-1" })} {getFormattedDuration(duration)}
@@ -229,15 +234,15 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
                 <>
                     <ModalOpener
                         id={modalId}
-                        buttonName="Add Picture"
+                        buttonName="Adicionar Foto"
                         className="btn-xs btn-primary"
                     />
                     <Modal
                         id={modalId}
                     >
-                        <h2 className="text-xl font-bold mb-2">Challenge Picture</h2>
-                        <p className="my-2">Let's upload the best picture you took for this challenge!</p>
-                        <p className="my-2">Note: you can't change it later</p>
+                        <h2 className="text-xl font-bold mb-2">Foto do Desafio</h2>
+                        <p className="my-2">Que tal adicionar a melhor foto do seu desafio?!</p>
+                        <p className="my-2">Nota: não é possível alterar posteriormente.</p>
                         <div className="mt-2">
                             <imageUploadsFetcher.Form method="post" action="/uploads" encType="multipart/form-data">
                                 <input type="hidden" name="_challengeId" value={id} />
@@ -263,7 +268,7 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
                                         type="submit"
                                         className="btn btn-xs btn-primary"
                                     >
-                                        Add picture
+                                        Adicionar Foto
                                     </button>
                                 </div>
                             </imageUploadsFetcher.Form>
@@ -282,7 +287,7 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
                         value="complete"
                         className="btn btn-xs btn-primary"
                     >
-                        Mark as done
+                        Marcar como Finalizado
                     </button>
                 </Form>
             )
@@ -298,7 +303,7 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
                     className="btn btn-xs btn-primary"
                     disabled={canOnlyBeRevealedInFuture}
                 >
-                    Reveal it
+                    Revelar
                 </button>
             </Form>
         )
@@ -365,7 +370,7 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
                                 value="remove-note"
                                 className="btn btn-xs btn-secondary"
                             >
-                                Remove note
+                                Remover comentário
                             </button>
                         }
                         {note !== modifyingNote && modifyingNote.length !== 0 &&
@@ -375,7 +380,7 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
                                 value="update-note"
                                 className="btn btn-xs btn-secondary"
                             >
-                                Save note
+                                Salvar comentário
                             </button>
                         }
                     </Form>
@@ -418,7 +423,7 @@ export default function ChallengesListPage() {
                     title={`#${challenge.position + 1} ${challenge.challengeTemplate.title}`}
                     description={challenge.challengeTemplate.description}
                     notePlaceholder={challenge.challengeTemplate.notePlaceholder}
-                    cost={challenge.challengeTemplate.costEuros}
+                    cost={challenge.challengeTemplate.cost}
                     time={challenge.challengeTemplate.timeOfDay}
                     duration={challenge.challengeTemplate.durationMinutes}
                     completedAt={challenge.completedAt}
@@ -434,7 +439,7 @@ export default function ChallengesListPage() {
                 <>
                     {canOnlyBeRevealedInFuture &&
                         <div className="mt-32 w-80 lg:w-[32rem] flex flex-col items-center">
-                            <div className="divider">Next Challenge in</div>
+                            <div className="divider">Próximo Desafio em</div>
                             <div className="grid grid-flow-col gap-5 text-center auto-cols-max">
                                 <div className="flex flex-col">
                                     <span className="countdown font-mono text-5xl">
@@ -443,7 +448,7 @@ export default function ChallengesListPage() {
                                             { "--value": daysForReveal }
                                         }></span>
                                     </span>
-                                    days
+                                    dias
                                 </div>
                                 <div className="flex flex-col">
                                     <span className="countdown font-mono text-5xl">
@@ -452,7 +457,7 @@ export default function ChallengesListPage() {
                                             { "--value": hoursForReveal }
                                         }></span>
                                     </span>
-                                    hours
+                                    horas
                                 </div>
                                 <div className="flex flex-col">
                                     <span className="countdown font-mono text-5xl">
@@ -470,7 +475,7 @@ export default function ChallengesListPage() {
                                             { "--value": secondsForReveal }
                                         }></span>
                                     </span>
-                                    sec
+                                    seg
                                 </div>
                             </div>
                         </div>
@@ -481,7 +486,7 @@ export default function ChallengesListPage() {
                         title={`#${data.nextUnrevealedChallenge.position + 1} ${data.nextUnrevealedChallenge.challengeTemplate.title}`}
                         description={data.nextUnrevealedChallenge.challengeTemplate.description}
                         notePlaceholder={data.nextUnrevealedChallenge.challengeTemplate.notePlaceholder}
-                        cost={data.nextUnrevealedChallenge.challengeTemplate.costEuros}
+                        cost={data.nextUnrevealedChallenge.challengeTemplate.cost}
                         time={data.nextUnrevealedChallenge.challengeTemplate.timeOfDay}
                         duration={data.nextUnrevealedChallenge.challengeTemplate.durationMinutes}
                         completedAt={data.nextUnrevealedChallenge.completedAt}
@@ -491,7 +496,7 @@ export default function ChallengesListPage() {
                         hints={data.nextUnrevealedChallenge.challengeTemplate.hints.map(h => h.hint.name)}
                         coverImage={data.adventure.coverImage}
                         errors={getErrorForChallenge(data.nextUnrevealedChallenge.id)}
-                        badge="New"
+                        badge="Novo"
                         canOnlyBeRevealedInFuture={canOnlyBeRevealedInFuture}
                     />
                 </>

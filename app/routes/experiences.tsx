@@ -15,7 +15,7 @@ export async function loader({ request }: LoaderArgs) {
 
 export const meta: MetaFunction = () => {
   return {
-    title: "My Adventures",
+    title: "Minhas Experiências",
   };
 };
 

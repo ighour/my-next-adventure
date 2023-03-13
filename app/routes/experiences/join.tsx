@@ -15,7 +15,7 @@ export async function action({ request }: ActionArgs) {
 
     if (typeof code !== "string" || code.length === 0) {
         return json(
-            { errors: { code: "You need to add an adventure code" } },
+            { errors: { code: "Código de Convite obrigatório" } },
             { status: 400 }
         );
     }
@@ -24,19 +24,19 @@ export async function action({ request }: ActionArgs) {
 
     if (error || !adventure) {
         return json(
-            { errors: { code: error || "Invalid invite" } },
+            { errors: { code: error || "Código de Convite inválido" } },
             { status: 400 }
         );
     }
 
     const joinedAdventure = await joinAdventure({ id: adventure.id, userId: user.id });
 
-    return redirect(`/adventures/${joinedAdventure.id}`);
+    return redirect(`/experiences/${joinedAdventure.id}`);
 }
 
 export const meta: MetaFunction = () => {
     return {
-        title: "Join Adventure",
+        title: "Participar de uma Experiência",
     };
 };
 
@@ -52,14 +52,14 @@ export default function JoinAdventurePage() {
 
     return (
         <div className="mx-auto w-full max-w-md px-8">
-            <h2 className="text-2xl mb-5">Join an Adventure</h2>
+            <h2 className="text-2xl mb-5">Participar de uma Experiência</h2>
             <Form
                 method="post"
                 className="space-y-6"
             >
                 <div className="form-control w-full">
                     <label className="label" htmlFor="code">
-                        <span className="label-text">Adventure Code</span>
+                        <span className="label-text">Código de Convite</span>
                     </label>
                     <input
                         ref={codeRef}
@@ -71,7 +71,7 @@ export default function JoinAdventurePage() {
                         aria-invalid={actionData?.errors?.code ? true : undefined}
                         aria-describedby="code-error"
                         className={clsx("input input-bordered", `${actionData?.errors?.code ? "input-error" : ""}`)}
-                        placeholder="s2A52..."
+                        placeholder="S29D8..."
                     />
                     {actionData?.errors?.code && (
                         <div className="pt-1 text-red-700" id="code-error">
@@ -84,7 +84,7 @@ export default function JoinAdventurePage() {
                     type="submit"
                     className="btn btn-block btn-circle btn-primary"
                 >
-                    Join
+                    Participar
                 </button>
             </Form>
         </div>

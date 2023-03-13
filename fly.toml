@@ -1,4 +1,4 @@
-app = "my-next-adventure-9003"
+app = "be-out-of-the-box"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = [ ]

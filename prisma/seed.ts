@@ -86,7 +86,7 @@ async function seed() {
 
   const adventureTemplate = await prisma.adventureTemplate.create({
     data: {
-      title: "Couples Edition",
+      title: "Vida de Casal",
       description: "Lorem ipsum...",
       maxJoiners: 1,
       nextChallengeRevealHours: 0
@@ -95,8 +95,8 @@ async function seed() {
 
   const adventureTemplate2 = await prisma.adventureTemplate.create({
     data: {
-      title: "Couples Edition 2",
-      description: "Lorem ipsum (with cover)...",
+      title: "Vida de Casal 2",
+      description: "Lorem ipsum (com capa)...",
       maxJoiners: 2,
       nextChallengeRevealHours: 36,
       coverImage:
@@ -121,19 +121,19 @@ async function seed() {
 
   const baseChallengeTemplates = [
     {
-      title: "The Helpless Baker",
+      title: "Ajuda na Cozinha",
       description: `
         <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
       notePlaceholder: "How was the challenge?",
-      costEuros: 0,
+      cost: 0,
       timeOfDay: ETimeOfDay.ANY,
       durationMinutes: 60,
       hints: [EHint.HOME],
     },
     {
-      title: "The Helpless Baker 2",
+      title: "Ajuda na Cozinha 2",
       description: `
         <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
@@ -143,18 +143,18 @@ async function seed() {
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
       notePlaceholder: "Was it hard to complete the challenge?",
-      costEuros: 12,
+      cost: 12,
       timeOfDay: ETimeOfDay.ANY,
       durationMinutes: 15,
       hints: [EHint.HOME, EHint.SHOPPING_CART],
     },
     {
-      title: "The Helpless Baker 3",
+      title: "Ajuda na Cozinha 3",
       description: `
         <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
       `,
       notePlaceholder: "Have you had fun on your challenge?",
-      costEuros: 75.75,
+      cost: 75.75,
       timeOfDay: ETimeOfDay.AFTERNOON,
       durationMinutes: 92,
       hints: [],
@@ -166,7 +166,7 @@ async function seed() {
         <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
-      costEuros: 0,
+      cost: 0,
       timeOfDay: ETimeOfDay.NIGHT,
       durationMinutes: 432,
       hints: [EHint.HOME],
@@ -182,7 +182,7 @@ async function seed() {
         <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
-      costEuros: 0.32,
+      cost: 0.32,
       timeOfDay: ETimeOfDay.MORNING,
       durationMinutes: 7,
       hints: [EHint.SHOPPING_CART],
@@ -196,7 +196,7 @@ async function seed() {
           title: `${item.title} (${index+1})`,
           description: item.description,
           notePlaceholder: item.notePlaceholder,
-          costEuros: item.costEuros,
+          cost: item.cost,
           timeOfDay: item.timeOfDay,
           durationMinutes: item.durationMinutes,
           adventureTemplates: {

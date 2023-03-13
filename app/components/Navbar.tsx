@@ -17,14 +17,14 @@ export default function Navbar() {
                                 className={({ isActive }) =>
                                     `${isActive ? "underline" : ""}`
                                 }
-                                to="/adventures"
+                                to="/experiences"
                             >
-                                My Adventures
+                                Minhas Experiências
                             </NavLink>
                         </li>
                     </ul>
                 </div>
-                <Link className="btn btn-ghost normal-case text-xl" to="/">MNA</Link>
+                <Link className="btn btn-ghost normal-case text-xl" to="/">Fora da Caixa</Link>
             </div>
             {/* Menu list for big sizes */}
             <div className="navbar-center hidden lg:flex">
@@ -34,9 +34,9 @@ export default function Navbar() {
                             className={({ isActive }) =>
                                 `${isActive ? "underline" : ""}`
                             }
-                            to="/adventures"
+                            to="/experiences"
                         >
-                            My Adventures
+                            Minhas Experiências
                         </NavLink>
                     </li>
                 </ul>
@@ -51,7 +51,7 @@ export default function Navbar() {
                         type="submit"
                         className="btn"
                     >
-                        Logout
+                        Sair
                     </button>
                 </Form>
             </div>

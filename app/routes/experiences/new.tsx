@@ -29,19 +29,19 @@ export async function action({ request }: ActionArgs) {
 
     if (typeof adventureTemplateId !== "string" || adventureTemplateId.length === 0) {
         return json(
-            { errors: { ...errorFields, adventureTemplateId: "You need to select an Adventure Template" } },
+            { errors: { ...errorFields, adventureTemplateId: "Você precisa selecionar uma experiência" } },
             { status: 400 }
         );
     }
 
     const adventure = await createAdventureFromTemplate({ adventureTemplateId, userId: user.id });
 
-    return redirect(`/adventures/${adventure.id}`);
+    return redirect(`/experiences/${adventure.id}`);
 }
 
 export const meta: MetaFunction = () => {
     return {
-        title: "New Adventure",
+        title: "Criar uma Experiência",
     };
 };
 
@@ -65,14 +65,14 @@ export default function NewAdventurePage() {
 
     return (
         <div className="mx-auto w-full max-w-md px-8">
-            <h2 className="text-2xl mb-5">Create an Adventure</h2>
+            <h2 className="text-2xl mb-5">Criar uma Experiência</h2>
             <Form
                 method="post"
                 className="space-y-6"
             >
                 <div className="form-control w-full">
                     <label className="label" htmlFor="adventure-template-id">
-                        <span className="label-text">Adventure Edition</span>
+                        <span className="label-text">Experiência</span>
                     </label>
                     <select
                         ref={adventureTemplateIdRef}
@@ -104,7 +104,7 @@ export default function NewAdventurePage() {
                             <figure><img src={selectedAdventureTemplate.coverImage ?? defaultCoverImage} alt="Shoes" /></figure>
                             <div className="card-body">
                                 <div>
-                                    <p className="mb-3 font-bold">{selectedAdventureTemplate.maxJoiners + 1} adventurers</p>
+                                    <p className="mb-3 font-bold">{selectedAdventureTemplate.maxJoiners + 1} aventureiros</p>
                                     <p>{selectedAdventureTemplate.description}</p>
                                 </div>
                             </div>
@@ -116,7 +116,7 @@ export default function NewAdventurePage() {
                     type="submit"
                     className="btn btn-block btn-circle btn-primary"
                 >
-                    Create
+                    Criar
                 </button>
             </Form>
         </div>

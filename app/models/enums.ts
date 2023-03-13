@@ -7,6 +7,13 @@ export enum ETimeOfDay {
   EVENING = "EVENING",
   NIGHT = "NIGHT"
 }
+export enum ETimeOfDayPT {
+  ANY = "QUALQUER",
+  MORNING = "MANHÃ",
+  AFTERNOON = "TARDE",
+  EVENING = "NOITE",
+  NIGHT = "MADRUGADA"
+}
 
 export enum EHint {
   HOME = "HOME",

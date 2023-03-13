@@ -70,7 +70,7 @@ model ChallengeTemplate {
   title       String @unique
   description String
   notePlaceholder String?
-  costEuros  Decimal
+  cost  Decimal
   timeOfDay String // ETimeOfDay
   durationMinutes  Int
 

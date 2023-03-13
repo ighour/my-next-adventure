@@ -18,26 +18,19 @@ export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");
-  const redirectTo = safeRedirect(formData.get("redirectTo"), "/adventures");
+  const redirectTo = safeRedirect(formData.get("redirectTo"), "/experiences");
   const remember = formData.get("remember");
 
   if (!validateEmail(email)) {
     return json(
-      { errors: { email: "Email is invalid", password: null } },
+      { errors: { email: "Email inválido", password: null } },
       { status: 400 }
     );
   }
 
   if (typeof password !== "string" || password.length === 0) {
     return json(
-      { errors: { email: null, password: "Password is required" } },
-      { status: 400 }
-    );
-  }
-
-  if (password.length < 8) {
-    return json(
-      { errors: { email: null, password: "Password is too short" } },
+      { errors: { email: null, password: "Senha obrigatória" } },
       { status: 400 }
     );
   }
@@ -46,7 +39,7 @@ export async function action({ request }: ActionArgs) {
 
   if (!user) {
     return json(
-      { errors: { email: "Invalid email or password", password: null } },
+      { errors: { email: "Email ou senha inválidos", password: null } },
       { status: 400 }
     );
   }
@@ -67,7 +60,7 @@ export const meta: MetaFunction = () => {
 
 export default function LoginPage() {
   const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") || "/adventures";
+  const redirectTo = searchParams.get("redirectTo") || "/experiences";
   const actionData = useActionData<typeof action>();
   const emailRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
@@ -82,12 +75,12 @@ export default function LoginPage() {
 
   return (
     <main className="bg-base-200 p-6 min-h-screen flex flex-col justify-center items-center">
-      <h2 className="text-3xl font-bold my-10 text-base-content">My Next Challenge</h2>
+      <h2 className="text-3xl font-bold my-10 text-base-content">Fora da Caixa</h2>
       <div className="mx-auto w-full max-w-md px-8">
         <Form method="post" className="space-y-6">
           <div className="form-control w-full">
             <label className="label" htmlFor="email">
-              <span className="label-text">Email address</span>
+              <span className="label-text">Email</span>
             </label>
             <input
               ref={emailRef}
@@ -100,7 +93,7 @@ export default function LoginPage() {
               aria-invalid={actionData?.errors?.email ? true : undefined}
               aria-describedby="email-error"
               className={clsx("input input-bordered", `${actionData?.errors?.email ? "input-error" : ""}`)}
-              placeholder="your@email.here"
+              placeholder="seu@email.aqui"
             />
             {actionData?.errors?.email && (
               <div className="pt-1 text-red-700" id="email-error">
@@ -111,7 +104,7 @@ export default function LoginPage() {
 
           <div className="form-control w-full">
             <label className="label" htmlFor="password">
-              <span className="label-text">Password</span>
+              <span className="label-text">Senha</span>
             </label>
             <input
               ref={passwordRef}
@@ -123,7 +116,7 @@ export default function LoginPage() {
               aria-invalid={actionData?.errors?.password ? true : undefined}
               aria-describedby="password-error"
               className={clsx("input input-bordered", `${actionData?.errors?.password ? "input-error" : ""}`)}
-              placeholder="type here"
+              placeholder="sua senha aqui"
             />
             {actionData?.errors?.password && (
               <div className="pt-1 text-red-700" id="password-error">
@@ -137,7 +130,7 @@ export default function LoginPage() {
             type="submit"
             className="btn btn-block btn-circle btn-primary"
           >
-            Log in
+            Login
           </button>
           <div className="flex items-center justify-between">
             <div className="form-control">
@@ -148,11 +141,11 @@ export default function LoginPage() {
                   type="checkbox"
                   className="checkbox checkbox-sm"
                 />
-                <span className="label-text ml-2">Remember me</span>
+                <span className="label-text ml-2">Lembrar</span>
               </label>
             </div>
             <div className="text-center text-sm text-base-content">
-              Don't have an account?{" "}
+              Não tem conta?{" "}
               <Link
                 className="link link-primary"
                 to={{
@@ -160,7 +153,7 @@ export default function LoginPage() {
                   search: searchParams.toString(),
                 }}
               >
-                Sign up
+                Registrar
               </Link>
             </div>
           </div>

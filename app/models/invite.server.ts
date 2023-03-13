@@ -28,13 +28,13 @@ export async function getValidInviteFromCode({
   if (invite.remainingUses !== null && invite.remainingUses <= 0) {
     return {
       invite: null,
-      error: "No remaining uses for this invite code",
+      error: "Código de Convite já utilizado",
     };
   }
   if (invite.expireAt && dayjs(invite.expireAt).isBefore(dayjs())) {
     return {
       invite: null,
-      error: "Invite code is not valid anymore",
+      error: "Código de Convite expirado",
     };
   }
 

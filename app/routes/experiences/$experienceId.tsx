@@ -13,15 +13,15 @@ import { getOrCreateValidInviteFromAdventure } from "~/models/invite.server";
 
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);
-  invariant(params.adventureId, "adventureId not found");
+  invariant(params.experienceId, "adexperienceIdventureId not found");
 
-  const adventure = await getAdventure({ userId, id: params.adventureId });
+  const adventure = await getAdventure({ userId, id: params.experienceId });
   if (!adventure) {
     throw new Response("Not Found", { status: 404 });
   }
 
   const invite = await getOrCreateValidInviteFromAdventure({
-    adventureId: params.adventureId,
+    adventureId: params.experienceId,
     maxJoiners: adventure.maxJoiners,
     currentJoinersCount: adventure.joiners.length,
   });
@@ -47,16 +47,16 @@ export default function AdventureDetailsPage() {
               {data.invite &&
                 <CopyToClipboard
                   text={data.invite.code}
-                  onCopy={() => { createNotificationWithTitleAndDescription({ title: "Copied adventure invite link", description: "Share it with other adventurers." }) }}
+                  onCopy={() => { createNotificationWithTitleAndDescription({ title: "Copiou o Código de Convite", description: "Compartilhe com outros aventureiros." }) }}
                 >
                   <button className="btn btn-primary mx-1 my-1">
-                    Invite Code
+                    Código de Convite
                   </button>
                 </CopyToClipboard>
               }
               <ModalOpener
                 id={modalId}
-                buttonName="Info"
+                buttonName="Detalhes"
                 className="mx-1 my-1 btn-secondary"
               />
             </div>
@@ -70,24 +70,24 @@ export default function AdventureDetailsPage() {
         <ul className="space-y-2 text-md">
           {data.invite &&
             <li>
-              1. You can invite other people to your adventure by using the code <span className="underline font-semibold">{data.invite.code}</span>
+              1. Você pode convidar outros aventureiros para a sua experiência compartilhando o código de convite <span className="underline font-semibold">{data.invite.code}</span>
             </li>
           }
           {!data.invite &&
             <li>
-              1. Your adventure is full.
+              1. Sua experiência está com todos os aventureiros
             </li>
           }
           <li>
-            2. This adventure is limited to <span className="underline font-semibold">{data.adventure.maxJoiners + 1}</span> people
+            2. Essa experiência é limitada a <span className="underline font-semibold">{data.adventure.maxJoiners + 1}</span> aventureiros
           </li>
           <li>
-            3. Adventure creator is <span className="underline font-semibold">@{data.adventure.creator.username}</span>
+            3. O organizador da experiência é <span className="underline font-semibold">@{data.adventure.creator.username}</span>
           </li>
         </ul>
         {joiners.length > 0 &&
           <>
-            <div className="mt-2">4. Other adventurers are:</div>
+            <div className="mt-2">4. Cúmplices da experiência:</div>
             <ul className="space-y-2 text-md">
               {joiners.map(joiner =>
                 <li key={joiner}>

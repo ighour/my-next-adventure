@@ -1,5 +1,4 @@
-# my-next-adventure
-
+# be-out-of-the-box
 ## TODO
 
 ### Closed Alpha
@@ -20,7 +19,7 @@
 
 - [ ] Make content in PT for first draft
 
-- [ ] Create real adventures / challenges. Check GPT help.
+- [ ] Create real experiences / challenges. Check GPT help.
 
 - [ ] Set app theme
 

@@ -5,7 +5,7 @@ import { getUserId } from "~/session.server";
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
   if (userId) {
-    return redirect("/adventures");
+    return redirect("/experiences");
   }
   return redirect("/login")
 }

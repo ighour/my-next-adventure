@@ -24,19 +24,19 @@ export default function AdventuresIndexPage() {
                     to="new"
                     className="m-2"
                 >
-                    <button className="btn btn-primary">Create Adventure</button>
+                    <button className="btn btn-primary">Criar uma Experiência</button>
                 </Link>
                 <Link
                     to="join"
                     className="m-2"
                 >
-                    <button className="btn btn-primary">Join Adventure</button>
+                    <button className="btn btn-primary">Participar de uma Experiência</button>
                 </Link>
             </div>
 
             {data.createdAdventureListItems.length > 0 &&
                 <div className="my-5">
-                    <h2 className="text-2xl mb-2">Created Adventures</h2>
+                    <h2 className="text-2xl mb-2">Experiências Criadas</h2>
                     <div className="flex flex-wrap">
                         {data.createdAdventureListItems.map(adventure => {
                             const { newCount, activeCount, completedCount } = adventure.challenges.reduce((all, item) => {
@@ -57,13 +57,13 @@ export default function AdventuresIndexPage() {
                                             <h2 className="card-title mb-2">{adventure.title}</h2>
                                             <ul className="my-2">
                                                 <li>{dayjs(adventure.createdAt).format("YYYY-MM-DD")}</li>
-                                                <li>{adventurersCount} adventurers</li>
+                                                <li>{adventurersCount} aventureiros</li>
                                             </ul>
                                             {(newCount > 0 || activeCount > 0 || completedCount > 0) &&
                                                 <ul className="my-2">
-                                                    {newCount > 0 && <li>{newCount}x new</li>}
-                                                    {activeCount > 0 && <li>{activeCount}x active</li>}
-                                                    {completedCount > 0 && <li>{completedCount}x completed</li>}
+                                                    {newCount > 0 && <li>{newCount}x novos</li>}
+                                                    {activeCount > 0 && <li>{activeCount}x ativos</li>}
+                                                    {completedCount > 0 && <li>{completedCount}x finalizados</li>}
                                                 </ul>
                                             }
                                         </div>
@@ -71,7 +71,7 @@ export default function AdventuresIndexPage() {
                                             <Link
                                                 to={adventure.id}
                                             >
-                                                <button className="btn btn-ghost">Open</button>
+                                                <button className="btn btn-ghost">Abrir</button>
                                             </Link>
                                         </div>
                                     </div>
@@ -84,7 +84,7 @@ export default function AdventuresIndexPage() {
 
             {data.joinedAdventureListItems.length > 0 &&
                 <div className="my-5">
-                    <h2 className="text-2xl mb-2">Joined Adventures</h2>
+                    <h2 className="text-2xl mb-2">Experiências Compartilhadas</h2>
                     <div className="flex flex-wrap">
                         {data.joinedAdventureListItems.map(adventure => {
                             const { newCount, activeCount, completedCount } = adventure.challenges.reduce((all, item) => {
@@ -105,13 +105,13 @@ export default function AdventuresIndexPage() {
                                             <h2 className="card-title mb-2">{adventure.title}</h2>
                                             <ul className="my-2">
                                                 <li>{dayjs(adventure.createdAt).format("YYYY-MM-DD")}</li>
-                                                <li>{adventurersCount} adventurers</li>
+                                                <li>{adventurersCount} aventureiros</li>
                                             </ul>
                                             {(newCount > 0 || activeCount > 0 || completedCount > 0) &&
                                                 <ul className="my-2">
-                                                    {newCount > 0 && <li>{newCount}x new</li>}
-                                                    {activeCount > 0 && <li>{activeCount}x active</li>}
-                                                    {completedCount > 0 && <li>{completedCount}x completed</li>}
+                                                    {newCount > 0 && <li>{newCount}x novos</li>}
+                                                    {activeCount > 0 && <li>{activeCount}x ativos</li>}
+                                                    {completedCount > 0 && <li>{completedCount}x finalizados</li>}
                                                 </ul>
                                             }
                                         </div>
@@ -119,7 +119,7 @@ export default function AdventuresIndexPage() {
                                             <Link
                                                 to={adventure.id}
                                             >
-                                                <button className="btn btn-ghost">Open</button>
+                                                <button className="btn btn-ghost">Abrir</button>
                                             </Link>
                                         </div>
                                     </div>
