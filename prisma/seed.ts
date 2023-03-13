@@ -2,9 +2,9 @@ import type { Hint } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import dayjs from "dayjs";
-import { EHint, EInviteType } from "~/models/enums";
+import { EHint, EInviteType } from "~/enums";
 import { createInvite } from "~/models/invite.server";
-import { ETimeOfDayCode } from "~/models/locales";
+import { ECurrencyCode, ELanguageCode, ETimeOfDayCode } from "~/enums";
 
 const prisma = new PrismaClient();
 
@@ -125,10 +125,11 @@ async function seed() {
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
       notePlaceholder: "How was the challenge?",
-      cost: 0,
+      cost: ECurrencyCode.FREE,
       timeOfDay: ETimeOfDayCode.ANY,
       durationMinutes: 60,
       hints: [EHint.HOME],
+      languageCode: ELanguageCode.PT,
     },
     {
       title: "Ajuda na Cozinha 2",
@@ -141,10 +142,11 @@ async function seed() {
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
       notePlaceholder: "Was it hard to complete the challenge?",
-      cost: 12,
+      cost: ECurrencyCode.LOW,
       timeOfDay: ETimeOfDayCode.ANY,
       durationMinutes: 15,
       hints: [EHint.HOME, EHint.SHOPPING_CART],
+      languageCode: ELanguageCode.PT,
     },
     {
       title: "Ajuda na Cozinha 3",
@@ -152,10 +154,11 @@ async function seed() {
         <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
       `,
       notePlaceholder: "Have you had fun on your challenge?",
-      cost: 75.75,
+      cost: ECurrencyCode.HIGH,
       timeOfDay: ETimeOfDayCode.AFTERNOON,
       durationMinutes: 92,
       hints: [],
+      languageCode: ELanguageCode.PT,
     },
     {
       title:
@@ -164,10 +167,11 @@ async function seed() {
         <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
-      cost: 0,
+      cost: ECurrencyCode.FREE,
       timeOfDay: ETimeOfDayCode.NIGHT,
       durationMinutes: 432,
       hints: [EHint.HOME],
+      languageCode: ELanguageCode.PT,
     },
     {
       title:
@@ -180,10 +184,11 @@ async function seed() {
         <p>Make a homemade pie together! Easier said than done! One of you must mix all the ingredients by yourself...BLINDFOLDED, while the other person gives instructions by leading with their hands.</p>
         <p>The leader can only use three directive sentences the whole time. (The person with the least amount of cooking experience has to be the blindfolded mixer!)</p>
       `,
-      cost: 0.32,
+      cost: ECurrencyCode.MEDIUM,
       timeOfDay: ETimeOfDayCode.MORNING,
       durationMinutes: 7,
       hints: [EHint.SHOPPING_CART],
+      languageCode: ELanguageCode.PT,
     },
   ];
 
@@ -197,6 +202,7 @@ async function seed() {
           cost: item.cost,
           timeOfDay: item.timeOfDay,
           durationMinutes: item.durationMinutes,
+          languageCode: item.languageCode,
           adventureTemplates: {
             create: [
               {

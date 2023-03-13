@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 
 import { prisma } from "~/db.server";
 import { generateRandomAlphanumeric } from "~/utils";
-import { EInviteType } from "./enums";
+import { EInviteType } from "../enums";
 
 export type { Invite } from "@prisma/client";
 

@@ -10,14 +10,14 @@ import { getAdventure } from "~/models/adventure.server";
 import { completeChallenge, getNextUnrevealedChallengeListItem, getRevealedChallengeListItems, revealChallenge, updateNote } from "~/models/challenge.server";
 import { requireUserId } from "~/session.server";
 import { ClockIcon, CurrencyDollarIcon, HomeIcon, ShoppingCartIcon, SunIcon } from '@heroicons/react/24/outline'
-import { EHint } from "~/models/enums";
+import { ECurrencyCode, EHint } from "~/enums";
 
 import defaultCoverImage from "~/assets/adventure_cover.png";
 import Modal, { ModalOpener } from "~/components/Modal";
 import dayjs from "dayjs";
 import { useCountdown } from "~/hooks/useCountdown";
-import { getTimeOfDay } from "~/utils/locales";
-import { ELanguageCode, ETimeOfDayCode } from "~/models/locales";
+import { getLocalizedCost, getLocalizedTimeOfDay } from "~/utils/locales";
+import type { ETimeOfDayCode, ELanguageCode } from "~/enums";
 
 export async function loader({ request, params }: LoaderArgs) {
     const userId = await requireUserId(request);
@@ -87,30 +87,6 @@ function getIconComponentByName(name: string, props?: { className?: string, key?
     }
 }
 
-function getFormattedCost(cost: string) {
-    let numericCost = Number(cost);
-
-    if (numericCost <= 0) {
-        return "GRÁTIS";
-    }
-    if (numericCost < 1) {
-        return "1";
-    }
-    if (numericCost < 10) {
-        return "10";
-    }
-    if (numericCost < 20) {
-        return "20";
-    }
-    if (numericCost < 30) {
-        return "30";
-    }
-    if (numericCost <= 50) {
-        return "50";
-    }
-    return "> 50";
-}
-
 function getFormattedDuration(duration: number) {
     if (duration <= 1) {
         return "1M";
@@ -161,6 +137,7 @@ interface IChallengeListItemProps {
     notePlaceholder: string | null
     cost: string
     time: string
+    languageCode: string
     duration: number
     completedAt: string | null
     revealedAt: string | null
@@ -174,7 +151,7 @@ interface IChallengeListItemProps {
     className?: string
 };
 
-function ChallengeListItem({ id, title, description, notePlaceholder, cost, time, duration, completedAt, revealedAt, note, completedImage, hints, coverImage, errors, badge, canOnlyBeRevealedInFuture, className }: IChallengeListItemProps) {
+function ChallengeListItem({ id, title, description, notePlaceholder, cost, time, languageCode, duration, completedAt, revealedAt, note, completedImage, hints, coverImage, errors, badge, canOnlyBeRevealedInFuture, className }: IChallengeListItemProps) {
     const [modifyingNote, setModifyingNote] = useState(note ?? "");
     const imageUploadsFetcher = useFetcher();
 
@@ -198,10 +175,10 @@ function ChallengeListItem({ id, title, description, notePlaceholder, cost, time
         return (
             <div className={clsx("font-semibold", className)}>
                 <span className="flex items-center">
-                    {getIconComponentByName("currency-dollar", { className: "mr-1" })} {getFormattedCost(cost)}
+                    {getIconComponentByName("currency-dollar", { className: "mr-1" })} {getLocalizedCost(cost as ECurrencyCode, languageCode as ELanguageCode)}
                 </span>
                 <span className="flex items-center">
-                    {getIconComponentByName("sun", { className: "mr-1" })} {getTimeOfDay(time as ETimeOfDayCode, ELanguageCode.PT)}
+                    {getIconComponentByName("sun", { className: "mr-1" })} {getLocalizedTimeOfDay(time as ETimeOfDayCode, languageCode as ELanguageCode)}
                 </span>
                 <span className="flex items-center">
                     {getIconComponentByName("clock", { className: "mr-1" })} {getFormattedDuration(duration)}
@@ -422,6 +399,7 @@ export default function ChallengesListPage() {
                     notePlaceholder={challenge.challengeTemplate.notePlaceholder}
                     cost={challenge.challengeTemplate.cost}
                     time={challenge.challengeTemplate.timeOfDay}
+                    languageCode={challenge.challengeTemplate.languageCode}
                     duration={challenge.challengeTemplate.durationMinutes}
                     completedAt={challenge.completedAt}
                     revealedAt={challenge.revealedAt}
@@ -485,6 +463,7 @@ export default function ChallengesListPage() {
                         notePlaceholder={data.nextUnrevealedChallenge.challengeTemplate.notePlaceholder}
                         cost={data.nextUnrevealedChallenge.challengeTemplate.cost}
                         time={data.nextUnrevealedChallenge.challengeTemplate.timeOfDay}
+                        languageCode={data.nextUnrevealedChallenge.challengeTemplate.languageCode}
                         duration={data.nextUnrevealedChallenge.challengeTemplate.durationMinutes}
                         completedAt={data.nextUnrevealedChallenge.completedAt}
                         revealedAt={data.nextUnrevealedChallenge.revealedAt}

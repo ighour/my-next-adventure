@@ -70,9 +70,11 @@ model ChallengeTemplate {
   title       String @unique
   description String
   notePlaceholder String?
-  cost  Decimal
-  timeOfDay String // ETimeOfDay
+  cost String // ECurrencyCode
+  timeOfDay String // ETimeOfDayCode
   durationMinutes  Int
+
+  languageCode String // ELanguageCode
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -124,6 +126,7 @@ model Adventure {
 
 model Challenge {
   id        String  @id @default(cuid())
+
   canBeRevealedAt DateTime?
   revealedAt  DateTime?
   completedAt DateTime?
