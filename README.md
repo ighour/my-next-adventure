@@ -9,16 +9,6 @@
 - https://www.mailgun.com/pricing/ (prod?)
 - https://sendgrid.com/pricing/ (prod?)
 
-- [ ] Review nomenclatures (adventure, challenge etc)
-- App: My Next Adventure -> Fora da Caixa (Be Out of The Box)
-- Adventure -> Experiência (Experience)
-- Challenge -> Desafio (Challenge)
-- Adventurers -> Aventureiros (Adventurers)
-- Adventurer (Owner) -> Organizador (Organizer)
-- Adventurer (Joiner) -> Cúmplice (Accomplice)
-
-- [ ] Make content in PT for first draft
-
 - [ ] Create real experiences / challenges. Check GPT help.
 
 - [ ] Set app theme
@@ -41,6 +31,14 @@
 - [ ] Reset password by email ?
 
 - [ ] Optimize DB queries and schemas
+
+- [ ] Set nomenclatures (adventure, challenge etc)
+- App: My Next Adventure -> Fora da Caixa (Be Out of The Box)
+- Adventure -> Experiência (Experience)
+- Challenge -> Desafio (Challenge)
+- Adventurers -> Aventureiros (Adventurers)
+- Adventurer (Owner) -> Organizador (Organizer)
+- Adventurer (Joiner) -> Cúmplice (Accomplice)
 
 ### Maybe
 
