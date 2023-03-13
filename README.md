@@ -11,8 +11,14 @@
 - https://sendgrid.com/pricing/ (prod?)
 
 - [ ] Review nomenclatures (adventure, challenge etc)
-- - My Next Adventure (Adventure/Edition + Challenge)
-- - I Dare You (Edition + Challenge)
+- App: My Next Adventure -> Fora da Caixa (Be Out of The Box)
+- Adventure -> Experiência (Experience)
+- Challenge -> Desafio (Challenge)
+- Adventurers -> Aventureiros (Adventurers)
+- Adventurer (Owner) -> Organizador (Organizer)
+- Adventurer (Joiner) -> Cúmplice (Accomplice)
+
+- [ ] Make content in PT for first draft
 
 - [ ] Create real adventures / challenges. Check GPT help.
 
@@ -23,6 +29,7 @@
 - [ ] App Internationalization
 - - Check for packages and tools
 - - Start with port and eng
+- - App name? (beoutofthebox)
 
 - [ ] Adventure + Challenge Internationalization
 - - Check for packages and tools (would it work?? or need to save in DB??)
